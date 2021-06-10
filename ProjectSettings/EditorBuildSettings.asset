@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Scenes/ErsteSchritte.unity
+    path: Assets/_Scenes/SmithMilerParadigma.unity
     guid: a87b2b1a77c405b409bc84256fc9c8b4
   m_configObjects:
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: d366a1d9cf3d84e4eb88767ea4dd7abc,
