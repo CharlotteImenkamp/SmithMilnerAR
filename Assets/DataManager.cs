@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO; 
+using System.IO;
 
 public class DataManager : MonoBehaviour
 {
-    private string path;  
+    private string path;
+   //  StorageFile newFile; 
 
     // Start is called before the first frame update
     void Start()
@@ -27,8 +28,12 @@ public class DataManager : MonoBehaviour
     public void WriteText()
     {
         TextWriter writer = File.CreateText(path);
+
+
         writer.WriteLine("Hello Hololens");
         writer.Close();
         Debug.Log(Application.persistentDataPath);
+
+        // newFile = await DownloadsFolder.CreateFileAsync("fileNew.txt"); 
     }
 }
