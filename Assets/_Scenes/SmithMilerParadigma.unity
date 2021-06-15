@@ -1151,7 +1151,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 549391117}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.068, y: -0.1279, z: 0.808}
+  m_LocalPosition: {x: 0.298, y: -0.1279, z: 1.049}
   m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
   m_Children: []
   m_Father: {fileID: 1656400720}
@@ -3454,9 +3454,9 @@ MonoBehaviour:
   drawTetherWhenManipulating: 1
   handlesIgnoreCollider: {fileID: 0}
   handlePrefabColliderType: 1
-  showHandleForX: 0
-  showHandleForY: 0
-  showHandleForZ: 0
+  showHandleForX: 1
+  showHandleForY: 1
+  showHandleForZ: 1
 --- !u!1 &1556827407
 GameObject:
   m_ObjectHideFlags: 0
@@ -3653,7 +3653,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1585112146}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.143, y: -0.099, z: 0.7595011}
+  m_LocalPosition: {x: -0.031, y: -0.099, z: 0.839}
   m_LocalScale: {x: 1.5, y: 1.5000008, z: 1.5000008}
   m_Children:
   - {fileID: 1639564481}
@@ -4582,7 +4582,7 @@ MonoBehaviour:
   activation: 0
   flattenAxis: 0
   uniformScaleOnFlattenedAxis: 1
-  boxPadding: {x: 0, y: 0, z: 0}
+  boxPadding: {x: 0.1, y: 0.1, z: 0.1}
   boxDisplayConfiguration: {fileID: 114158987510220008, guid: e9e54ebd208487c409e32502a50a1f20,
     type: 3}
   linksConfiguration: {fileID: 114435853832332800, guid: e9e54ebd208487c409e32502a50a1f20,
@@ -6230,6 +6230,7 @@ GameObject:
   - component: {fileID: 4971653863074118055}
   - component: {fileID: 636727019}
   - component: {fileID: 1976327989910185}
+  - component: {fileID: 1976327989910186}
   m_Layer: 0
   m_Name: Cheese
   m_TagString: Untagged
@@ -6253,6 +6254,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1976327989910186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1976327989910184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dcfcba599c0d214385d4fc82f4c492a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DistanceThreshold: 20
 --- !u!4 &4538656065432206
 Transform:
   m_ObjectHideFlags: 0
@@ -6545,7 +6559,7 @@ PrefabInstance:
     - target: {fileID: 489965671589471709, guid: 864dd616ff33fe849b6bd4afb68d76d9,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.853
+      value: 1.021
       objectReference: {fileID: 0}
     - target: {fileID: 489965671589471709, guid: 864dd616ff33fe849b6bd4afb68d76d9,
         type: 3}

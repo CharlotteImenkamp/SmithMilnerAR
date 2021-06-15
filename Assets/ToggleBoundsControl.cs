@@ -28,6 +28,4 @@ public class ToggleBoundsControl : MonoBehaviour
         GetComponent<BoxCollider>().enabled = true;
         GetComponent<BoundsControl>().Active = true;
     }
-
-
 }
