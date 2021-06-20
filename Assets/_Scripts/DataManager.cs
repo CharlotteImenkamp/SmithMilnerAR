@@ -5,15 +5,21 @@ using System.IO;
 
 public class DataManager : MonoBehaviour
 {
-    private string path;
-   //  StorageFile newFile; 
+
+    storageFile settings; 
+
+    private list<string> configFiles;
+
+
+
+
+
 
     // Start is called before the first frame update
     void Start()
     {
-        path = Path.Combine(Application.persistentDataPath, "myFile.txt");
+        Path = System.IO.Path.Combine(Application.persistentDataPath, "myFile.txt");
 
-        
     }
 
     // Update is called once per frame
@@ -24,13 +30,12 @@ public class DataManager : MonoBehaviour
 
     public void WriteText()
     {
-        TextWriter writer = File.CreateText(path);
+        TextWriter writer = File.CreateText(Path);
 
 
         writer.WriteLine("Hello Hololens");
         writer.Close();
         Debug.Log(Application.persistentDataPath);
 
-        // newFile = await DownloadsFolder.CreateFileAsync("fileNew.txt"); 
     }
 }
