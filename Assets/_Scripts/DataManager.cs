@@ -8,7 +8,7 @@ public class DataManager : MonoBehaviour
 
     storageFile settings; 
 
-    private list<string> configFiles;
+    //private list<string> configFiles;
 
 
 
@@ -18,7 +18,7 @@ public class DataManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Path = System.IO.Path.Combine(Application.persistentDataPath, "myFile.txt");
+        //Path = System.IO.Path.Combine(Application.persistentDataPath, "myFile.txt");
 
     }
 
@@ -30,11 +30,11 @@ public class DataManager : MonoBehaviour
 
     public void WriteText()
     {
-        TextWriter writer = File.CreateText(Path);
+        //TextWriter writer = File.CreateText();
 
 
-        writer.WriteLine("Hello Hololens");
-        writer.Close();
+        //writer.WriteLine("Hello Hololens");
+        //writer.Close();
         Debug.Log(Application.persistentDataPath);
 
     }
