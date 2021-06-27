@@ -4,6 +4,21 @@ using UnityEngine;
 
 public class ObjectManager : ISubManager
 {
+    // singelton pattern 
+    private static ObjectManager _instance = null;
+    public static ObjectManager Instance
+    {
+
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = new ObjectManager();
+            }
+            return _instance;
+        }
+
+    }
     public void Initialize()
     {
         Debug.Log("ObjectManager Initialized.");

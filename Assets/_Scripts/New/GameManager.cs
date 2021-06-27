@@ -24,6 +24,12 @@ public class GameManager : MonoBehaviour
 
     }
 
+    [Tooltip("Add Menu Objects for UIManager")]
+    public GameObject GeneralSettingsMenu;
+    public GameObject NewSettingsMenu;
+    public GameObject OldSettingsMenu; 
+
+
     #region public parameters
     public List<Type> AttachedManagerScripts { get => attachedManagerScripts; set => attachedManagerScripts = value; }
     public List<ISubManager> AttachedSubManagers { get => attachedSubManagers; set => attachedSubManagers = value; }
@@ -49,6 +55,11 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        // Check Input parameters
+        if(GeneralSettingsMenu == null || NewSettingsMenu == null || OldSettingsMenu == null)
+        {
+            Debug.LogError("Not all Parameters are Set in GameManager."); 
+        }
 
         // Add Managers of Type Monobehaviour
         attachedManagerScripts = new List<Type>(); 
@@ -60,12 +71,27 @@ public class GameManager : MonoBehaviour
         AddSubManager(new AudioManager());
         AddSubManager(new UIManager());
         AddSubManager(new ObjectManager());
-
-  
     }
 
     void Start()
     {
+    }
+
+    void Update()
+    {
+
+        if (Input.GetKeyDown("y"))
+        {
+            OnMenuButtonPressed(1); 
+        }
+        if (Input.GetKeyDown("x"))
+        {
+            OnMenuButtonPressed(3);
+        }
+        if (Input.GetKeyDown("z"))
+        {
+            OnMenuButtonPressed(2);
+        }
     }
 
     #region helper methods
@@ -98,6 +124,39 @@ public class GameManager : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Helper function for the interaction between Button Scene comnponents and UIManager
+    /// </summary>
+    /// <param name="type"> Define, which button type is pressed. 
+    /// 0 "Userbutton", 
+    /// 1 "ApplyGeneralSettings", 
+    /// 2 "ApplyNewDataSettings"
+    /// 3 ApplyOldDataSettings"
+    /// </param>
+    public void OnMenuButtonPressed(int type)
+    {
+
+        switch (type)
+        {
+            case (int)ButtonType.UserButton:
+                UIManager.Instance.OnUserButtonClicked(); 
+                break;
+            case (int)ButtonType.ApplyGeneralSettings:
+                UIManager.Instance.OnButtonApplyGeneralSettings(); 
+                break;
+            case (int)ButtonType.ApplyNewDataSettings:
+                UIManager.Instance.OnButtonApplyNewDataSettings(); 
+                break;
+            case (int)ButtonType.ApplyOldDataSettings:
+                UIManager.Instance.OnButtonApplyOldDataSettings(); 
+                break;
+            default:
+                break;
+        }
+    }
+
     #endregion helper methods
 
 }
+
+

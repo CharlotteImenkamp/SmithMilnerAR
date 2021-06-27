@@ -9,7 +9,23 @@ using UnityEngine;
 public class AudioManager : ISubManager
 {
     private string[] audioClipAdresses;
-    private float audioVolume; 
+    private float audioVolume;
+
+    // singelton pattern 
+    private static AudioManager _instance = null;
+    public static AudioManager Instance
+    {
+
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = new AudioManager();
+            }
+            return _instance;
+        }
+
+    }
 
     public void Initialize()
     {

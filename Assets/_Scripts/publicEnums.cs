@@ -6,3 +6,11 @@ public enum configType
     layout,
     userData,
 }
+
+public enum ButtonType
+{
+    UserButton,
+    ApplyGeneralSettings,
+    ApplyNewDataSettings,
+    ApplyOldDataSettings
+}

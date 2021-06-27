@@ -41,20 +41,6 @@ public class GameStateManager: MonoBehaviour
 
     private void Update()
     {
-        // Debug
-        if (Input.GetKeyDown("1"))
-        {
-            UIManager ui = new UIManager();
-            ui.OnButtonApplyGeneralSettings(); 
-        }
-        if (Input.GetKeyDown("2"))
-        {
-            ApplyNewDataSettings(true); 
-        }
-        if (Input.GetKeyDown("3"))
-        {
-            ApplyOldDataSettings(true); 
-        }
     }
 
     #endregion private Methods

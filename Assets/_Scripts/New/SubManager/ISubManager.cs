@@ -1,6 +1,7 @@
 ﻿
 public interface ISubManager 
 {
+
     void Initialize();
     void Reset();
     void OnGameStateEntered(string newState);
