@@ -17,7 +17,7 @@ public class GameStateManager: MonoBehaviour
         if (_instance != null && _instance != this)
         {
             Destroy(this.gameObject);
-            Debug.LogWarning("Instance of GameStateManager destroyed."); 
+            Debug.LogError("Instance of GameStateManager destroyed."); 
         }
         else
         {

@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 // singelton 
 // tasks: 
 public class GameManager : MonoBehaviour
 {
-    // singelton pattern 
+    #region create instance
     private static GameManager _instance = null;
     public static GameManager Instance
     {
@@ -23,22 +24,34 @@ public class GameManager : MonoBehaviour
         }
 
     }
+    #endregion
 
     [Tooltip("Add Menu Objects for UIManager")]
     public GameObject GeneralSettingsMenu;
     public GameObject NewSettingsMenu;
-    public GameObject OldSettingsMenu; 
+    public GameObject OldSettingsMenu;
 
+    [Tooltip("General Settings file path")]
+    public string settingsFile;  
 
     #region public parameters
     public List<Type> AttachedManagerScripts { get => attachedManagerScripts; set => attachedManagerScripts = value; }
-    public List<ISubManager> AttachedSubManagers { get => attachedSubManagers; set => attachedSubManagers = value; }
+    public List<SubManager> AttachedSubManagers { get => attachedSubManagers; set => attachedSubManagers = value; }
 
     #endregion public parameters
 
     #region private parameters
+    // Managers
     private List <Type> attachedManagerScripts;
-    private List<ISubManager> attachedSubManagers; 
+    private List<SubManager> attachedSubManagers;
+
+    // General Settings
+    private string applicationFolder;
+    private string settingsFolder;
+    private applicationData settings; 
+
+
+
     #endregion private parameters
 
     /// <summary>
@@ -54,27 +67,60 @@ public class GameManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            Debug.LogError("Instance of GameManager destroyed.");
+
         }
+
         // Check Input parameters
-        if(GeneralSettingsMenu == null || NewSettingsMenu == null || OldSettingsMenu == null)
+        if (GeneralSettingsMenu == null || NewSettingsMenu == null || OldSettingsMenu == null)
         {
             Debug.LogError("Not all Parameters are Set in GameManager."); 
         }
 
-        // Add Managers of Type Monobehaviour
-        attachedManagerScripts = new List<Type>(); 
-        AddManagerToScene(typeof(GameStateManager));
-        AddManagerToScene(typeof(DataManager)); 
 
-        //Add SubManager of Type ISubManager
-        attachedSubManagers = new List<ISubManager>(); 
+    }
+
+    void Start()
+    {
+        // Load General Settings
+        LoadGeneralSettings(); 
+
+        // Add Managers of Type Monobehaviour
+        attachedManagerScripts = new List<Type>();
+        AddManagerToScene(typeof(GameStateManager));
+        AddManagerToScene(typeof(DataManager));
+
+        //Add SubManager of Type SubManager
+        attachedSubManagers = new List<SubManager>();
         AddSubManager(new AudioManager());
         AddSubManager(new UIManager());
         AddSubManager(new ObjectManager());
     }
 
-    void Start()
+    private void LoadGeneralSettings()
     {
+        string filepath = Application.persistentDataPath + "/generalSettings.json";
+        if (File.Exists(filepath))
+        {
+            applicationData set = JsonUtility.FromJson<applicationData>(filepath); 
+        }
+
+
+        // 
+        //settings = new applicationData();
+        //settings.settingFiles = new string[] { "s1", "x", "c" };
+        //settings.dataFolder = "//data";
+        //settings.dataFiles = new string[] { "d1", "d2" }; 
+
+        //string jsonString = JsonUtility.ToJson(settings, true);
+        //jsonString += System.Environment.NewLine;
+        //System.IO.File.AppendAllText(filepath, jsonString); 
+        //File.WriteAllText(filepath, jsonString);
+        //}
+
+
+        Debug.Log(filepath); 
+        Debug.Log("GameManager::LoadGeneralSettings successful."); 
     }
 
     void Update()
@@ -96,9 +142,9 @@ public class GameManager : MonoBehaviour
 
     #region helper methods
     /// <summary>
-    /// Managers of type Monobehaviour are added to the gameObject and collected in the list
+    /// Managers of are added to the gameObject and collected in the list
     /// </summary>
-    /// <param name="classType"></param>
+    /// <param name="classType">Inherited type of Monobehaviour is required. Use with typeof().</param>
     private void AddManagerToScene(Type classType)
     {
         if (this.gameObject.GetComponent(classType) == null)
@@ -106,12 +152,16 @@ public class GameManager : MonoBehaviour
             this.gameObject.AddComponent(classType);
             attachedManagerScripts.Add(classType);
         }
+        else
+        {
+            Debug.LogWarning("GameManager::AddManagerToScene Manager already exists!"); 
+        }
     }
     /// <summary>
-    /// Managers of type ISubManager are created and collected in the list
+    /// Managers of type SubManager are created and collected in the list
     /// </summary>
     /// <param name="newSubManager"></param>
-    private void AddSubManager(ISubManager newSubManager)
+    private void AddSubManager(SubManager newSubManager)
     { 
         if(newSubManager != null)
         {
@@ -119,7 +169,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("GameManager Failed to load SubManager"); 
+            Debug.LogError("GameManager::AddSubManager Failed to load SubManager"); 
         }
         
     }
@@ -135,20 +185,19 @@ public class GameManager : MonoBehaviour
     /// </param>
     public void OnMenuButtonPressed(int type)
     {
-
         switch (type)
         {
             case (int)ButtonType.UserButton:
-                UIManager.Instance.OnUserButtonClicked(); 
+                UIManager.OnUserButtonClicked(); 
                 break;
             case (int)ButtonType.ApplyGeneralSettings:
-                UIManager.Instance.OnButtonApplyGeneralSettings(); 
+                UIManager.OnButtonApplyGeneralSettings(); 
                 break;
             case (int)ButtonType.ApplyNewDataSettings:
-                UIManager.Instance.OnButtonApplyNewDataSettings(); 
+                UIManager.OnButtonApplyNewDataSettings(); 
                 break;
             case (int)ButtonType.ApplyOldDataSettings:
-                UIManager.Instance.OnButtonApplyOldDataSettings(); 
+                UIManager.OnButtonApplyOldDataSettings(); 
                 break;
             default:
                 break;
@@ -158,5 +207,7 @@ public class GameManager : MonoBehaviour
     #endregion helper methods
 
 }
+
+
 
 

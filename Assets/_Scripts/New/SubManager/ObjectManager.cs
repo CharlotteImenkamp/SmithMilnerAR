@@ -2,33 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectManager : ISubManager
+public class ObjectManager : SubManager
 {
-    // singelton pattern 
-    private static ObjectManager _instance = null;
-    public static ObjectManager Instance
-    {
-
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = new ObjectManager();
-            }
-            return _instance;
-        }
-
-    }
     public void Initialize()
     {
         Debug.Log("ObjectManager Initialized.");
     }
 
-    public void OnGameStateEntered(string newState)
+    public override void OnGameStateEntered(string newState)
     {
         switch (newState)
         {
             case "Initialization":
+                Initialize(); 
                 break; 
             case "SettingsMenu":
                 break;
@@ -45,10 +31,10 @@ public class ObjectManager : ISubManager
             default:
                 break;
         }
-        Debug.LogWarning("ObjectManager::OnGameStateChanged not implemented.");
+        Debug.LogWarning("ObjectManager::OnGameStateEntered not implemented.");
     }
 
-    public void OnGameStateLeft(string oldState)
+    public override void OnGameStateLeft(string oldState)
     {
         switch (oldState)
         {
@@ -69,10 +55,10 @@ public class ObjectManager : ISubManager
             default:
                 break;
         }
-        Debug.LogWarning("ObjectManager::OnGameStateChanged not implemented.");
+        Debug.LogWarning("ObjectManager::OnGameStateLeft not implemented.");
     }
 
-    public void Reset()
+    public override void Reset()
     {
         throw new System.NotImplementedException();
     }

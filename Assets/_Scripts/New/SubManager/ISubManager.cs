@@ -1,10 +1,8 @@
 ﻿
-public interface ISubManager 
+public class SubManager 
 {
+    public virtual void Reset(){ }
+    public virtual void OnGameStateEntered(string newState) { }
 
-    void Initialize();
-    void Reset();
-    void OnGameStateEntered(string newState);
-
-    void OnGameStateLeft(string oldState); 
+    public virtual void OnGameStateLeft(string oldState) { }
 }

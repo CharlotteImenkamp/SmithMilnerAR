@@ -6,27 +6,10 @@ using UnityEngine;
 /// Responsible to play audioClips depending on GameState
 /// Gets list of audioclips from ownData
 /// </summary>
-public class AudioManager : ISubManager
+public class AudioManager : SubManager
 {
     private string[] audioClipAdresses;
     private float audioVolume;
-
-    // singelton pattern 
-    private static AudioManager _instance = null;
-    public static AudioManager Instance
-    {
-
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = new AudioManager();
-            }
-            return _instance;
-        }
-
-    }
-
     public void Initialize()
     {
         // loadAdresses
@@ -35,11 +18,12 @@ public class AudioManager : ISubManager
         Debug.Log("AudioManager Initialized."); 
     }
 
-    public void OnGameStateEntered(string newState)
+    public override void OnGameStateEntered(string newState)
     {
         switch (newState)
         {
             case "Initialization":
+                Initialize(); 
                 break;
             case "SettingsMenu":
                 break;
@@ -61,15 +45,15 @@ public class AudioManager : ISubManager
             default:
                 break;
         }
-        Debug.LogWarning("ObjectManager::OnGameStateChanged not implemented.");
+        Debug.LogWarning("AudioManager::OnGameStateEntered not implemented.");
     }
 
-    public void Reset()
+    public override void Reset()
     {
         throw new System.NotImplementedException();
     }
 
-    public void OnGameStateLeft(string oldState)
+    public override void OnGameStateLeft(string oldState)
     {
         switch (oldState)
         {
@@ -90,7 +74,7 @@ public class AudioManager : ISubManager
             default:
                 break;
         }
-        Debug.LogWarning("ObjectManager::OnGameStateChanged not implemented.");
+        Debug.LogWarning("AudioManager::OnGameStateLeft not implemented.");
     }
 
     private void PlayAudioClip()

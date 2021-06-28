@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Settings
+[System.Serializable]
+public class PlayerSettings
 {
     // Object
     private Object[] gameObjects; 
@@ -18,15 +19,24 @@ public class Settings
     enum userSet { JG, AG, AK}; 
 }
 
+[System.Serializable]
+public class applicationData
+{
+
+    public string[] settingFiles;
+    public string dataFolder;
+    public string[] dataFiles;
+}
+
+[System.Serializable]
 public class Data
 {
     private Time time;
     private List<Object> movingObjects; 
 
-
-
 }
 
+[System.Serializable]
 public struct Object
 {
     string Objectname;

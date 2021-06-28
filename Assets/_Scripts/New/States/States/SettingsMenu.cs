@@ -9,7 +9,7 @@ public class SettingsMenu : IState
         Debug.Log("OpenSettingsMenu::Enter()");
 
         var SubManagers = GameManager.Instance.AttachedSubManagers;
-        foreach (ISubManager subManager in SubManagers)
+        foreach (SubManager subManager in SubManagers)
         {
             subManager.OnGameStateEntered(this.ToString());
         }
@@ -24,7 +24,7 @@ public class SettingsMenu : IState
         Debug.Log("OpenSettingsMenu::Exit()");
 
         var SubManagers = GameManager.Instance.AttachedSubManagers;
-        foreach (ISubManager subManager in SubManagers)
+        foreach (SubManager subManager in SubManagers)
         {
             subManager.OnGameStateLeft(this.ToString());
         }

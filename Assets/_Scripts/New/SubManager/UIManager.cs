@@ -3,53 +3,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIManager : ISubManager
+public class UIManager : SubManager
 {
-
-
-    // singelton pattern 
-    private static UIManager _instance = null;
-    public static UIManager Instance
-    {
-
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = new UIManager();
-            }
-            return _instance;
-        }
-
-    }
-
-
     private static GameObject generalSettingsMenu;
     private static GameObject newSettingsMenu;
     private static GameObject oldSettingsMenu;
-    private static GameObject[] allMenus; 
+    private static GameObject[] allMenus;
 
     #region inherited Methods
-    public void Initialize()
+    public UIManager()
     {
         // Get Parameters from GameManager
         generalSettingsMenu = GameManager.Instance.GeneralSettingsMenu;
         newSettingsMenu = GameManager.Instance.NewSettingsMenu;
         oldSettingsMenu = GameManager.Instance.OldSettingsMenu;
 
-        allMenus = new GameObject []{ generalSettingsMenu, newSettingsMenu, oldSettingsMenu };
+        allMenus = new GameObject[] { generalSettingsMenu, newSettingsMenu, oldSettingsMenu };
+    }
 
-        //Set Menus inactive
+    public void Initialize()
+    {
         CloseAllMenus(); 
 
         Debug.Log("UIManager Initialized.");
     }
 
-    public void OnGameStateEntered(string newState)
+    public override void OnGameStateEntered(string newState)
     {
         switch (newState)
         {
             case "Initialization":
+                Initialize(); 
                 break;
             case "SettingsMenu":
                 OpenMenu(generalSettingsMenu);  
@@ -67,10 +51,10 @@ public class UIManager : ISubManager
             default:
                 break;
         }
-        Debug.LogWarning("ObjectManager::OnGameStateChanged not implemented.");
+        Debug.LogWarning("UIManager::OnGameStateEntered not implemented.");
     }
 
-    public void OnGameStateLeft(string oldState)
+    public override void OnGameStateLeft(string oldState)
     {
         switch (oldState)
         {
@@ -92,10 +76,10 @@ public class UIManager : ISubManager
             default:
                 break;
         }
-        Debug.LogWarning("ObjectManager::OnGameStateChanged not implemented.");
+        Debug.LogWarning("UIManager::OnGameStateLeft not implemented.");
     }
 
-    public void Reset()
+    public override void Reset()
     {
         throw new System.NotImplementedException();
     }
@@ -109,7 +93,7 @@ public class UIManager : ISubManager
     /// Call in Scene on the User button 
     /// Add and remove listeners of GameStateManager depending on gameState
     /// </summary>
-    public void OnUserButtonClicked()
+    public static void OnUserButtonClicked()
     {
         Debug.LogWarning("UIManager::OnUserButtonClicked not implemented"); 
     }
@@ -118,7 +102,7 @@ public class UIManager : ISubManager
     /// <summary>
     /// Set new bool newDataSet and StartPrices/StartLocations
     /// </summary>
-    public void OnButtonApplyGeneralSettings()             
+    public static void OnButtonApplyGeneralSettings()             
     {
         bool newDataSet = true; //\TODO : Add to tick box in menu 
         Debug.LogWarning("TODO: implement newDataSet bool in UIManager Menu");
@@ -134,7 +118,7 @@ public class UIManager : ISubManager
         Debug.LogWarning("UIManager::OnButtonApplyGeneralSettings not implemented");
     }
 
-    public void OnButtonApplyNewDataSettings()
+    public static void OnButtonApplyNewDataSettings()
     {
         bool startWithPrices = true;
         Debug.LogWarning("TODO: implement startWithPrices bool in UIManager Menu");
@@ -143,7 +127,7 @@ public class UIManager : ISubManager
         GameStateManager.Instance.ApplyNewDataSettings(startWithPrices);
     }
 
-    public void OnButtonApplyOldDataSettings()
+    public static void OnButtonApplyOldDataSettings()
     {
         bool startWithPrices = true;
         Debug.LogWarning("TODO: implement startWithPrices bool in UIManager Menu");
@@ -158,7 +142,7 @@ public class UIManager : ISubManager
 
     #region menu
 
-    private void OpenMenu(GameObject menu)
+    private static void OpenMenu(GameObject menu)
     {
         foreach (GameObject obj in allMenus)
         {
@@ -168,7 +152,7 @@ public class UIManager : ISubManager
         menu.SetActive(true); 
     }
 
-    private void CloseAllMenus()
+    private static void CloseAllMenus()
     {
         foreach (GameObject obj in allMenus)
         {

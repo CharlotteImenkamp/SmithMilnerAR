@@ -14,9 +14,9 @@ public class Initialization : IState
     {
         Debug.Log("Initialization::Enter()");
         var SubManagers = GameManager.Instance.AttachedSubManagers; 
-        foreach (ISubManager subManager in SubManagers)
+        foreach (SubManager subManager in SubManagers)
         {
-            subManager.Initialize(); 
+            subManager.OnGameStateEntered(this.ToString());  
         }
     }
 
@@ -29,7 +29,7 @@ public class Initialization : IState
         Debug.Log("Initialization::Exit()");
 
         var SubManagers = GameManager.Instance.AttachedSubManagers;
-        foreach (ISubManager subManager in SubManagers)
+        foreach (SubManager subManager in SubManagers)
         {
             subManager.OnGameStateLeft(this.ToString());
         }
