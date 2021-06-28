@@ -10,15 +10,17 @@ public class UIManager : SubManager
     private static GameObject oldSettingsMenu;
     private static GameObject[] allMenus;
 
-    #region inherited Methods
+    private static bool enableUserButton; 
+
     public UIManager()
     {
         // Get Parameters from GameManager
         generalSettingsMenu = GameManager.Instance.GeneralSettingsMenu;
         newSettingsMenu = GameManager.Instance.NewSettingsMenu;
         oldSettingsMenu = GameManager.Instance.OldSettingsMenu;
-
         allMenus = new GameObject[] { generalSettingsMenu, newSettingsMenu, oldSettingsMenu };
+
+        enableUserButton = false; 
     }
 
     public void Initialize()
@@ -28,6 +30,12 @@ public class UIManager : SubManager
         Debug.Log("UIManager Initialized.");
     }
 
+    public override void Reset()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    #region gameStates
     public override void OnGameStateEntered(string newState)
     {
         switch (newState)
@@ -63,50 +71,61 @@ public class UIManager : SubManager
             case "SettingsMenu":
                 CloseAllMenus(); 
                 break;
+
             case "LocationTest":
+                Debug.LogWarning("UIManager::OnGameStateLeft LocationTest not implemented.");
                 break;
+
             case "LocationEstimation":
+                Debug.LogWarning("UIManager::OnGameStateLeft LocationEstimation not implemented.");
                 break;
+
             case "PriceTest":
+                Debug.LogWarning("UIManager::OnGameStateLeft PriceTest not implemented.");
                 break;
+
             case "PriceEstimation":
+                Debug.LogWarning("UIManager::OnGameStateLeft PriceEstimation not implemented.");
                 break;
+
             case "Pause":
+                Debug.LogWarning("UIManager::OnGameStateLeft Pause not implemented.");
                 break;
+
             default:
+                Debug.LogError("UIManager::OnGameStateLeft no valid state."); 
                 break;
         }
-        Debug.LogWarning("UIManager::OnGameStateLeft not implemented.");
     }
 
-    public override void Reset()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    
-    #endregion inherited Methods
+    #endregion gameStates
 
 
     #region buttons
+
     /// <summary>
     /// Call in Scene on the User button 
     /// Add and remove listeners of GameStateManager depending on gameState
     /// </summary>
-    public static void OnUserButtonClicked()
+    public static void OnUserButtonClicked()        //\TODO disable user button, if state is initializing, settingsmenu or end
     {
+        if (enableUserButton)
+        {
+            GameStateManager.gameStateMachine.SwitchToNextState(); 
+            enableUserButton = false; 
+        }
+        else
+        {
+            enableUserButton = true; 
+        }
         Debug.LogWarning("UIManager::OnUserButtonClicked not implemented"); 
     }
-
 
     /// <summary>
     /// Set new bool newDataSet and StartPrices/StartLocations
     /// </summary>
-    public static void OnButtonApplyGeneralSettings()             
+    public static void OnButtonApplyGeneralSettings(bool newDataSet)             
     {
-        bool newDataSet = true; //\TODO : Add to tick box in menu 
-        Debug.LogWarning("TODO: implement newDataSet bool in UIManager Menu");
-
         if (newDataSet)
         {
             OpenMenu(newSettingsMenu); 
@@ -115,24 +134,16 @@ public class UIManager : SubManager
         {
             OpenMenu(oldSettingsMenu); 
         }
-        Debug.LogWarning("UIManager::OnButtonApplyGeneralSettings not implemented");
+        Debug.Log("UIManager::OnButtonApplyGeneralSettings successful");
     }
 
-    public static void OnButtonApplyNewDataSettings()
+    public static void OnButtonApplyNewDataSettings(bool startWithPrices)
     {
-        bool startWithPrices = true;
-        Debug.LogWarning("TODO: implement startWithPrices bool in UIManager Menu");
-
-        Debug.LogWarning("UIManager::OnButtonApplyNewDataSettings not implemented");
         GameStateManager.Instance.ApplyNewDataSettings(startWithPrices);
     }
 
-    public static void OnButtonApplyOldDataSettings()
+    public static void OnButtonApplyOldDataSettings(bool startWithPrices)
     {
-        bool startWithPrices = true;
-        Debug.LogWarning("TODO: implement startWithPrices bool in UIManager Menu");
-
-        Debug.LogWarning("UIManager::OnButtonApplyOldDataSettings not implemented");
         GameStateManager.Instance.ApplyOldDataSettings(startWithPrices);
     }
 

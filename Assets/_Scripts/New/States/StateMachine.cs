@@ -43,6 +43,33 @@ public class StateMachine
     }
 
     /// <summary>
+    /// support method for user button
+    /// </summary>
+    public void SwitchToNextState()
+    {
+        if(currentState.GetType() == typeof(PriceTest))
+        {
+            ChangeState(new PriceEstimation()); 
+        }
+        else if(currentState.GetType() == typeof(PriceEstimation))
+        {
+            ChangeState(new Pause());
+        }
+        else if (currentState.GetType() == typeof(LocationTest))
+        {
+            ChangeState(new LocationEstimation());
+        }
+        else if (currentState.GetType() == typeof(LocationEstimation))
+        {
+            ChangeState(new End());
+        }
+        else
+        {
+            Debug.LogError("StateMachine::SwitchToNextState current state not supported."); 
+        }
+    }
+
+    /// <summary>
     /// Comment: Not used at this point, but maybe on later versions.
     /// </summary>
     public void SwitchToPreviousState()

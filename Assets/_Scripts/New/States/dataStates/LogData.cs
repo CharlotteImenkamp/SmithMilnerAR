@@ -7,17 +7,16 @@ class LogData : IState
 {
     public void Enter()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("LogData::Enter"); 
     }
 
     public void Execute()
     {
-        throw new System.NotImplementedException();
     }
 
     public void Exit()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("LogData::Exit");
     }
 }
 

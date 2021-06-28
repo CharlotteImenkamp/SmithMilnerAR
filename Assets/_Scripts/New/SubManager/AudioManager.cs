@@ -10,14 +10,13 @@ public class AudioManager : SubManager
 {
     private string[] audioClipAdresses;
     private float audioVolume;
+
     public void Initialize()
     {
-        // loadAdresses
-            // get filepath from GameManager
-        //LoadAudioClips()
         Debug.Log("AudioManager Initialized."); 
     }
 
+    #region gameStates
     public override void OnGameStateEntered(string newState)
     {
         switch (newState)
@@ -48,11 +47,6 @@ public class AudioManager : SubManager
         Debug.LogWarning("AudioManager::OnGameStateEntered not implemented.");
     }
 
-    public override void Reset()
-    {
-        throw new System.NotImplementedException();
-    }
-
     public override void OnGameStateLeft(string oldState)
     {
         switch (oldState)
@@ -77,14 +71,26 @@ public class AudioManager : SubManager
         Debug.LogWarning("AudioManager::OnGameStateLeft not implemented.");
     }
 
+    #endregion gameStates
+
+    public override void Reset()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    #region audioClip helper
+
     private void PlayAudioClip()
     {
         Debug.LogWarning("AudioManager::PlayAudioClip not implemented.");
     }
+
     private AudioClip[] LoadAudioClips(string[] audioClipAdresses)
     {
         Debug.LogWarning("AudioManager::LoadAudioClips not implemented.");
 
         return null; 
     }
+    #endregion audioClip helper
+
 }

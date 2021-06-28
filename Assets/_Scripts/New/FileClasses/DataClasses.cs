@@ -2,44 +2,70 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 [System.Serializable]
-public class PlayerSettings
+public class userSettingsData
 {
-    // Object
-    private Object[] gameObjects; 
-    private int ObjectNumber;
+    #region methods
+    public userSettingsData(List<Object> obj, float updateRate, int userId, userSet set)
+    {
+        gameObjects = new List<Object>();
+        gameObjects.AddRange(obj);
 
+        this.updateRate = updateRate;
+        this.UserID = userId;
+        this.set = set; 
+    }
+
+    public userSettingsData()
+    {
+
+    }
+    #endregion
+
+    #region parameters
+
+    public int UserID;
+    public userSet set;
     // saving
-    private float updateRate;
+    public float updateRate;
+    public List<Object> gameObjects;
+    public enum userSet { JG, AG, AK };
 
-    //login
-    int UserID;
-    userSet set; 
+    #endregion 
 
-    enum userSet { JG, AG, AK}; 
 }
+
 
 [System.Serializable]
 public class applicationData
 {
-
-    public string[] settingFiles;
+    public string settingsFolder; 
+    public List<string> settingFiles;
     public string dataFolder;
-    public string[] dataFiles;
+    public List<string> dataFiles;
 }
 
+
 [System.Serializable]
-public class Data
+public class loggingData
 {
     private Time time;
-    private List<Object> movingObjects; 
-
+    private List<Object> movingObjects;
 }
 
+
 [System.Serializable]
-public struct Object
+public class Object
 {
-    string Objectname;
-    Vector3 position;
-    Vector3 rotation;
+    public string Objectname;
+    public Vector3 position;
+    public Vector3 rotation;
+
+    public Object(string name, Vector3 position, Vector3 rotation)
+    {
+        this.Objectname = name;
+        this.position = position;
+        this.rotation = rotation; 
+    }
 }

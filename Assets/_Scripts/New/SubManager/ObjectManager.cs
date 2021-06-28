@@ -9,6 +9,8 @@ public class ObjectManager : SubManager
         Debug.Log("ObjectManager Initialized.");
     }
 
+    #region gameStates
+
     public override void OnGameStateEntered(string newState)
     {
         switch (newState)
@@ -57,6 +59,8 @@ public class ObjectManager : SubManager
         }
         Debug.LogWarning("ObjectManager::OnGameStateLeft not implemented.");
     }
+
+    #endregion gameStates
 
     public override void Reset()
     {

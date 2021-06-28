@@ -1,3 +1,4 @@
+using Microsoft.MixedReality.Toolkit.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,32 +8,26 @@ using UnityEngine;
 // tasks: 
 public class GameManager : MonoBehaviour
 {
-    #region create instance
-    private static GameManager _instance = null;
-    public static GameManager Instance
-    {
 
-        get
-        {
-            if (_instance == null)
-            {
-                Debug.LogWarning("GameManager created from script.");
-
-                _instance = new GameManager();
-            }
-            return _instance;
-        }
-
-    }
-    #endregion
-
+    [Header("Menu Objects")]
     [Tooltip("Add Menu Objects for UIManager")]
     public GameObject GeneralSettingsMenu;
     public GameObject NewSettingsMenu;
     public GameObject OldSettingsMenu;
 
-    [Tooltip("General Settings file path")]
-    public string settingsFile;  
+    [Header("ButtonObjects")]
+    public GameObject GeneralSettingsToggleButton;
+    public GameObject NewSettingsToggleButton;
+    public GameObject OldSettingsToggleButton;
+
+    [NonSerialized]
+    public string settingsFile;
+    [NonSerialized]
+    public string persistentPath;
+    [NonSerialized]
+    public applicationData generalSettings; 
+
+    private string generalSettingsPath; 
 
     #region public parameters
     public List<Type> AttachedManagerScripts { get => attachedManagerScripts; set => attachedManagerScripts = value; }
@@ -48,11 +43,15 @@ public class GameManager : MonoBehaviour
     // General Settings
     private string applicationFolder;
     private string settingsFolder;
-    private applicationData settings; 
+    private applicationData settings;
 
 
 
     #endregion private parameters
+
+    #region instance and awake
+    private static GameManager _instance = null;
+    public static GameManager Instance { get => _instance; }
 
     /// <summary>
     /// Manage Instance and Add depending Scripts
@@ -70,20 +69,25 @@ public class GameManager : MonoBehaviour
             Debug.LogError("Instance of GameManager destroyed.");
 
         }
-
-        // Check Input parameters
-        if (GeneralSettingsMenu == null || NewSettingsMenu == null || OldSettingsMenu == null)
-        {
-            Debug.LogError("Not all Parameters are Set in GameManager."); 
-        }
-
-
     }
+    #endregion 
 
     void Start()
     {
+        // Check Input parameters
+        if (GeneralSettingsMenu == null || NewSettingsMenu == null || OldSettingsMenu == null)
+        {
+            Debug.LogError("Not all Menu Parameters are Set in GameManager.");
+        }
+        if (GeneralSettingsToggleButton == null || NewSettingsToggleButton == null || OldSettingsToggleButton == null)
+        {
+            Debug.LogError("Not all Menu Parameters are Set in GameManager.");
+        }
+
         // Load General Settings
-        LoadGeneralSettings(); 
+        persistentPath = Application.persistentDataPath;
+        generalSettingsPath = persistentPath + "/generalSettings.json";
+        generalSettings = LoadGeneralSettings(generalSettingsPath); 
 
         // Add Managers of Type Monobehaviour
         attachedManagerScripts = new List<Type>();
@@ -97,50 +101,36 @@ public class GameManager : MonoBehaviour
         AddSubManager(new ObjectManager());
     }
 
-    private void LoadGeneralSettings()
+    #region helper methods
+
+
+    /// <summary>
+    /// General Settings include the datapath for the userSetting files and the generated files and the same for the userData.
+    /// </summary>
+    /// <param name="filepath"></param>
+    /// <returns></returns>
+    private applicationData LoadGeneralSettings(string filepath)
     {
-        string filepath = Application.persistentDataPath + "/generalSettings.json";
+        applicationData newGeneralSettings = new applicationData();
+
         if (File.Exists(filepath))
         {
-            applicationData set = JsonUtility.FromJson<applicationData>(filepath); 
+            string jsonString = File.ReadAllText(filepath);
+            newGeneralSettings = JsonUtility.FromJson<applicationData>(jsonString);
+            if (newGeneralSettings != null)
+            {
+                Debug.Log("GameManager::LoadGeneralSettings successful.");
+            }
         }
+        else
+        {
+            Debug.LogError("GameManager::LoadGeneralSettings no file found.");
+        }
+        Debug.Log(filepath);
 
-
-        // 
-        //settings = new applicationData();
-        //settings.settingFiles = new string[] { "s1", "x", "c" };
-        //settings.dataFolder = "//data";
-        //settings.dataFiles = new string[] { "d1", "d2" }; 
-
-        //string jsonString = JsonUtility.ToJson(settings, true);
-        //jsonString += System.Environment.NewLine;
-        //System.IO.File.AppendAllText(filepath, jsonString); 
-        //File.WriteAllText(filepath, jsonString);
-        //}
-
-
-        Debug.Log(filepath); 
-        Debug.Log("GameManager::LoadGeneralSettings successful."); 
+        return newGeneralSettings;
     }
 
-    void Update()
-    {
-
-        if (Input.GetKeyDown("y"))
-        {
-            OnMenuButtonPressed(1); 
-        }
-        if (Input.GetKeyDown("x"))
-        {
-            OnMenuButtonPressed(3);
-        }
-        if (Input.GetKeyDown("z"))
-        {
-            OnMenuButtonPressed(2);
-        }
-    }
-
-    #region helper methods
     /// <summary>
     /// Managers of are added to the gameObject and collected in the list
     /// </summary>
@@ -177,32 +167,38 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Helper function for the interaction between Button Scene comnponents and UIManager
     /// </summary>
-    /// <param name="type"> Define, which button type is pressed. 
-    /// 0 "Userbutton", 
-    /// 1 "ApplyGeneralSettings", 
-    /// 2 "ApplyNewDataSettings"
-    /// 3 ApplyOldDataSettings"
+    /// <param name="type"> Define, which button type is pressed.  \TODO better solution
     /// </param>
-    public void OnMenuButtonPressed(int type)
+    public void OnMenuButtonClicked(string type)
     {
         switch (type)
         {
-            case (int)ButtonType.UserButton:
+            case "UserButton":
                 UIManager.OnUserButtonClicked(); 
                 break;
-            case (int)ButtonType.ApplyGeneralSettings:
-                UIManager.OnButtonApplyGeneralSettings(); 
+
+            case "ApplyGeneralSettings":
+                bool useOldSettings = GeneralSettingsToggleButton.GetComponent<Interactable>().IsToggled; 
+                UIManager.OnButtonApplyGeneralSettings(useOldSettings);
                 break;
-            case (int)ButtonType.ApplyNewDataSettings:
-                UIManager.OnButtonApplyNewDataSettings(); 
+
+            case "ApplyNewDataSettings":
+                bool startWithPricesNew = NewSettingsToggleButton.GetComponent<Interactable>().IsToggled; 
+                UIManager.OnButtonApplyNewDataSettings(startWithPricesNew); 
                 break;
-            case (int)ButtonType.ApplyOldDataSettings:
-                UIManager.OnButtonApplyOldDataSettings(); 
+
+            case "ApplyOldDataSettings":
+                bool startWithPricesOld = OldSettingsToggleButton.GetComponent<Interactable>().IsToggled; 
+                UIManager.OnButtonApplyOldDataSettings(startWithPricesOld); 
                 break;
+
             default:
+                Debug.LogError("GameManager::OnMenuButtonClicked no valid input string"); 
                 break;
         }
     }
+
+
 
     #endregion helper methods
 

@@ -103,7 +103,4 @@ public class CustomMovementConstraint : TransformConstraint
     #endregion Private Methods
 
 
-
-
-
 }

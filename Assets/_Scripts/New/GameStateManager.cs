@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ using UnityEngine;
 /// </summary>
 public class GameStateManager: MonoBehaviour
 {
+    #region instance
     private static GameStateManager _instance = null;
 
     public static GameStateManager Instance { get => _instance; }
@@ -24,36 +26,33 @@ public class GameStateManager: MonoBehaviour
             _instance = this;
         }
     }
-
-    #region private parameters
-
-    static StateMachine gameStateMachine = new StateMachine();
-
-    #endregion private parameters
+    #endregion 
 
 
-    #region private Methods
+    public static StateMachine gameStateMachine = new StateMachine();
+
+
     private void Start()
     {
         gameStateMachine.ChangeState(new Initialization());
         gameStateMachine.ChangeState(new SettingsMenu());
     }
 
-    private void Update()
+
+    private void ChangeStateToNextGameState()
     {
+        throw new NotImplementedException();
     }
 
-    #endregion private Methods
 
-    #region public button methods
+    #region button methods
+
     /// <summary>
     /// Called in UIManager OnButtonApplyNewDataSettings
     /// </summary>
     /// <param name="startWithPrices"></param>
     public void ApplyNewDataSettings(bool startWithPrices)
     {
-        Debug.LogWarning("GameStateManager::ApplyNewDataSettings not implemented");
-
         if (startWithPrices)
         {
             gameStateMachine.ChangeState(new PriceTest()); 
@@ -62,16 +61,15 @@ public class GameStateManager: MonoBehaviour
         {
             gameStateMachine.ChangeState(new LocationTest());
         }
+        DataManager.Instance.StartDataLogging();
     }
 
     /// <summary>
     /// Called in UIManager OnButtonApplyOldDataSettings
     /// </summary>
-    /// <param name="startWithPrices"></param>
+    /// <param name="startWithPrices"> Input from Toggle button </param>
     public void ApplyOldDataSettings(bool startWithPrices)
     {
-        Debug.LogWarning("GameStateManager::ApplyOldDataSettings not implemented");
-
         if (startWithPrices)
         {
             gameStateMachine.ChangeState(new PriceTest());
@@ -80,51 +78,12 @@ public class GameStateManager: MonoBehaviour
         {
             gameStateMachine.ChangeState(new LocationTest());
         }
+        DataManager.Instance.StartDataLogging(); 
     }
 
-    #region UserButtonListeners
 
-    /// <summary>
-    /// Add as Listener to UIManager::OnUserButtonClicked
-    /// </summary>
-    public void TransitionFromPriceTestToPriceEstimation()
-    {
-        Debug.LogWarning("GameStateManager::TransitionFromPriceTestToPriceEstimation not implemented");
-
-        gameStateMachine.ChangeState(new PriceEstimation()); 
-    }
-
-    /// <summary>
-    /// Add as Listener to UIManager::OnUserButtonClicked
-    /// </summary>
-    public void TransitionFromPriceEstimationToPause()
-    {
-        Debug.LogWarning("GameStateManager::TransitionFromPriceEstimationToPause not implemented");
-
-        gameStateMachine.ChangeState(new Pause());
-    }
-
-    /// <summary>
-    /// Add as Listener to UIManager::OnUserButtonClicked
-    /// </summary>
-    public void TransitionFromLocationTestToLocationEstimation()
-    {
-        Debug.LogWarning("GameStateManager::TransitionFromLocationTestToLocationEstimation not implemented");
-
-        gameStateMachine.ChangeState(new LocationEstimation());
-    }
-
-    /// <summary>
-    /// Add as Listener to UIManager::OnUserButtonClicked
-    /// </summary>
-    public void TransitionFromLocationEstimationToEnd()
-    {
-        Debug.LogWarning("GameStateManager::TransitionFromLocationEstimationToEnd not implemented");
-
-        gameStateMachine.ChangeState(new End());
-    }
-    #endregion UserButtonListeners
-
-    #endregion public methods
+    #endregion  
 
 }
+
+
