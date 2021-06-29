@@ -4,9 +4,18 @@ using UnityEngine;
 
 public class ObjectManager : SubManager
 {
+
+    
+    private GameObject parentObject;
+
+    public GameObject[] interactionObjects;
+    private string[] prefabPath; 
+
     public void Initialize()
     {
         Debug.Log("ObjectManager Initialized.");
+
+        
     }
 
     #region gameStates
@@ -65,6 +74,17 @@ public class ObjectManager : SubManager
     public override void Reset()
     {
         throw new System.NotImplementedException();
+    }
+
+    public void SpawnObjects()
+    {
+
+    }
+
+    public GameObject[] GetInteractionObjectsInScene()
+    {
+        interactionObjects = GameObject.FindGameObjectsWithTag("InteractionObject");
+        return interactionObjects; 
     }
 
     

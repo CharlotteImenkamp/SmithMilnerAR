@@ -28,10 +28,17 @@ public class DataManager : MonoBehaviour
     private List<userSettingsData> userSettings;
     public List<userSettingsData> UserSettings { get => userSettings; set => userSettings = value; }
 
+ 
+
     void Start()
     {
+        // events
+        GameManager.Instance.ApplyNewSettingsButtonClickedEvent.AddListener(StartDataLogging);
+        GameManager.Instance.ApplyOldSettingsButtonClickedEvent.AddListener(StartDataLogging);
+
         // parameters
-        UserSettings = new List<userSettingsData>(); 
+        userSettings = new List<userSettingsData>(); 
+
         // start loading
         dataStateMachine.ChangeState(new LoadSettings()); 
     }
@@ -42,6 +49,9 @@ public class DataManager : MonoBehaviour
     }
 
     #region dataLogging
+    /// <summary>
+    /// start, if last menu button is pressed   //\TODO: start, if userbutton is pressed first
+    /// </summary>
     public void StartDataLogging()
     {
         dataStateMachine.ChangeState(new LogData()); 
@@ -52,4 +62,6 @@ public class DataManager : MonoBehaviour
         dataStateMachine.SwitchToIdle(); 
     }
     #endregion dataLogging
+
+    
 }

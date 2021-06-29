@@ -15,23 +15,22 @@ class LoadSettings : IState
     {
         Debug.Log("LoadSettings Enter");
 
-        // get parameters from GameManager
-        int n = GameManager.Instance.generalSettings.settingFiles.Count;
-        string persistentPath = GameManager.Instance.persistentPath;
-        settingsFolder = GameManager.Instance.generalSettings.settingsFolder;
+        //// get parameters from GameManager
+        //int n = GameManager.Instance.generalSettings.settingFiles.Count;
+        //string persistentPath = GameManager.Instance.persistentPath;
+        //settingsFolder = GameManager.Instance.generalSettings.settingsFolder;
          
-        // load each file into own parameter and save in DataManager
-        for (int i = 0; i < n; i++)
-        {
-            var file = GameManager.Instance.generalSettings.settingFiles[i];
-            var set = LoadUserSettings(persistentPath + settingsFolder + file);
-            DataManager.Instance.UserSettings.Add(set);
-        }
+        //// load each file into own parameter and save in DataManager
+        //for (int i = 0; i < n; i++)
+        //{
+        //    var file = GameManager.Instance.generalSettings.settingFiles[i];
+        //    var set = LoadUserSettings(persistentPath + settingsFolder + file);
+        //    DataManager.Instance.UserSettings.Add(set);
+        //}
     }
 
     public void Execute()
     {
-        throw new System.NotImplementedException();
     }
 
     /// <summary>
@@ -40,24 +39,24 @@ class LoadSettings : IState
     public void Exit()
     {
         Debug.Log("LoadSettings Exit");
-        if (false)      // \TODO save new settings, if user applied new settings
-        {
-            userSettingsData test = new userSettingsData(
-            new List<Object> {
-                new Object("eins", Vector3.zero, Vector3.one),
-                new Object("zwei", Vector3.zero, Vector3.one)},
-            0f, 1, userSettingsData.userSet.AG);
+        //if (false)      // \TODO save new settings, if user applied new settings
+        //{
+        //    userSettingsData test = new userSettingsData(
+        //    new List<Object> {
+        //        new Object("eins", Vector3.zero, Vector3.one),
+        //        new Object("zwei", Vector3.zero, Vector3.one)},
+        //    0f, 1, userSettingsData.userSet.AG);
 
-            test.gameObjects = new List<Object>();
-            test.gameObjects.Add(new Object("eins", Vector3.zero, Vector3.one));
-            test.gameObjects.Add(new Object("zwei", Vector3.zero, Vector3.one));
-            test.updateRate = 0f;
-            test.UserID = 1;
-            test.set = userSettingsData.userSet.AG;
+        //    test.gameObjects = new List<Object>();
+        //    test.gameObjects.Add(new Object("eins", Vector3.zero, Vector3.one));
+        //    test.gameObjects.Add(new Object("zwei", Vector3.zero, Vector3.one));
+        //    test.updateRate = 0f;
+        //    test.UserID = 1;
+        //    test.set = userSettingsData.userSet.AG;
 
-            SaveNewUserSettings(test, settingsFolder, "/settings_user_4.json");
-        }
-        Debug.LogWarning("LoadSettings::SaveNewUserSettings not implemented.");
+        //    SaveNewUserSettings(test, settingsFolder, "/settings_user_4.json");
+        //}
+        //Debug.LogWarning("LoadSettings::SaveNewUserSettings not implemented.");
     }
 
     #region dataManagement

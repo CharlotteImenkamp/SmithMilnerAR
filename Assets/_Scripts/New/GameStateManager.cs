@@ -32,8 +32,16 @@ public class GameStateManager: MonoBehaviour
     public static StateMachine gameStateMachine = new StateMachine();
 
 
+
+
     private void Start()
     {
+        // Events
+        bool startWithPrices = GameManager.Instance.startWithPrices; 
+        GameManager.Instance.ApplyNewSettingsButtonClickedEvent.AddListener(() => StartGame(startWithPrices));
+        GameManager.Instance.ApplyOldSettingsButtonClickedEvent.AddListener(() => StartGame(startWithPrices)); 
+
+        // game states
         gameStateMachine.ChangeState(new Initialization());
         gameStateMachine.ChangeState(new SettingsMenu());
     }
@@ -48,10 +56,10 @@ public class GameStateManager: MonoBehaviour
     #region button methods
 
     /// <summary>
-    /// Called in UIManager OnButtonApplyNewDataSettings
+    /// Called at Event of menu button press
     /// </summary>
     /// <param name="startWithPrices"></param>
-    public void ApplyNewDataSettings(bool startWithPrices)
+    public void StartGame(bool startWithPrices)
     {
         if (startWithPrices)
         {
@@ -61,24 +69,6 @@ public class GameStateManager: MonoBehaviour
         {
             gameStateMachine.ChangeState(new LocationTest());
         }
-        DataManager.Instance.StartDataLogging();
-    }
-
-    /// <summary>
-    /// Called in UIManager OnButtonApplyOldDataSettings
-    /// </summary>
-    /// <param name="startWithPrices"> Input from Toggle button </param>
-    public void ApplyOldDataSettings(bool startWithPrices)
-    {
-        if (startWithPrices)
-        {
-            gameStateMachine.ChangeState(new PriceTest());
-        }
-        else
-        {
-            gameStateMachine.ChangeState(new LocationTest());
-        }
-        DataManager.Instance.StartDataLogging(); 
     }
 
 

@@ -20,7 +20,10 @@ public class UIManager : SubManager
         oldSettingsMenu = GameManager.Instance.OldSettingsMenu;
         allMenus = new GameObject[] { generalSettingsMenu, newSettingsMenu, oldSettingsMenu };
 
-        enableUserButton = false; 
+        enableUserButton = false;
+
+        // events
+        GameManager.Instance.UserButtonClickedEvent.AddListener(OnUserButtonClicked);
     }
 
     public void Initialize()
@@ -118,6 +121,7 @@ public class UIManager : SubManager
         {
             enableUserButton = true; 
         }
+
         Debug.LogWarning("UIManager::OnUserButtonClicked not implemented"); 
     }
 
@@ -135,16 +139,6 @@ public class UIManager : SubManager
             OpenMenu(oldSettingsMenu); 
         }
         Debug.Log("UIManager::OnButtonApplyGeneralSettings successful");
-    }
-
-    public static void OnButtonApplyNewDataSettings(bool startWithPrices)
-    {
-        GameStateManager.Instance.ApplyNewDataSettings(startWithPrices);
-    }
-
-    public static void OnButtonApplyOldDataSettings(bool startWithPrices)
-    {
-        GameStateManager.Instance.ApplyOldDataSettings(startWithPrices);
     }
 
 

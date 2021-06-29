@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Events;
+
 
 // singelton 
 // tasks: 
@@ -20,6 +22,9 @@ public class GameManager : MonoBehaviour
     public GameObject NewSettingsToggleButton;
     public GameObject OldSettingsToggleButton;
 
+    [Header("ButtonObjects")]
+    public GameObject parentInteractionObject; 
+
     [NonSerialized]
     public string settingsFile;
     [NonSerialized]
@@ -27,13 +32,23 @@ public class GameManager : MonoBehaviour
     [NonSerialized]
     public applicationData generalSettings; 
 
-    private string generalSettingsPath; 
+    private string generalSettingsPath;
 
-    #region public parameters
+    // Events
+    public UnityEvent UserButtonClickedEvent;
+    public UnityEvent ApplyGeneralSettingsButtonClickedEvent;
+    public UnityEvent ApplyNewSettingsButtonClickedEvent;
+    public UnityEvent ApplyOldSettingsButtonClickedEvent;
+
+
+    // game 
+    [NonSerialized]
+    public bool startWithPrices; 
+
+    // script management
     public List<Type> AttachedManagerScripts { get => attachedManagerScripts; set => attachedManagerScripts = value; }
     public List<SubManager> AttachedSubManagers { get => attachedSubManagers; set => attachedSubManagers = value; }
 
-    #endregion public parameters
 
     #region private parameters
     // Managers
@@ -83,6 +98,19 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogError("Not all Menu Parameters are Set in GameManager.");
         }
+
+        // Events
+        if (UserButtonClickedEvent == null)
+            UserButtonClickedEvent = new UnityEvent();
+        if (ApplyGeneralSettingsButtonClickedEvent == null)
+            ApplyGeneralSettingsButtonClickedEvent = new UnityEvent();
+        if (ApplyNewSettingsButtonClickedEvent == null)
+            ApplyNewSettingsButtonClickedEvent = new UnityEvent();
+        if (ApplyOldSettingsButtonClickedEvent == null)
+            ApplyOldSettingsButtonClickedEvent = new UnityEvent();
+
+        // game
+        startWithPrices = true; 
 
         // Load General Settings
         persistentPath = Application.persistentDataPath;
@@ -171,25 +199,28 @@ public class GameManager : MonoBehaviour
     /// </param>
     public void OnMenuButtonClicked(string type)
     {
+        
         switch (type)
         {
             case "UserButton":
-                UIManager.OnUserButtonClicked(); 
+                UserButtonClickedEvent.Invoke(); 
                 break;
 
             case "ApplyGeneralSettings":
-                bool useOldSettings = GeneralSettingsToggleButton.GetComponent<Interactable>().IsToggled; 
+                bool useOldSettings = GeneralSettingsToggleButton.GetComponent<Interactable>().IsToggled;
+                ApplyGeneralSettingsButtonClickedEvent.Invoke();
+
                 UIManager.OnButtonApplyGeneralSettings(useOldSettings);
                 break;
 
             case "ApplyNewDataSettings":
-                bool startWithPricesNew = NewSettingsToggleButton.GetComponent<Interactable>().IsToggled; 
-                UIManager.OnButtonApplyNewDataSettings(startWithPricesNew); 
+                startWithPrices = NewSettingsToggleButton.GetComponent<Interactable>().IsToggled;
+                ApplyNewSettingsButtonClickedEvent.Invoke();
                 break;
 
             case "ApplyOldDataSettings":
-                bool startWithPricesOld = OldSettingsToggleButton.GetComponent<Interactable>().IsToggled; 
-                UIManager.OnButtonApplyOldDataSettings(startWithPricesOld); 
+                startWithPrices = OldSettingsToggleButton.GetComponent<Interactable>().IsToggled;
+                ApplyOldSettingsButtonClickedEvent.Invoke();
                 break;
 
             default:
@@ -197,6 +228,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
     }
+
 
 
 
