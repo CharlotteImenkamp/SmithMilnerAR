@@ -7,6 +7,11 @@ public class PriceEstimation : IState
     public void Enter()
     {
         Debug.Log("PriceEstimation::Enter()");
+        var SubManagers = GameManager.Instance.AttachedSubManagers;
+        foreach (SubManager subManager in SubManagers)
+        {
+            subManager.OnGameStateEntered(this.ToString());
+        }
     }
 
     public void Execute()
@@ -17,5 +22,10 @@ public class PriceEstimation : IState
     public void Exit()
     {
         Debug.Log("PriceEstimation::Exit()");
+        var SubManagers = GameManager.Instance.AttachedSubManagers;
+        foreach (SubManager subManager in SubManagers)
+        {
+            subManager.OnGameStateLeft(this.ToString());
+        }
     }
 }

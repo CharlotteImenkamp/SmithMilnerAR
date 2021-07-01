@@ -93,17 +93,17 @@ GameObject:
   - component: {fileID: 5101521959669307828}
   - component: {fileID: 5101521959668210548}
   - component: {fileID: 5101521959666206088}
-  - component: {fileID: 5101521959666206091}
   - component: {fileID: 5101521959666206093}
   - component: {fileID: 5101521959666206090}
-  - component: {fileID: 5101521959666206092}
-  - component: {fileID: 5101521959666206129}
   - component: {fileID: 5101521959666206095}
   - component: {fileID: 5101521959666206131}
   - component: {fileID: 5101521959666206133}
   - component: {fileID: 5101521959666206132}
   - component: {fileID: 5101521959666206135}
   - component: {fileID: 5101521959666206130}
+  - component: {fileID: -676660957027871693}
+  - component: {fileID: -1023356193983736516}
+  - component: {fileID: 6474537626564436199}
   m_Layer: 0
   m_Name: Cheese
   m_TagString: InteractionObject
@@ -188,20 +188,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DistanceThreshold: 20
---- !u!114 &5101521959666206091
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5101521959666206134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5afd5316c63705643b3daba5a6e923bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTetherWhenManipulating: 0
-  IsBoundsHandles: 1
 --- !u!114 &5101521959666206093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,42 +295,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoConstraintSelection: 0
   selectedConstraints:
-  - {fileID: 5101521959666206092}
-  - {fileID: 5101521959666206129}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 5101521959666206130}
---- !u!114 &5101521959666206092
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5101521959666206134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b3e6359c9750ad4fb8a05c9b8704d7b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  handType: -1
-  proximityType: -1
-  constraintOnRotation: 5
-  useLocalSpaceForConstraint: 1
---- !u!114 &5101521959666206129
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5101521959666206134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 820f94d57893bf843a0cd6d93313fe6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  handType: -1
-  proximityType: -1
-  scaleMinimum: 1
-  scaleMaximum: 1
-  relativeToInitialState: 1
+  - {fileID: -1023356193983736516}
+  - {fileID: 6474537626564436199}
 --- !u!114 &5101521959666206095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -606,3 +561,50 @@ MonoBehaviour:
   useConstraint: 1
   referenceTransform: {fileID: 0}
   constraintOnMovement: 2
+--- !u!114 &-676660957027871693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5101521959666206134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5afd5316c63705643b3daba5a6e923bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTetherWhenManipulating: 0
+  IsBoundsHandles: 1
+--- !u!114 &-1023356193983736516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5101521959666206134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b3e6359c9750ad4fb8a05c9b8704d7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handType: 1
+  proximityType: 3
+  constraintOnRotation: 4
+  useLocalSpaceForConstraint: 1
+--- !u!114 &6474537626564436199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5101521959666206134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 820f94d57893bf843a0cd6d93313fe6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handType: 2
+  proximityType: 1
+  scaleMinimum: 1
+  scaleMaximum: 1
+  relativeToInitialState: 1

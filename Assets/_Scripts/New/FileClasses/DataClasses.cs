@@ -7,9 +7,9 @@ using UnityEngine;
 public class userSettingsData
 {
     #region methods
-    public userSettingsData(List<Object> obj, float updateRate, int userId, userSet set)
+    public userSettingsData(List<InteractionObject> obj, float updateRate, int userId, userSet set)
     {
-        gameObjects = new List<Object>();
+        gameObjects = new List<InteractionObject>();
         gameObjects.AddRange(obj);
 
         this.updateRate = updateRate;
@@ -17,10 +17,28 @@ public class userSettingsData
         this.set = set; 
     }
 
-    public userSettingsData()
-    {
+    public userSettingsData() {  }
 
+    public Vector3[] GetObjectPositions()
+    {
+        Vector3[] positions = new Vector3[gameObjects.Count];
+        for (int i = 0; i < gameObjects.Count; i++)
+        {
+            positions[i] = gameObjects[i].position; 
+        }
+        return positions; 
     }
+
+    public Quaternion[] GetObjectRotations()
+    {
+        Quaternion[] rotations = new Quaternion[gameObjects.Count];
+        for (int i = 0; i < gameObjects.Count; i++)
+        {
+            rotations[i] = gameObjects[i].rotation;
+        }
+        return rotations;
+    }
+
     #endregion
 
     #region parameters
@@ -29,7 +47,7 @@ public class userSettingsData
     public userSet set;
     // saving
     public float updateRate;
-    public List<Object> gameObjects;
+    public List<InteractionObject> gameObjects;
     public enum userSet { JG, AG, AK };
 
     #endregion 
@@ -51,18 +69,18 @@ public class applicationData
 public class loggingData
 {
     private Time time;
-    private List<Object> movingObjects;
+    private List<InteractionObject> movingObjects;
 }
 
 
 [System.Serializable]
-public class Object
+public class InteractionObject
 {
     public string Objectname;
     public Vector3 position;
     public Quaternion rotation;
 
-    public Object(string name, Vector3 position, Quaternion rotation)
+    public InteractionObject(string name, Vector3 position, Quaternion rotation)
     {
         this.Objectname = name;
         this.position = position;

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-// https://stackoverflow.com/questions/36239705/serialize-and-deserialize-json-and-json-array-in-unity 
 public class DataManager : MonoBehaviour
 {
     #region create instance
@@ -27,17 +27,19 @@ public class DataManager : MonoBehaviour
 
     private List<userSettingsData> userSettings;
     public List<userSettingsData> UserSettings { get => userSettings; set => userSettings = value; }
+    public userSettingsData CurrentSettings { get => currentSettings; set => currentSettings = value; }
 
- 
+    private userSettingsData currentSettings; 
+
 
     void Start()
     {
         // events
-        GameManager.Instance.ApplyNewSettingsButtonClickedEvent.AddListener(StartDataLogging);
-        GameManager.Instance.ApplyOldSettingsButtonClickedEvent.AddListener(StartDataLogging);
+        GameManager.Instance.OnNewSettingsButtonClicked.AddListener(StartDataLogging);
+        GameManager.Instance.OnOldSettingsButtonClicked.AddListener(StartDataLogging);
 
-        // parameters
-        userSettings = new List<userSettingsData>(); 
+       // parameters
+       userSettings = new List<userSettingsData>(); 
 
         // start loading
         dataStateMachine.ChangeState(new LoadSettings()); 

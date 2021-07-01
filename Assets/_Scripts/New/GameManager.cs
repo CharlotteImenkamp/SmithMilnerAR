@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     public GameObject GeneralSettingsToggleButton;
     public GameObject NewSettingsToggleButton;
     public GameObject OldSettingsToggleButton;
+    public GameObject radioButtonCollection; 
 
     [Header("ButtonObjects")]
     public GameObject parentInteractionObject; 
@@ -35,15 +36,21 @@ public class GameManager : MonoBehaviour
     private string generalSettingsPath;
 
     // Events
-    public UnityEvent UserButtonClickedEvent;
-    public UnityEvent ApplyGeneralSettingsButtonClickedEvent;
-    public UnityEvent ApplyNewSettingsButtonClickedEvent;
-    public UnityEvent ApplyOldSettingsButtonClickedEvent;
-
+    [NonSerialized]
+    public UnityEvent OnUserButtonClicked;
+    [NonSerialized]
+    public UnityEvent OnGeneralSettingsButtonClicked;
+    [NonSerialized]
+    public UnityEvent OnNewSettingsButtonClicked;
+    [NonSerialized]
+    public UnityEvent OnOldSettingsButtonClicked;
 
     // game 
     [NonSerialized]
-    public bool startWithPrices; 
+    public bool startWithPrices;
+
+    [NonSerialized]
+    public bool newDataset; 
 
     // script management
     public List<Type> AttachedManagerScripts { get => attachedManagerScripts; set => attachedManagerScripts = value; }
@@ -68,6 +75,7 @@ public class GameManager : MonoBehaviour
     private static GameManager _instance = null;
     public static GameManager Instance { get => _instance; }
 
+
     /// <summary>
     /// Manage Instance and Add depending Scripts
     /// </summary>
@@ -82,7 +90,6 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
             Debug.LogError("Instance of GameManager destroyed.");
-
         }
     }
     #endregion 
@@ -98,19 +105,19 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogError("Not all Menu Parameters are Set in GameManager.");
         }
-
         // Events
-        if (UserButtonClickedEvent == null)
-            UserButtonClickedEvent = new UnityEvent();
-        if (ApplyGeneralSettingsButtonClickedEvent == null)
-            ApplyGeneralSettingsButtonClickedEvent = new UnityEvent();
-        if (ApplyNewSettingsButtonClickedEvent == null)
-            ApplyNewSettingsButtonClickedEvent = new UnityEvent();
-        if (ApplyOldSettingsButtonClickedEvent == null)
-            ApplyOldSettingsButtonClickedEvent = new UnityEvent();
+        if (OnUserButtonClicked == null)
+            OnUserButtonClicked = new UnityEvent();
+        if (OnGeneralSettingsButtonClicked == null)
+            OnGeneralSettingsButtonClicked = new UnityEvent();
+        if (OnNewSettingsButtonClicked == null)
+            OnNewSettingsButtonClicked = new UnityEvent();
+        if (OnOldSettingsButtonClicked == null)
+            OnOldSettingsButtonClicked = new UnityEvent();
+
 
         // game
-        startWithPrices = true; 
+        startWithPrices = false; 
 
         // Load General Settings
         persistentPath = Application.persistentDataPath;
@@ -127,9 +134,18 @@ public class GameManager : MonoBehaviour
         AddSubManager(new AudioManager());
         AddSubManager(new UIManager());
         AddSubManager(new ObjectManager());
+
     }
 
     #region helper methods
+
+    public void ToggleStartWithPrices()
+    {
+        if (startWithPrices == true)
+            startWithPrices = false;
+        else if (startWithPrices == false)
+            startWithPrices = true; 
+    }
 
 
     /// <summary>
@@ -211,24 +227,23 @@ public class GameManager : MonoBehaviour
         switch (type)
         {
             case "UserButton":
-                UserButtonClickedEvent.Invoke(); 
+                OnUserButtonClicked.Invoke(); 
                 break;
 
             case "ApplyGeneralSettings":
-                bool useOldSettings = GeneralSettingsToggleButton.GetComponent<Interactable>().IsToggled;
-                ApplyGeneralSettingsButtonClickedEvent.Invoke();
-
-                UIManager.OnButtonApplyGeneralSettings(useOldSettings);
+                newDataset = GeneralSettingsToggleButton.GetComponent<Interactable>().IsToggled;
+                OnGeneralSettingsButtonClicked.Invoke();
+                OnGeneralSettingsButtonClicked.RemoveAllListeners(); 
                 break;
 
             case "ApplyNewDataSettings":
-                startWithPrices = NewSettingsToggleButton.GetComponent<Interactable>().IsToggled;
-                ApplyNewSettingsButtonClickedEvent.Invoke();
+                OnNewSettingsButtonClicked.Invoke();
+                OnNewSettingsButtonClicked.RemoveAllListeners(); 
                 break;
 
             case "ApplyOldDataSettings":
-                startWithPrices = OldSettingsToggleButton.GetComponent<Interactable>().IsToggled;
-                ApplyOldSettingsButtonClickedEvent.Invoke();
+                OnOldSettingsButtonClicked.Invoke();
+                OnOldSettingsButtonClicked.RemoveAllListeners(); 
                 break;
 
             default:

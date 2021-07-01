@@ -7,6 +7,11 @@ public class End : IState
     public void Enter()
     {
         Debug.Log("End::Enter()");
+        var SubManagers = GameManager.Instance.AttachedSubManagers;
+        foreach (SubManager subManager in SubManagers)
+        {
+            subManager.OnGameStateEntered(this.ToString());
+        }
     }
 
     public void Execute()
@@ -17,5 +22,10 @@ public class End : IState
     public void Exit()
     {
         Debug.Log("End::Exit()");
+        var SubManagers = GameManager.Instance.AttachedSubManagers;
+        foreach (SubManager subManager in SubManagers)
+        {
+            subManager.OnGameStateLeft(this.ToString());
+        }
     }
 }

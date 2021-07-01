@@ -15,18 +15,18 @@ class LoadSettings : IState
     {
         Debug.Log("LoadSettings Enter");
 
-        //// get parameters from GameManager
-        //int n = GameManager.Instance.generalSettings.settingFiles.Count;
-        //string persistentPath = GameManager.Instance.persistentPath;
-        //settingsFolder = GameManager.Instance.generalSettings.settingsFolder;
-         
-        //// load each file into own parameter and save in DataManager
-        //for (int i = 0; i < n; i++)
-        //{
-        //    var file = GameManager.Instance.generalSettings.settingFiles[i];
-        //    var set = LoadUserSettings(persistentPath + settingsFolder + file);
-        //    DataManager.Instance.UserSettings.Add(set);
-        //}
+        // get parameters from GameManager
+        int n = GameManager.Instance.generalSettings.settingFiles.Count;
+        string persistentPath = GameManager.Instance.persistentPath;
+        settingsFolder = GameManager.Instance.generalSettings.settingsFolder;
+
+        // load each file into own parameter and save in DataManager
+        for (int i = 0; i < n; i++)
+        {
+            var file = GameManager.Instance.generalSettings.settingFiles[i];
+            var set = LoadUserSettings(persistentPath + settingsFolder + file);
+            DataManager.Instance.UserSettings.Add(set);
+        }
     }
 
     public void Execute()
@@ -86,7 +86,7 @@ class LoadSettings : IState
             {
                 string jsonString = JsonUtility.ToJson(data, true);
                 jsonString += System.Environment.NewLine;
-                System.IO.File.AppendAllText(filepath, jsonString);
+                File.AppendAllText(filepath, jsonString);
                 File.WriteAllText(filepath, jsonString);
             }
             else

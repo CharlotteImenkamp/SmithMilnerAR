@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
@@ -30,16 +28,6 @@ public class CustomMovementConstraint : TransformConstraint
     [SerializeField]
     [Tooltip("Use Objects Transformation to calculate MovementBoundaries ")]
     private Transform referenceTransform;
-    private GameObject referenceObject; 
-
-    public GameObject ReferenceObject
-    {
-        get => referenceObject;
-        set {
-            referenceObject = value;
-            referenceTransform = referenceObject.transform; 
-        }
-    }
 
     /// <summary>
     /// Constrain movement along an axis
@@ -67,6 +55,10 @@ public class CustomMovementConstraint : TransformConstraint
     public override void Initialize(MixedRealityTransform worldPose)
     {
         base.Initialize(worldPose);
+        if(referenceTransform == null)
+        {
+            referenceTransform = GameObject.FindGameObjectWithTag("MovementConstraint").transform;
+        }
         GetLowerBorder(); 
     }
 

@@ -37,9 +37,8 @@ public class GameStateManager: MonoBehaviour
     private void Start()
     {
         // Events
-        bool startWithPrices = GameManager.Instance.startWithPrices; 
-        GameManager.Instance.ApplyNewSettingsButtonClickedEvent.AddListener(() => StartGame(startWithPrices));
-        GameManager.Instance.ApplyOldSettingsButtonClickedEvent.AddListener(() => StartGame(startWithPrices)); 
+        GameManager.Instance.OnNewSettingsButtonClicked.AddListener(() => StartGame(GameManager.Instance.startWithPrices));
+        GameManager.Instance.OnOldSettingsButtonClicked.AddListener(() => StartGame(GameManager.Instance.startWithPrices)); 
 
         // game states
         gameStateMachine.ChangeState(new Initialization());

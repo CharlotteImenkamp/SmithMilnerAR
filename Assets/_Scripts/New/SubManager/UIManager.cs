@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Microsoft.MixedReality.Toolkit.UI;
 
 public class UIManager : SubManager
 {
@@ -9,6 +10,8 @@ public class UIManager : SubManager
     private static GameObject newSettingsMenu;
     private static GameObject oldSettingsMenu;
     private static GameObject[] allMenus;
+
+    private static InteractableToggleCollection radioButtons; 
 
     private static bool enableUserButton; 
 
@@ -20,10 +23,15 @@ public class UIManager : SubManager
         oldSettingsMenu = GameManager.Instance.OldSettingsMenu;
         allMenus = new GameObject[] { generalSettingsMenu, newSettingsMenu, oldSettingsMenu };
 
+        radioButtons = GameManager.Instance.radioButtonCollection.GetComponentInChildren<InteractableToggleCollection>(); 
+
+        // parameters
         enableUserButton = false;
 
         // events
-        GameManager.Instance.UserButtonClickedEvent.AddListener(OnUserButtonClicked);
+        GameManager.Instance.OnUserButtonClicked.AddListener(OnUserButtonClicked);
+        GameManager.Instance.OnGeneralSettingsButtonClicked.AddListener(()=> OnButtonApplyGeneralSettings(GameManager.Instance.newDataset));
+        GameManager.Instance.OnOldSettingsButtonClicked.AddListener(SetCurrentUserSettings); 
     }
 
     public void Initialize()
@@ -71,6 +79,7 @@ public class UIManager : SubManager
         {
             case "Initialization":
                 break;
+
             case "SettingsMenu":
                 CloseAllMenus(); 
                 break;
@@ -128,7 +137,7 @@ public class UIManager : SubManager
     /// <summary>
     /// Set new bool newDataSet and StartPrices/StartLocations
     /// </summary>
-    public static void OnButtonApplyGeneralSettings(bool newDataSet)             
+    public void OnButtonApplyGeneralSettings(bool newDataSet)             
     {
         if (newDataSet)
         {
@@ -139,6 +148,12 @@ public class UIManager : SubManager
             OpenMenu(oldSettingsMenu); 
         }
         Debug.Log("UIManager::OnButtonApplyGeneralSettings successful");
+    }
+
+    private void SetCurrentUserSettings()
+    {
+        DataManager.Instance.CurrentSettings = DataManager.Instance.UserSettings[radioButtons.CurrentIndex];
+        Debug.LogWarning("UIManager::getCurrentUserSettings not implemented."); 
     }
 
 

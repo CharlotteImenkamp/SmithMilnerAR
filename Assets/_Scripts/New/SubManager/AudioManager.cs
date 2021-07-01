@@ -52,23 +52,30 @@ public class AudioManager : SubManager
         switch (oldState)
         {
             case "Initialization":
+                Debug.LogWarning("AudioManager::OnGameStateLeft Initialization not implemented.");
                 break;
             case "SettingsMenu":
+                Debug.LogWarning("AudioManager::OnGameStateLeft SettingsMenu not implemented.");
                 break;
             case "LocationTest":
+                Debug.LogWarning("AudioManager::OnGameStateLeft LocationTest not implemented.");
                 break;
             case "LocationEstimation":
+                Debug.LogWarning("AudioManager::OnGameStateLeft LocationEstimation not implemented.");
                 break;
             case "PriceTest":
+                Debug.LogWarning("AudioManager::OnGameStateLeft PriceTest not implemented.");
                 break;
             case "PriceEstimation":
+                Debug.LogWarning("AudioManager::OnGameStateLeft PriceEstimation not implemented.");
                 break;
             case "Pause":
+                Debug.LogWarning("AudioManager::OnGameStateLeft Pause not implemented.");
                 break;
             default:
+                Debug.LogError("AudioManager::OnGameStateLeft invalid State.");
                 break;
         }
-        Debug.LogWarning("AudioManager::OnGameStateLeft not implemented.");
     }
 
     #endregion gameStates

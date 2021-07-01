@@ -20,12 +20,12 @@ public class DataGenerationHelper : MonoBehaviour
     userSettingsData SaveCurrentLayout()
     {
         GameObject[] intObj = GameObject.FindGameObjectsWithTag("InteractionObject");
-        List<Object> obj = new List<Object>(); 
+        List<InteractionObject> obj = new List<InteractionObject>(); 
 
 
         foreach (GameObject o in intObj)
         {
-            obj.Add(new Object(o.name, o.transform.position, o.transform.rotation)); 
+            obj.Add(new InteractionObject(o.name, o.transform.position, o.transform.rotation)); 
         }
 
         userSettingsData res = new userSettingsData(
@@ -40,14 +40,14 @@ public class DataGenerationHelper : MonoBehaviour
     userSettingsData GenerateTestSet()
     {
         userSettingsData test = new userSettingsData(
-    new List<Object> {
-                new Object("eins", Vector3.zero, Quaternion.identity),
-                new Object("zwei", Vector3.zero, Quaternion.identity)},
+    new List<InteractionObject> {
+                new InteractionObject("eins", Vector3.zero, Quaternion.identity),
+                new InteractionObject("zwei", Vector3.zero, Quaternion.identity)},
     0f, 1, userSettingsData.userSet.AG);
 
-        test.gameObjects = new List<Object>();
-        test.gameObjects.Add(new Object("eins", Vector3.zero, Quaternion.identity));
-        test.gameObjects.Add(new Object("zwei", Vector3.zero, Quaternion.identity));
+        test.gameObjects = new List<InteractionObject>();
+        test.gameObjects.Add(new InteractionObject("eins", Vector3.zero, Quaternion.identity));
+        test.gameObjects.Add(new InteractionObject("zwei", Vector3.zero, Quaternion.identity));
         test.updateRate = 0f;
         test.UserID = 1;
         test.set = userSettingsData.userSet.AG;
@@ -63,12 +63,12 @@ public class DataGenerationHelper : MonoBehaviour
         {
             if (File.Exists(filepath))
             {
-                filename = filename + System.DateTime.Now;
+                filename = filename + System.DateTime.Now; 
                 filepath = persistentPath + foldername + filename + fileending;
             }
             string jsonString = JsonUtility.ToJson(data, true);
         jsonString += System.Environment.NewLine;
-        System.IO.File.AppendAllText(filepath, jsonString);
+        File.AppendAllText(filepath, jsonString);
 
         File.WriteAllText(filepath, jsonString);
             Debug.Log(filepath); 
