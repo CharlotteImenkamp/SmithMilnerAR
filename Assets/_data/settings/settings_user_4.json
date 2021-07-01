@@ -1,0 +1,33 @@
+{
+    "UserID": 1,
+    "set": 1,
+    "updateRate": 0.0,
+    "gameObjects": [
+        {
+            "Objectname": "eins",
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        },
+        {
+            "Objectname": "zwei",
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotation": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        }
+    ]
+}

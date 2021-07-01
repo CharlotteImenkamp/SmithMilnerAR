@@ -39,24 +39,7 @@ class LoadSettings : IState
     public void Exit()
     {
         Debug.Log("LoadSettings Exit");
-        //if (false)      // \TODO save new settings, if user applied new settings
-        //{
-        //    userSettingsData test = new userSettingsData(
-        //    new List<Object> {
-        //        new Object("eins", Vector3.zero, Vector3.one),
-        //        new Object("zwei", Vector3.zero, Vector3.one)},
-        //    0f, 1, userSettingsData.userSet.AG);
 
-        //    test.gameObjects = new List<Object>();
-        //    test.gameObjects.Add(new Object("eins", Vector3.zero, Vector3.one));
-        //    test.gameObjects.Add(new Object("zwei", Vector3.zero, Vector3.one));
-        //    test.updateRate = 0f;
-        //    test.UserID = 1;
-        //    test.set = userSettingsData.userSet.AG;
-
-        //    SaveNewUserSettings(test, settingsFolder, "/settings_user_4.json");
-        //}
-        //Debug.LogWarning("LoadSettings::SaveNewUserSettings not implemented.");
     }
 
     #region dataManagement

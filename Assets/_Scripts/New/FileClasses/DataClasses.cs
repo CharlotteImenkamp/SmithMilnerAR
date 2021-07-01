@@ -60,9 +60,9 @@ public class Object
 {
     public string Objectname;
     public Vector3 position;
-    public Vector3 rotation;
+    public Quaternion rotation;
 
-    public Object(string name, Vector3 position, Vector3 rotation)
+    public Object(string name, Vector3 position, Quaternion rotation)
     {
         this.Objectname = name;
         this.position = position;

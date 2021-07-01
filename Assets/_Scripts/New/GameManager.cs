@@ -137,7 +137,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     /// <param name="filepath"></param>
     /// <returns></returns>
-    private applicationData LoadGeneralSettings(string filepath)
+    public applicationData LoadGeneralSettings(string filepath) //\return to private
     {
         applicationData newGeneralSettings = new applicationData();
 
@@ -157,6 +157,14 @@ public class GameManager : MonoBehaviour
         Debug.Log(filepath);
 
         return newGeneralSettings;
+    }
+
+    public void SaveGeneralSettings(applicationData updatedSettings)   // return to private
+    {
+        string jsonString = JsonUtility.ToJson(updatedSettings, true);
+        jsonString += System.Environment.NewLine;
+        System.IO.File.AppendAllText(generalSettingsPath, jsonString);
+        File.WriteAllText(generalSettingsPath, jsonString);
     }
 
     /// <summary>
