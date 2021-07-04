@@ -1,1 +1,20 @@
 https://onedrive.live.com/?id=A899757D7F26C1DB%216036&cid=A899757D7F26C1DB 
+
+Windows Device Portal:  
+Username: FHKiel 
+PW: Labor2.62 
+https://192.168.100.233/ 
+
+persistent path: LocalAppData/YourApp/LocalState  
+
+
+
+Unity Build: 
+Universal Windows Platform
+Neuer Produktname pro Build
+
+Visual Studio Build: 
+Release 
+ARM64
+Gerät
+Erstellen> Projektmappe bereitstellen
