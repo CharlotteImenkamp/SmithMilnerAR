@@ -25,7 +25,6 @@ GameObject:
   - component: {fileID: -8952756945328094738}
   - component: {fileID: 8879197387190480044}
   - component: {fileID: 7854361381396116356}
-  - component: {fileID: 123991675905732248}
   m_Layer: 0
   m_Name: Banana_MPI01_fbx
   m_TagString: InteractionObject
@@ -553,7 +552,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4840743763390519954}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 98c748f3768ab714a8449b60fb9edc5c, type: 3}
   m_Name: 
@@ -565,16 +564,3 @@ MonoBehaviour:
   localCenter: {x: 0, y: 0, z: 0}
   bounds: {x: 0, y: 0}
   touchableCollider: {fileID: 200731914564914326}
---- !u!65 &123991675905732248
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4840743763390519954}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.20042902, y: 0.037620343, z: 0.08064714}
-  m_Center: {x: -0.000045761466, y: 0.01790423, z: 0.009456513}

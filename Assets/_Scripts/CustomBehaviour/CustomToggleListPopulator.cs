@@ -54,6 +54,8 @@ public class CustomToggleListPopulator : MonoBehaviour
             // Get Size
             if (DataManager.Instance.UserSettings.Count == 0)
             {
+                GameManager.Instance.debugText.text = "CustomScrollableListPopulator::Start no items in DataManager.UserSettings found. Using Default Value of 3.";
+
                 Debug.LogWarning("CustomScrollableListPopulator::Start no items in DataManager.UserSettings found. Using Default Value of 3.");
                 numItems = 3;
             }
@@ -64,6 +66,7 @@ public class CustomToggleListPopulator : MonoBehaviour
         }
         else
         {
+            GameManager.Instance.debugText.text = "CustomToggleList Populator:: Initialize not able to get DataManager Instance"; 
             Debug.LogError("CustomToggleList Populator:: Initialize not able to get DataManager Instance"); 
         }
 

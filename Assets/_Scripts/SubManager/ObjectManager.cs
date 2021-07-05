@@ -122,6 +122,7 @@ public class ObjectManager : SubManager
 
     public override void Reset()
     {
+        GameManager.Instance.debugText.text = "ObjectManager::Reset"; 
         Debug.Log("ObjectManager::Reset"); 
 
         interactionObjects = null; 

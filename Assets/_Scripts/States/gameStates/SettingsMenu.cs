@@ -6,6 +6,8 @@ public class SettingsMenu : IState
 {
     public void Enter()
     {
+        GameManager.Instance.debugText.text = "OpenSettingsMenu::Enter()";
+
         Debug.Log("OpenSettingsMenu::Enter()");
 
         var SubManagers = GameManager.Instance.AttachedSubManagers;
@@ -21,6 +23,8 @@ public class SettingsMenu : IState
 
     public void Exit()
     {
+        GameManager.Instance.debugText.text = "OpenSettingsMenu::Exit()";
+
         Debug.Log("OpenSettingsMenu::Exit()");
 
         var SubManagers = GameManager.Instance.AttachedSubManagers;

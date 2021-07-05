@@ -6,6 +6,8 @@ public class Pause : IState
 {
     public void Enter()
     {
+        GameManager.Instance.debugText.text = "Pause::Enter()";
+
         Debug.Log("Pause::Enter()");
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
@@ -22,6 +24,8 @@ public class Pause : IState
     public void Exit()
     {
         Debug.Log("Pause::Exit()");
+        GameManager.Instance.debugText.text = "Pause::Exit()";
+
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
         {

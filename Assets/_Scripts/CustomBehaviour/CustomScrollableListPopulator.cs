@@ -33,30 +33,17 @@ public class CustomScrollableListPopulator : MonoBehaviour
     }
 
     [SerializeField]
-    [Tooltip("Number of items to load each frame during lazy load")]
-    private int itemsPerFrame = 3;
-
-    /// <summary>
-    /// Number of items to load each frame during lazy load 
-    /// </summary>
-    public int ItemsPerFrame
-    {
-        get { return itemsPerFrame; }
-        set { itemsPerFrame = value; }
-    }
-
-    [SerializeField]
     [Tooltip("Indeterminate loader to hide / show for LazyLoad")]
     private GameObject loader;
 
     [SerializeField]
-    private float cellWidth = 0.032f;
+    private float cellWidth = 0.04f;
 
     [SerializeField]
-    private float cellHeight = 0.032f;
+    private float cellHeight = 0.4f;
 
     [SerializeField]
-    private float cellDepth = 0.032f;
+    private float cellDepth = 0.04f;
 
     [SerializeField]
     private int cellsPerTier = 3;
@@ -80,6 +67,8 @@ public class CustomScrollableListPopulator : MonoBehaviour
         get { return loader; }
         set { loader = value; }
     }
+
+    public ScrollingObjectCollection ScrollView { get => scrollView; set => scrollView = value; }
 
     private void OnEnable()
     {
@@ -142,8 +131,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
         if (!lazyLoad)
         {
             
-            objectCreator.SpawnObjects(dynamicItems, gridObjectCollection.gameObject, gridObjectCollection.transform.position, gridObjectCollection.transform.rotation, ConfigType.MovementDisabled);
-            // objectCreator.ResizeObjects(dynamicItems, 0.5f); 
+            objectCreator.SpawnObjects(dynamicItems, gridObjectCollection.gameObject, gridObjectCollection.transform.position, gridObjectCollection.transform.rotation, ConfigType.scrollBox);
             scrollView.gameObject.SetActive(true);
             gridObjectCollection.UpdateCollection();
         }
@@ -154,19 +142,16 @@ public class CustomScrollableListPopulator : MonoBehaviour
                 loader.SetActive(true);
             }
 
-            StartCoroutine(UpdateListOverTime(loader, itemsPerFrame));
+            StartCoroutine(UpdateListOverTime(loader));
         }
     }
 
-    private IEnumerator UpdateListOverTime(GameObject loaderViz, int instancesPerFrame)
+    private IEnumerator UpdateListOverTime(GameObject loaderViz)
     {
         for (int currItemCount = 0; currItemCount < numItems; currItemCount++)
         {
-            for (int i = 0; i < instancesPerFrame; i++)
-            {
-                objectCreator.SpawnObject(dynamicItems[currItemCount], gridObjectCollection.gameObject, gridObjectCollection.transform.position, gridObjectCollection.transform.rotation, ConfigType.MovementDisabled);
-                // objectCreator.ResizeObject(dynamicItems[currItemCount], 0.5f);
-            }
+            objectCreator.SpawnObject(dynamicItems[currItemCount], gridObjectCollection.gameObject, gridObjectCollection.transform.position, gridObjectCollection.transform.rotation, ConfigType.scrollBox);
+            // objectCreator.ResizeObject(dynamicItems[currItemCount], 0.5f);
             yield return null;
         }
 

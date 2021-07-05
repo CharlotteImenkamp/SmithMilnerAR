@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
-using System.IO;
 using System;
+using System.IO;
+using System.Text;
 
 class LogData : IState
 {
@@ -30,13 +31,14 @@ class LogData : IState
 
     public void Enter()
     {
+        GameManager.Instance.debugText.text = "LogData Enter"; 
+
         Debug.Log("LogData::Enter");
         sampleRate = DataManager.Instance.CurrentSettings.updateRate;
 
         // Directory
-        dataFolder = GameManager.Instance.generalSettings.dataFolder;
-        persistentPath = Application.persistentDataPath;
-        directoryPath = Path.Combine(persistentPath, dataFolder, "User_" + DataManager.Instance.CurrentSettings.UserID.ToString());
+        dataFolder = GameManager.Instance.generalSettings.dataFolder;   //TODO nutzen
+        directoryPath = Path.Combine(Application.persistentDataPath, "data", "User_" + DataManager.Instance.CurrentSettings.UserID.ToString());
 
         // Generate Directory
         if (!Directory.Exists(directoryPath))
@@ -77,6 +79,8 @@ class LogData : IState
 
     public void Exit()
     {
+        GameManager.Instance.debugText.text = "LogData Exit"; 
+
         Debug.Log("LogData::Exit");
 
         if (gameType == GameType.Locations)
@@ -204,7 +208,10 @@ class LogData : IState
     private void StartFile(string filepath)
     {
         string start = "{ \n \"entries " + DateTime.Now.ToString("D") + DateTime.Now.ToString("F") + "\":[" + Environment.NewLine;
-        File.AppendAllText(filepath, start);
+       // File.AppendAllText(filepath, start);
+
+        // TEST/ ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        UnityEngine.Windows.File.WriteAllBytes(filepath, Encoding.ASCII.GetBytes(start)); 
     }
 
     private void AddFileToGeneralSettings(string fileName)
@@ -217,13 +224,14 @@ class LogData : IState
         string jsonString = JsonUtility.ToJson(data, true);
 
         jsonString += "," + System.Environment.NewLine;
-        File.AppendAllText(filepath, jsonString);
+        File.AppendAllText(filepath, jsonString);        
     }
 
     private void EndFile(string filepath)
     {
         string ende = " \"END\"\n ]}\n";
         File.AppendAllText(filepath, ende);
+        
     }
     #endregion 
 

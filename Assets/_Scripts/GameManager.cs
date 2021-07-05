@@ -2,6 +2,8 @@ using Microsoft.MixedReality.Toolkit.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -22,6 +24,11 @@ public class GameManager : MonoBehaviour
 
     [Header("InteractionObjects")]
     public GameObject parentInteractionObject;
+
+    [Header("Debug")]
+    public GameObject debugTextObject;
+    [NonSerialized]
+    public TextMeshPro debugText; 
 
     #endregion Serialized in Editor
 
@@ -92,14 +99,19 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        // debug
+        debugText = debugTextObject.GetComponent<TextMeshPro>();
+
         // Check Input parameters
         if (GeneralSettingsMenu == null || NewSettingsMenu == null || OldSettingsMenu == null)
         {
+            debugText.text = "Not all Menu Parameters are Set in GameManager."; 
             Debug.LogError("Not all Menu Parameters are Set in GameManager.");
         }
         // Events
         if (OnUserButtonClicked == null)
             OnUserButtonClicked = new UnityEvent();
+
 
         // Load General Settings
         persistentPath = Application.persistentDataPath;
@@ -117,6 +129,7 @@ public class GameManager : MonoBehaviour
         AddSubManager(new AudioManager());
         AddSubManager(new UIManager());
         AddSubManager(new ObjectManager());
+
     }
 
 
@@ -166,6 +179,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            debugText.text = "GameManager::AddManagerToScene Manager already exists!";
             Debug.LogWarning("GameManager::AddManagerToScene Manager already exists!"); 
         }
     }
@@ -181,9 +195,9 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            debugText.text = "GameManager::AddSubManager Failed to load SubManager"; 
             Debug.LogError("GameManager::AddSubManager Failed to load SubManager"); 
         }
-        
     }
 
     #endregion Script Management
@@ -219,14 +233,17 @@ public class GameManager : MonoBehaviour
             newGeneralSettings = JsonUtility.FromJson<ApplicationData>(textFile.text);
             if (newGeneralSettings != null)
             {
+                debugText.text = "GameManager::LoadGeneralSettings successful."; 
                 Debug.Log("GameManager::LoadGeneralSettings successful.");
             }
         else
         {
+            debugText.text = "GameManager::LoadGeneralSettings no file found."; 
             Debug.LogError("GameManager::LoadGeneralSettings no file found.");
             newGeneralSettings = DefaultGeneralSettingsFile();
             if (newGeneralSettings != null)
             {
+                debugText.text = "GameManager::LoadGeneralSettings generated default data."; 
                 Debug.LogWarning("GameManager::LoadGeneralSettings generated default data.");
             }
         }
@@ -234,13 +251,13 @@ public class GameManager : MonoBehaviour
         return newGeneralSettings;
     }
 
-    public void SaveGeneralSettings()
+    public void SaveGeneralSettingsToPersistentPath()
     {
         string jsonString = JsonUtility.ToJson(generalSettings, true);
         jsonString += Environment.NewLine;
 
         // override existing text
-        File.WriteAllText(generalSettingsPath, jsonString);
+        UnityEngine.Windows.File.WriteAllBytes(Application.persistentDataPath + "/generalSettings.json", Encoding.ASCII.GetBytes(jsonString));
     }
 
     /// <summary>

@@ -14,49 +14,49 @@ public class DataGenerationHelper : MonoBehaviour
     {
         if (saveNewSettings)
         {
-            // generate path
-            string savePath = Path.Combine(Application.persistentDataPath, "test");
-            if (!Directory.Exists(savePath))
-            {
-                Directory.CreateDirectory(savePath); 
-            }
+        //    // generate path
+        //    string savePath = Path.Combine(Application.persistentDataPath, "test");
+        //    if (!Directory.Exists(savePath))
+        //    {
+        //        Directory.CreateDirectory(savePath); 
+        //    }
 
-            // generate new file
-            FileStream file; 
-            string fileName = "testData"; 
-            string filePath = Path.Combine(savePath, fileName + ".json");
-            if (!File.Exists(filePath))
-            {
-                file = File.Create(filePath);
-            }
-            else
-            {
-                // unique name
-                fileName = fileName + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString();      
-                filePath = Path.Combine(savePath, fileName + ".json");
-                //file = File.Create(filePath);
-            }
+        //    // generate new file
+        //    FileStream file; 
+        //    string fileName = "testData"; 
+        //    string filePath = Path.Combine(savePath, fileName + ".json");
+        //    if (!File.Exists(filePath))
+        //    {
+        //        file = File.Create(filePath);
+        //    }
+        //    else
+        //    {
+        //        // unique name
+        //        fileName = fileName + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString();      
+        //        filePath = Path.Combine(savePath, fileName + ".json");
+        //        //file = File.Create(filePath);
+        //    }
 
-            // start formatter
-            BinaryFormatter bf = new BinaryFormatter();
+        //    // start formatter
+        //    BinaryFormatter bf = new BinaryFormatter();
 
-            // start writer
-            StartFile(bf, filePath); 
+        //    // start writer
+        //    StartFile(bf, filePath); 
     
 
-            // Write into file
-            var test = new CustomObject("eins", Vector3.zero, Quaternion.identity);
-            var list = new List<CustomObject>();
-            list.Add(test); 
+        //    // Write into file
+        //    var test = new CustomObject("eins", Vector3.zero, Quaternion.identity);
+        //    var list = new List<CustomObject>();
+        //    list.Add(test); 
             
-            AddLine(bf, new ObjectData(list, Time.deltaTime), filePath);
-            AddLine(bf, new ObjectData(list, Time.deltaTime + 1), filePath);
+        //    AddLine(bf, new ObjectData(list, Time.deltaTime), filePath);
+        //    AddLine(bf, new ObjectData(list, Time.deltaTime + 1), filePath);
 
-            // end file
-            EndFile(bf, filePath); 
+        //    // end file
+        //    EndFile(bf, filePath); 
 
-            // SaveNewUserSettings(SaveCurrentLayout(), "/settings", "/settings_1", ".json");
-            // SaveNewUserSettings(GenerateTestSet(), "", "/settings_user_4.json");
+            SaveNewUserSettings(SaveCurrentLayout(), "", "settings_1", ".json");
+            //SaveNewUserSettings(GenerateTestSet(), "", "/settings_user_4.json");
         }
     }
     private void StartFile(BinaryFormatter bf, string filepath)
@@ -120,7 +120,10 @@ public class DataGenerationHelper : MonoBehaviour
     private void SaveNewUserSettings(userSettingsData data, string foldername, string filename, string fileending)
     { 
         string persistentPath = Application.persistentDataPath; 
-        string filepath = persistentPath + foldername + filename + fileending;
+        
+        string filepath = Path.Combine(persistentPath, filename + fileending);
+
+        Debug.Log(filepath); 
         // save data in json 
         if (data != null)
         {
@@ -140,14 +143,14 @@ public class DataGenerationHelper : MonoBehaviour
         {
             Debug.LogError("LoadSettings::SaveNewUserSettings no data to save");
         }
-        AddNewSettingsFileToGeneralSettings(filename, fileending); 
+        //AddNewSettingsFileToGeneralSettings(filename, fileending); 
     }
 
     void AddNewSettingsFileToGeneralSettings(string filename, string fileending)
     {
         GameManager.Instance.generalSettings.settingFiles.Add(filename + fileending);
 
-        GameManager.Instance.SaveGeneralSettings(); 
+        GameManager.Instance.SaveGeneralSettingsToPersistentPath(); 
     }
 
 }

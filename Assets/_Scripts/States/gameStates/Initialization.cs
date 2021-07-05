@@ -12,6 +12,7 @@ public class Initialization : IState
     /// </summary>
     public void Enter()
     {
+        GameManager.Instance.debugText.text = "Initialization::Enter()"; 
         Debug.Log("Initialization::Enter()");
         var SubManagers = GameManager.Instance.AttachedSubManagers; 
 
@@ -27,6 +28,8 @@ public class Initialization : IState
 
     public void Exit()
     {
+        GameManager.Instance.debugText.text = "Initialization::Exit()"; 
+        
         Debug.Log("Initialization::Exit()");
 
         var SubManagers = GameManager.Instance.AttachedSubManagers;

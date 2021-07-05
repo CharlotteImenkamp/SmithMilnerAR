@@ -37,14 +37,17 @@ public class ObjectCreator : ScriptableObject
     }
     public void SpawnObject(GameObject obj, GameObject parent, Vector3 position, Quaternion rotation, ConfigType config)
     {
-       
-        var generatedObject = Instantiate(obj, position, rotation);
 
-        generatedObject.SetActive(true);
-        generatedObject.transform.parent = parent.transform;
+        
 
         ApplyRelevantComponents(obj);
         ApplyConfiguration(obj, config);
+
+        var generatedObject = Instantiate(obj, position, rotation);
+        generatedObject.transform.parent = parent.transform;
+
+        generatedObject.SetActive(true);
+
 
         instantiatedObjects.Add(generatedObject);
     }
@@ -138,7 +141,11 @@ public class ObjectCreator : ScriptableObject
                 if (obj.TryGetComponent(out NearInteractionGrabbable iG))
                     iG.enabled = false;
                 if (obj.TryGetComponent(out Rigidbody rb))
+                {
                     rb.useGravity = false;
+                    rb.constraints = RigidbodyConstraints.FreezeAll;
+                }
+                    
 
                 if (obj.TryGetComponent(out NearInteractionTouchable nI))
                     nI.enabled = false;
@@ -163,7 +170,11 @@ public class ObjectCreator : ScriptableObject
                 iG.enabled = true;
 
                 if (obj.TryGetComponent(out Rigidbody rb))
+                {
                     rb.useGravity = true;
+                    rb.constraints = RigidbodyConstraints.FreezeRotation; 
+                }
+                    
 
                 if (obj.TryGetComponent(out NearInteractionTouchable nI))
                     nI.enabled = false;
@@ -176,28 +187,24 @@ public class ObjectCreator : ScriptableObject
         }
         else if(config == ConfigType.scrollBox)
         {
-            try
-            {
-
                 if (obj.TryGetComponent(out BoundsControl bC))
-                    bC.enabled = false;
+                bC.enabled = false;
                 if (obj.TryGetComponent(out ObjectManipulator oM))
-                    oM.enabled = false;
-                if (obj.TryGetComponent(out NearInteractionGrabbable iG))
-                    iG.enabled = false;
-                if (obj.TryGetComponent(out Rigidbody rb))
-                    rb.useGravity = false;
 
+                oM.enabled = false;
+                if (obj.TryGetComponent(out NearInteractionGrabbable iG))
+
+                iG.enabled = false;
+                if (obj.TryGetComponent(out Rigidbody rb))
+                rb.useGravity = false;
+                rb.constraints = RigidbodyConstraints.FreezeAll; 
+                
+                    
                 if (obj.TryGetComponent(out BoxCollider col))
                     col.enabled = true;
 
                 if (obj.TryGetComponent(out NearInteractionTouchable nI))
                     nI.enabled = true;
-            }
-            catch (InvalidCastException e)
-            {
-                throw new System.MemberAccessException("ObjectCreator:: ApplyConfiguration, not all Components found.", e);
-            }
         }
         else
         {
@@ -208,92 +215,55 @@ public class ObjectCreator : ScriptableObject
 
     private void ApplyRelevantComponents(GameObject loadedObj)
     {
-        loadedObj.hideFlags = HideFlags.None; 
-
         // Custom Object Helper
-        var helper = loadedObj.GetComponent<CustomObjectHelper>();
-        if (helper == null)
-        {
-            helper = loadedObj.AddComponent<CustomObjectHelper>();
-        }
+        var helper = loadedObj.EnsureComponent<CustomObjectHelper>();
 
         // Rigidbody
-        var rb = loadedObj.GetComponent<Rigidbody>();
-        if (rb == null)
-        {
-            rb = loadedObj.AddComponent<Rigidbody>();
-            rb.mass = 1;
-            rb.drag = 0;
-            rb.angularDrag = 0;
-            rb.useGravity = true;
-            rb.isKinematic = false;
-            rb.freezeRotation = true;
-        }
+        var rb = loadedObj.EnsureComponent<Rigidbody>();
+        rb.mass = 1;
+        rb.drag = 0;
+        rb.angularDrag = 0;
+        rb.useGravity = true;
+        rb.isKinematic = false;
+        rb.freezeRotation = true;
 
         // BoxCollider
-        var col = loadedObj.GetComponent<BoxCollider>();
-        if (col == null)
-        {
-            col = loadedObj.AddComponent<BoxCollider>();
-        }
+        var col = loadedObj.EnsureComponent<BoxCollider>();
 
         // Near Interaction Touchable for Scrolling
-        var nI = loadedObj.GetComponent<NearInteractionTouchable>();
-        if (nI == null)
-        {
-            nI = loadedObj.AddComponent<NearInteractionTouchable>();
-            nI.enabled = false;
-            nI.EventsToReceive = TouchableEventType.Touch; 
-            nI.SetTouchableCollider(col); 
-        }
+        var nI = loadedObj.EnsureComponent<NearInteractionTouchable>();
+        nI.enabled = false;
+        nI.EventsToReceive = TouchableEventType.Touch; 
+        nI.SetTouchableCollider(col);
+        
 
         // Audio Source
-        var audio = loadedObj.GetComponent<AudioSource>();
-        if (audio == null)
-        {
-            audio = loadedObj.AddComponent<AudioSource>();
-        }
-
+        var audio = loadedObj.EnsureComponent<AudioSource>();
 
         // Tethered Placement
-        var placementComp = loadedObj.GetComponent<TetheredPlacement>();
-        if (placementComp == null)
-        {
-            placementComp = loadedObj.AddComponent<TetheredPlacement>();
-            placementComp.DistanceThreshold = 20.0f;
-        }
+        var placementComp = loadedObj.EnsureComponent<TetheredPlacement>();
+        placementComp.DistanceThreshold = 20.0f;
 
         // Near Interaction Grabbable
-        var grabComp = loadedObj.GetComponent<NearInteractionGrabbable>();
-        if (grabComp == null)
-        {
-            grabComp = loadedObj.AddComponent<NearInteractionGrabbable>();
-            grabComp.ShowTetherWhenManipulating = false;
-            grabComp.IsBoundsHandles = true;
-        }
+        var grabComp = loadedObj.EnsureComponent<NearInteractionGrabbable>();
+        grabComp.ShowTetherWhenManipulating = false;
+        grabComp.IsBoundsHandles = true;
 
         // ConstraintManager
-        var constMan = loadedObj.GetComponent<ConstraintManager>();
-        if (constMan == null)
-        {
-            constMan = loadedObj.AddComponent<ConstraintManager>();
-        }
+        var constMan = loadedObj.EnsureComponent<ConstraintManager>();
 
         // RotationAxisConstraint
         var rotConst = loadedObj.EnsureComponent<RotationAxisConstraint>();
-            rotConst.HandType = ManipulationHandFlags.OneHanded;
-            rotConst.ConstraintOnRotation = AxisFlags.XAxis;
-            rotConst.ConstraintOnRotation = AxisFlags.ZAxis;
-            rotConst.UseLocalSpaceForConstraint = true;
-            constMan.AddConstraintToManualSelection(rotConst);
+        rotConst.HandType = ManipulationHandFlags.OneHanded;
+        rotConst.ConstraintOnRotation = AxisFlags.XAxis;
+        rotConst.ConstraintOnRotation = AxisFlags.ZAxis;
+        rotConst.UseLocalSpaceForConstraint = true;
+        constMan.AddConstraintToManualSelection(rotConst);
 
 
 
         // Min Max Scale Constraint
-        var scaleConst = loadedObj.GetComponent<MinMaxScaleConstraint>();
-        if (scaleConst == null)
-        {
-            scaleConst = loadedObj.AddComponent<MinMaxScaleConstraint>();
+        var scaleConst = loadedObj.EnsureComponent<MinMaxScaleConstraint>();
             scaleConst.HandType = ManipulationHandFlags.TwoHanded;
             scaleConst.ProximityType = ManipulationProximityFlags.Far;
             scaleConst.ProximityType = ManipulationProximityFlags.Near;
@@ -302,41 +272,28 @@ public class ObjectCreator : ScriptableObject
             scaleConst.RelativeToInitialState = true;
 
             constMan.AddConstraintToManualSelection(scaleConst);
-        }
 
         // Custom Movement Constraint
-        var moveConst = loadedObj.GetComponent<CustomMovementConstraint>();
-        if (moveConst == null)
-        {
-            moveConst = loadedObj.AddComponent<CustomMovementConstraint>();
+        var moveConst = loadedObj.EnsureComponent<CustomMovementConstraint>();
             moveConst.HandType = ManipulationHandFlags.TwoHanded;
             moveConst.UseConstraint = true;
             moveConst.ConstraintOnMovement = AxisFlags.YAxis;
 
             constMan.AddConstraintToManualSelection(moveConst);
-        }
 
         // Object Manipulator
-        var objMan = loadedObj.GetComponent<ObjectManipulator>();
-        if (objMan == null)
-        {
-            objMan = loadedObj.AddComponent<ObjectManipulator>();
+        var objMan = loadedObj.EnsureComponent<ObjectManipulator>();
             objMan.AllowFarManipulation = false;
             objMan.EnableConstraints = true;
             objMan.ConstraintsManager = constMan;
-        }
 
         // Events
         objMan.OnManipulationStarted.AddListener(helper.AddObject);
         objMan.OnManipulationEnded.AddListener(helper.RemoveObject);
 
         // BoundsControl
-
-        var boundsControl = loadedObj.GetComponent<BoundsControl>();
-        if (boundsControl == null)
-        {
-            boundsControl = loadedObj.AddComponent<BoundsControl>();
-            boundsControl.Target = loadedObj;
+        var boundsControl = loadedObj.EnsureComponent<BoundsControl>();
+        boundsControl.Target = loadedObj;
             boundsControl.BoundsControlActivation = Microsoft.MixedReality.Toolkit.UI.BoundsControlTypes.BoundsControlActivationType.ActivateOnStart;
             boundsControl.BoundsOverride = col;
             boundsControl.CalculationMethod = Microsoft.MixedReality.Toolkit.UI.BoundsControlTypes.BoundsCalculationMethod.RendererOverCollider;
@@ -372,7 +329,6 @@ public class ObjectCreator : ScriptableObject
             rotationHandle.HandlePrefab = go;
 
             boundsControl.RotationHandlesConfig = rotationHandle;
-        }
 
         // Events
         boundsControl.RotateStarted.AddListener(helper.AddMovingObject);

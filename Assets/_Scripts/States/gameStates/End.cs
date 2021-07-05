@@ -7,6 +7,8 @@ public class End : IState
     public void Enter()
     {
         // Call Submanagers
+        GameManager.Instance.debugText.text = "End::Enter()";
+
         Debug.Log("End::Enter()");
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
@@ -15,11 +17,13 @@ public class End : IState
         }
 
         // Save Data
-        GameManager.Instance.SaveGeneralSettings();
+        GameManager.Instance.SaveGeneralSettingsToPersistentPath();
+        GameManager.Instance.debugText.text = "General Settings saved.";
+
+        GameManager.Instance.debugText.text = "General Settings saved.";
         Debug.Log("General Settings saved.");
 
-        // End Game
-        Application.Quit(); 
+        // End Game 
     }
 
     /// <summary>

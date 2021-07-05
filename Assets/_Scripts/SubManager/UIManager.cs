@@ -25,6 +25,7 @@ public class UIManager : SubManager
 
     public override void Reset()
     {
+        GameManager.Instance.debugText.text = "UIManager::Reset"; 
         Debug.Log("UIManager::Reset"); 
     }
 
@@ -54,10 +55,13 @@ public class UIManager : SubManager
                 break;
 
             case "Pause":
+                CloseAllMenus();
+                OpenMenu(generalSettingsMenu);
                 break;
 
             case "End":
-                Debug.LogWarning("UIManager::OnGameStateEntered End not implemented.");
+                CloseAllMenus(); 
+                OpenMenu(generalSettingsMenu); 
                 break;
 
             default:
@@ -76,7 +80,7 @@ public class UIManager : SubManager
                 CloseAllMenus();
 
                 // Apply user Settings, if old ones were used
-                if (GameManager.Instance.OldSettingsMenu.activeInHierarchy)
+                if (GameManager.Instance.radioButtonCollection.GetComponentInChildren<InteractableToggleCollection>() != null)
                 {
                     DataManager.Instance.SetCurrentUserSettings(
                                         GameManager.Instance.radioButtonCollection.GetComponentInChildren<InteractableToggleCollection>().CurrentIndex);

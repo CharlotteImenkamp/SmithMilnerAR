@@ -8,8 +8,8 @@ using UnityEngine;
 /// </summary>
 public class AudioManager : SubManager
 {
-    private string[] audioClipAdresses;
-    private float audioVolume;
+    //private string[] audioClipAdresses;
+    //private float audioVolume;
 
     public void Initialize()
     {
@@ -74,8 +74,8 @@ public class AudioManager : SubManager
 
     public override void Reset()
     {
-        audioClipAdresses = null;
-        audioVolume = 0.0f; 
+        //audioClipAdresses = null;
+        //audioVolume = 0.0f; 
     }
 
     #region audioClip helper

@@ -6,6 +6,8 @@ public class LocationTest : IState
 {
     public void Enter()
     {
+        GameManager.Instance.debugText.text = "LocationTest::Enter()";
+
         Debug.Log("LocationTest::Enter()");
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
@@ -21,6 +23,8 @@ public class LocationTest : IState
 
     public void Exit()
     {
+        GameManager.Instance.debugText.text = "LocationTest::Exit()";
+
         Debug.Log("LocationTest::Exit()");
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)

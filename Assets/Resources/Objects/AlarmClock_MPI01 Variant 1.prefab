@@ -18,7 +18,12 @@ GameObject:
   - component: {fileID: 174326167440867604}
   - component: {fileID: 174326167440867610}
   - component: {fileID: 4145997531687648087}
-  - component: {fileID: -2911702746704641274}
+  - component: {fileID: -3575544366265542293}
+  - component: {fileID: 1290489260770177921}
+  - component: {fileID: 2095071366071722582}
+  - component: {fileID: 8348265009645046823}
+  - component: {fileID: 621564219395848834}
+  - component: {fileID: 6025792981464296966}
   m_Layer: 0
   m_Name: AlarmClock_MPI01 Variant 1
   m_TagString: InteractionObject
@@ -110,7 +115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTetherWhenManipulating: 0
-  IsBoundsHandles: 0
+  IsBoundsHandles: 1
 --- !u!114 &6913166122785665885
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,7 +129,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   autoConstraintSelection: 1
-  selectedConstraints: []
+  selectedConstraints:
+  - {fileID: 8348265009645046823}
+  - {fileID: 621564219395848834}
+  - {fileID: 6025792981464296966}
 --- !u!114 &2467920537781009083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,7 +148,7 @@ MonoBehaviour:
   hostTransform: {fileID: 8120975832914036995}
   manipulationType: 3
   twoHandedManipulationType: 7
-  allowFarManipulation: 1
+  allowFarManipulation: 0
   useForcesForNearManipulation: 0
   oneHandRotationModeNear: 1
   oneHandRotationModeFar: 1
@@ -196,7 +204,7 @@ MonoBehaviour:
   targetObject: {fileID: 8932978727469437881}
   boundsOverride: {fileID: 174326167440867605}
   boundsCalculationMethod: 0
-  activation: 4
+  activation: 0
   flattenAxis: 0
   uniformScaleOnFlattenedAxis: 1
   boxPadding: {x: 0, y: 0, z: 0}
@@ -204,10 +212,8 @@ MonoBehaviour:
     type: 3}
   linksConfiguration: {fileID: 114435853832332800, guid: e9e54ebd208487c409e32502a50a1f20,
     type: 3}
-  scaleHandlesConfiguration: {fileID: 114048139386862018, guid: e9e54ebd208487c409e32502a50a1f20,
-    type: 3}
-  rotationHandlesConfiguration: {fileID: 114187175676110674, guid: e9e54ebd208487c409e32502a50a1f20,
-    type: 3}
+  scaleHandlesConfiguration: {fileID: 0}
+  rotationHandlesConfiguration: {fileID: 0}
   translationHandlesConfiguration: {fileID: 0}
   handleProximityEffectConfiguration: {fileID: 114927192352316934, guid: e9e54ebd208487c409e32502a50a1f20,
     type: 3}
@@ -309,7 +315,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8932978727469437881}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 98c748f3768ab714a8449b60fb9edc5c, type: 3}
   m_Name: 
@@ -317,20 +323,181 @@ MonoBehaviour:
   eventsToReceive: 0
   debounceThreshold: 0.01
   localForward: {x: -0, y: -0, z: -1}
-  localUp: {x: 0, y: 1, z: 0}
-  localCenter: {x: 0, y: 0, z: 0}
-  bounds: {x: 0, y: 0}
+  localUp: {x: 0, y: 1, z: -0}
+  localCenter: {x: -0.00001513936, y: 0.000042849406, z: 0.0000014189864}
+  bounds: {x: 0.001080936, y: 0.0009119095}
   touchableCollider: {fileID: 174326167440867605}
---- !u!65 &-2911702746704641274
-BoxCollider:
+--- !u!114 &-3575544366265542293
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8932978727469437881}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b289913ae93102a47b48faececba6545, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!54 &1290489260770177921
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8932978727469437881}
   serializedVersion: 2
-  m_Size: {x: 0.0010809355, y: 0.00091190916, z: 0.001482825}
-  m_Center: {x: -0.000015139352, y: 0.000042850388, z: 0.00074283144}
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
+--- !u!82 &2095071366071722582
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8932978727469437881}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &8348265009645046823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8932978727469437881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b3e6359c9750ad4fb8a05c9b8704d7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handType: 1
+  proximityType: 3
+  constraintOnRotation: 4
+  useLocalSpaceForConstraint: 1
+--- !u!114 &621564219395848834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8932978727469437881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 820f94d57893bf843a0cd6d93313fe6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handType: 2
+  proximityType: 1
+  scaleMinimum: 1
+  scaleMaximum: 1
+  relativeToInitialState: 1
+--- !u!114 &6025792981464296966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8932978727469437881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c11a70a7496a6ba4eb57c099871c4748, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handType: 2
+  proximityType: 3
+  useConstraint: 1
+  referenceTransform: {fileID: 0}
+  constraintOnMovement: 2

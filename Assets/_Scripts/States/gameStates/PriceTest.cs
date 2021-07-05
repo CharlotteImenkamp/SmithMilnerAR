@@ -6,6 +6,8 @@ public class PriceTest : IState
 {
     public void Enter()
     {
+        GameManager.Instance.debugText.text = "PriceTest::Enter()";
+
         Debug.Log("PriceTest::Enter()");
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
@@ -21,6 +23,8 @@ public class PriceTest : IState
 
     public void Exit()
     {
+        GameManager.Instance.debugText.text = "PriceTest::Exit()";
+
         Debug.Log("PriceTest::Exit()");
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)

@@ -13,6 +13,7 @@ class LoadSettings : IState
     /// </summary>
     public void Enter()
     {
+        GameManager.Instance.debugText.text = "LoadSettings Enter"; 
         Debug.Log("LoadSettings Enter");
 
         // get parameters from GameManager
@@ -38,6 +39,8 @@ class LoadSettings : IState
     /// </summary>
     public void Exit()
     {
+        GameManager.Instance.debugText.text = "LoadSettings Exit"; 
+
         Debug.Log("LoadSettings Exit");
 
     }
