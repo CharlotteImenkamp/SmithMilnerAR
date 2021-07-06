@@ -25,7 +25,13 @@ class LoadSettings : IState
         for (int i = 0; i < n; i++)
         {
             var file = GameManager.Instance.generalSettings.settingFiles[i];
-            var set = LoadUserSettings("DataFiles/settings/" + file);
+            var set = userSettingsData.LoadUserSettings(Path.Combine(Application.persistentDataPath, "DataFiles", "settings", file), false);
+
+            // use backup in resources
+            if (set == null)
+            {
+                set = userSettingsData.LoadUserSettings("DataFiles/settings/" + file, true);
+            }
             DataManager.Instance.UserSettings.Add(set);
         }
     }
@@ -47,49 +53,7 @@ class LoadSettings : IState
 
     #region dataManagement
 
-    /// <summary>
-    /// Load user settings into class instance.         /\ TODO: zusammen mit GameManager load general settings als helfer methode
-    /// </summary>
-    /// <param name="filepath"></param>
-    /// <returns></returns>
-    private userSettingsData LoadUserSettings(string filepath)
-    {
-        userSettingsData newGeneralSettings = new userSettingsData();
 
-        var textFile = Resources.Load<TextAsset>(filepath); 
-        // string jsonString = File.ReadAllText(filepath);
-        newGeneralSettings = JsonUtility.FromJson<userSettingsData>(textFile.text);
-        if (newGeneralSettings == null)
-        {
-            throw new FileLoadException("LoadSettings::LoadUserSettings no settings loaded.");
-        }
-
-        return newGeneralSettings;
-    }
-
-    /// <summary>
-    /// \TODO connect with buttons
-    /// </summary>
-    /// <param name="data"></param>
-    /// <param name="foldername"></param>
-    /// <param name="filename"></param>
-    private void SaveNewUserSettings(userSettingsData data, string foldername, string filename)
-    {
-            string persistentPath = GameManager.Instance.persistentPath;
-            string filepath = persistentPath + foldername + filename;
-            // save data in json 
-            if (data != null)
-            {
-                string jsonString = JsonUtility.ToJson(data, true);
-                jsonString += System.Environment.NewLine;
-                File.AppendAllText(filepath, jsonString);
-                File.WriteAllText(filepath, jsonString);
-            }
-            else
-            {
-                Debug.LogError("LoadSettings::SaveNewUserSettings no data to save");
-            }
-    }
 
     #endregion 
 }

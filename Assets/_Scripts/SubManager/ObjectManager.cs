@@ -148,7 +148,7 @@ public class ObjectManager : SubManager
         if (testObject == null)
         {
             testObject = objectCreator.CreateInteractionObject(currentSettings);
-            testPosition = new Vector3(-0.0f, -0.177f, 1.14f);                                        // \TODO add to general settings
+            testPosition = new Vector3(-0.0f, -0f, 0f);                                        // \TODO add to general settings
             testRotation = Quaternion.identity;
         }
     }

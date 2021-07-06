@@ -23,6 +23,30 @@ public class ToggleBoundsControl : MonoBehaviour
         }
     }
 
+    public void SetResize(bool enable)
+    {
+        if (!enable)
+        {
+            GetComponent<BoxCollider>().enabled = false;
+            GetComponent<BoundsControl>().Active = false;
+            isResizeEnabled = false;
+        }
+        else
+        {
+            var comp = (BoxCollider)GetComponent(typeof(BoxCollider));
+            comp.enabled = true;
+
+            var bC = (BoundsControl)GetComponent(typeof(BoundsControl));
+            bC.Active = true;
+
+            isResizeEnabled = true;
+        }
+
+        TetheredPlacement[] gameObjComp = FindObjectsOfType<TetheredPlacement>();
+        foreach (TetheredPlacement tp in gameObjComp)
+            tp.LockSpawnPoint();
+    }
+
     /// <summary>
     /// Toggle Bounds Control of Interaction Area and change Spawn point of interaction Objects
     /// </summary>

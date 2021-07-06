@@ -209,57 +209,6 @@ public class GameManager : MonoBehaviour
         DataManager.Instance.GenerateNewUserSettings(); 
     }
 
-    private ApplicationData DefaultGeneralSettingsFile()
-    {
-        ApplicationData defaultData = new ApplicationData();
-        defaultData.dataFiles = new List<string> { "default1.json" };
-        defaultData.dataFolder = "data";
-        defaultData.settingFiles = new List<string> { };
-        defaultData.settingsFolder = "settings"; 
-
-        return defaultData; 
-    }
-
-    /// <summary>
-    /// General Settings include the datapath for the userSetting files and the generated files and the same for the userData.
-    /// </summary>
-    /// <param name="filepath"></param>
-    /// <returns></returns>
-    public ApplicationData LoadGeneralSettings(string filepath) //\TODO return to private
-    {
-        ApplicationData newGeneralSettings = new ApplicationData();
-        var textFile = Resources.Load<TextAsset>(filepath); 
-
-            newGeneralSettings = JsonUtility.FromJson<ApplicationData>(textFile.text);
-            if (newGeneralSettings != null)
-            {
-                debugText.text = "GameManager::LoadGeneralSettings successful."; 
-                Debug.Log("GameManager::LoadGeneralSettings successful.");
-            }
-        else
-        {
-            debugText.text = "GameManager::LoadGeneralSettings no file found."; 
-            Debug.LogError("GameManager::LoadGeneralSettings no file found.");
-            newGeneralSettings = DefaultGeneralSettingsFile();
-            if (newGeneralSettings != null)
-            {
-                debugText.text = "GameManager::LoadGeneralSettings generated default data."; 
-                Debug.LogWarning("GameManager::LoadGeneralSettings generated default data.");
-            }
-        }
-
-        return newGeneralSettings;
-    }
-
-    public void SaveGeneralSettingsToPersistentPath()
-    {
-        string jsonString = JsonUtility.ToJson(generalSettings, true);
-        jsonString += Environment.NewLine;
-
-        // override existing text
-        UnityEngine.Windows.File.WriteAllBytes(Application.persistentDataPath + "/generalSettings.json", Encoding.ASCII.GetBytes(jsonString));
-    }
-
     /// <summary>
     /// Managers of are added to the gameObject and collected in the list
     /// </summary>
@@ -290,7 +239,15 @@ public class GameManager : MonoBehaviour
 
         // game
         gameType = GameType.Locations;
-        generalSettings = LoadGeneralSettings(generalSettingsPath);
+
+        // try from persistent path first
+        generalSettings = ApplicationData.Load(Path.Combine(Application.persistentDataPath, "generalSettings"), false);
+
+        if(generalSettings == null)
+        {
+            // then from resources
+            generalSettings = ApplicationData.Load(Path.Combine("DataFiles", "generalSettings"), false);
+        }
     }
 
     public void QuitGame()

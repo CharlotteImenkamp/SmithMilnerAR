@@ -2,6 +2,8 @@
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit; 
 using UnityEngine.Events;
+using System;
+using System.IO;
 
 public class DataManager : MonoBehaviour
 {
@@ -107,5 +109,23 @@ public class DataManager : MonoBehaviour
 
         // start loading
         dataStateMachine.ChangeState(new LoadSettings());
+    }
+
+
+    public void SetAndSaveNewSettings(userSettingsData data)
+    {
+        if (data != null && data.gameObjects.Count != 0)
+        {
+            currentSettings = data;
+
+            // Save into user folder and into settings folder
+            userSettingsData.SaveNewFile(data, "DataFiles/data/User_" + data.UserID.ToString(), "userSettings");
+            userSettingsData.SaveNewFile(data, "DataFiles/settings", "settings" + data.UserID.ToString());
+        }
+        else
+        {
+            GameManager.Instance.debugText.text = "DataManager::SetCurrentSettings no valid data.";
+            Debug.LogWarning("DataManager::SetCurrentSettings no valid data.");
+        }
     }
 }

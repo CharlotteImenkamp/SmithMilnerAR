@@ -17,7 +17,7 @@ public class End : IState
         }
 
         // Save Data
-        GameManager.Instance.SaveGeneralSettingsToPersistentPath();
+        ApplicationData.SaveToPersistentPath(GameManager.Instance.generalSettings); 
         GameManager.Instance.debugText.text = "General Settings saved.";
 
         GameManager.Instance.debugText.text = "General Settings saved.";

@@ -4,6 +4,7 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System;
+using System.Linq;
 
 public class CustomScrollableListPopulator : MonoBehaviour
 {
@@ -12,9 +13,13 @@ public class CustomScrollableListPopulator : MonoBehaviour
     [Tooltip("The ScrollingObjectCollection to populate, if left empty. the populator will create on your behalf.")]
     private ScrollingObjectCollection scrollView;
 
-    [SerializeField]
+    [NonSerialized]
     [Tooltip("Objects to duplicate in ScrollCollection")]
     private GameObject[] dynamicItems;
+
+    [SerializeField]
+    [Tooltip("Parent Object")]
+    private GameObject buttonObject;
 
     [NonSerialized]
     private int numItems;
@@ -58,6 +63,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
 
     private ObjectCreator objectCreator; 
     private GridObjectCollection gridObjectCollection;
+    ClippingBox clip; 
 
     /// <summary>
     /// Indeterminate loader to hide / show for <see cref="LazyLoad"/> 
@@ -105,7 +111,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
             scrollView.CellHeight = cellHeight;
             scrollView.CellDepth = cellDepth;
             scrollView.CellsPerTier = cellsPerTier;
-            scrollView.TiersPerPage = tiersPerPage;
+            scrollView.TiersPerPage = tiersPerPage; 
         }
 
         gridObjectCollection = scrollView.GetComponentInChildren<GridObjectCollection>();
@@ -124,14 +130,21 @@ public class CustomScrollableListPopulator : MonoBehaviour
             gridObjectCollection.Layout = LayoutOrder.ColumnThenRow;
             gridObjectCollection.Columns = cellsPerTier;
             gridObjectCollection.Anchor = LayoutAnchor.UpperLeft;
-
             scrollView.AddContent(collectionGameObject);
+
         }
+        clip = scrollView.GetComponent<ClippingBox>(); 
 
         if (!lazyLoad)
         {
-            
-            objectCreator.SpawnObjects(dynamicItems, gridObjectCollection.gameObject, gridObjectCollection.transform.position, gridObjectCollection.transform.rotation, ConfigType.scrollBox);
+            // Buttons
+            var parent = Instantiate<GameObject>(buttonObject);
+            parent.transform.parent = gridObjectCollection.gameObject.transform;
+            parent.SetActive(true); 
+
+            var buttonContent = parent.transform.Find("ButtonContent"); 
+
+            // Objects
             scrollView.gameObject.SetActive(true);
             gridObjectCollection.UpdateCollection();
         }
@@ -144,14 +157,26 @@ public class CustomScrollableListPopulator : MonoBehaviour
 
             StartCoroutine(UpdateListOverTime(loader));
         }
+
+        
     }
 
     private IEnumerator UpdateListOverTime(GameObject loaderViz)
     {
         for (int currItemCount = 0; currItemCount < numItems; currItemCount++)
         {
-            objectCreator.SpawnObject(dynamicItems[currItemCount], gridObjectCollection.gameObject, gridObjectCollection.transform.position, gridObjectCollection.transform.rotation, ConfigType.scrollBox);
-            // objectCreator.ResizeObject(dynamicItems[currItemCount], 0.5f);
+            // Buttons
+            var parent = Instantiate<GameObject>(buttonObject);
+            parent.transform.parent = gridObjectCollection.gameObject.transform;
+            parent.transform.localRotation = Quaternion.identity; 
+            parent.SetActive(true);
+
+            var obj = dynamicItems[currItemCount];
+            parent.GetComponent<ButtonConfigHelper>().MainLabelText = obj.name;
+            parent.GetComponent<ButtonConfigHelper>().OnClick.AddListener(() => InstantiateObject(obj, parent));
+
+            // clip.AddRenderer(parent.GetComponent<Renderer>());
+
             yield return null;
         }
 
@@ -163,4 +188,34 @@ public class CustomScrollableListPopulator : MonoBehaviour
         gridObjectCollection.UpdateCollection();
     }
 
+    /// <summary>
+    /// Instantiate Objects when chosen in new settings menu
+    /// </summary>
+    /// <param name="obj">Game Object to instantiate</param>
+    /// <param name="button"> reference to button object to disable it after use </param>
+    private void InstantiateObject(GameObject obj, GameObject button)
+    {
+        objectCreator.SpawnObject(obj, GameManager.Instance.parentInteractionObject, Vector3.zero, Quaternion.identity, ConfigType.MovementEnabled);
+
+        // Disable Button to prevent several objects of the save type in scene  //\ TODO bessere lösung?
+        button.SetActive(false);
+        gridObjectCollection.UpdateCollection();
+    }
+
+    /// <summary>
+    /// Called on Apply Button to save the settings and remove the objects
+    /// </summary>
+    public void SaveNewSettings()
+    {
+        float updateRate = 2.0f;
+        userSettingsData.userSet userSet = userSettingsData.userSet.AG;
+        int UserId = 5;
+        userSettingsData.gameState state = userSettingsData.gameState.None; 
+
+        userSettingsData data = new userSettingsData(objectCreator.InstantiatedObjects, updateRate,UserId, userSet, state );
+
+        DataManager.Instance.SetAndSaveNewSettings(data);
+
+        objectCreator.RemoveAllObjects(); 
+    }
 }

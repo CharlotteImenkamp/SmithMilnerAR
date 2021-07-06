@@ -95,7 +95,9 @@ public class DataGenerationHelper : MonoBehaviour
                 obj,
                 0.1f,
                 1, 
-                userSettingsData.userSet.AG);
+                userSettingsData.userSet.AG,
+                userSettingsData.gameState.pricesCompleted
+                );
 
         return res; 
     }
@@ -106,7 +108,7 @@ public class DataGenerationHelper : MonoBehaviour
     new List<CustomObject> {
                 new CustomObject("eins", Vector3.zero, Quaternion.identity),
                 new CustomObject("zwei", Vector3.zero, Quaternion.identity)},
-    0f, 1, userSettingsData.userSet.AG);
+    0f, 1, userSettingsData.userSet.AG, userSettingsData.gameState.None);
 
         test.gameObjects = new List<CustomObject>();
         test.gameObjects.Add(new CustomObject("eins", Vector3.zero, Quaternion.identity));
@@ -150,7 +152,7 @@ public class DataGenerationHelper : MonoBehaviour
     {
         GameManager.Instance.generalSettings.settingFiles.Add(filename + fileending);
 
-        GameManager.Instance.SaveGeneralSettingsToPersistentPath(); 
+        ApplicationData.SaveToPersistentPath(GameManager.Instance.generalSettings); 
     }
 
 }

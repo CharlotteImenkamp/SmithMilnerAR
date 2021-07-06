@@ -21,7 +21,7 @@ public class ObjectCreator : ScriptableObject
     public string PrefabFolderName { get => prefabFolderName; set => prefabFolderName = value; }
     public string BoundingBoxFolderName { get => boundingBoxFolderName; set => boundingBoxFolderName = value; }
     public List<GameObject> InstantiatedObjects { get => instantiatedObjects; set => instantiatedObjects = value; }
-
+    
     private string boundingBoxFolderName;
     private string prefabFolderName;
     private List<GameObject> instantiatedObjects;
@@ -37,18 +37,17 @@ public class ObjectCreator : ScriptableObject
     }
     public void SpawnObject(GameObject obj, GameObject parent, Vector3 position, Quaternion rotation, ConfigType config)
     {
-
-        
-
         ApplyRelevantComponents(obj);
         ApplyConfiguration(obj, config);
 
         var generatedObject = Instantiate(obj, position, rotation);
+
+        generatedObject.name = generatedObject.name.Replace("(Clone)", ""); 
         generatedObject.transform.parent = parent.transform;
+        generatedObject.transform.localPosition = position;
+        generatedObject.transform.localRotation = rotation; 
 
         generatedObject.SetActive(true);
-
-
         instantiatedObjects.Add(generatedObject);
     }
 
@@ -111,18 +110,6 @@ public class ObjectCreator : ScriptableObject
         instantiatedObjects.Clear();
     }
 
-    public void ResizeObjects(GameObject[] objects, float resizeFactor)
-    {
-        foreach (GameObject obj in objects)
-        {
-            ResizeObject(obj, resizeFactor); 
-        }
-    }
-
-    public void ResizeObject(GameObject obj, float resizeFactor)
-    {
-        obj.transform.localScale = resizeFactor * obj.transform.localScale;
-    }
     #endregion public methods
 
     #region private methods
@@ -215,6 +202,8 @@ public class ObjectCreator : ScriptableObject
 
     private void ApplyRelevantComponents(GameObject loadedObj)
     {
+        loadedObj.tag = "InteractionObject"; 
+
         // Custom Object Helper
         var helper = loadedObj.EnsureComponent<CustomObjectHelper>();
 
@@ -337,10 +326,7 @@ public class ObjectCreator : ScriptableObject
 
     #endregion private methods
 
-
-
-
-    // benötigt??
+    //\TODO benötigt??
     public GameObject[] GetInteractionObjectsInScene()
     {
         GameObject[] ObjInScene;
