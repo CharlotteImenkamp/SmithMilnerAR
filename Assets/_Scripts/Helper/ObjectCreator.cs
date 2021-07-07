@@ -45,7 +45,7 @@ public class ObjectCreator : ScriptableObject
         generatedObject.name = generatedObject.name.Replace("(Clone)", ""); 
         generatedObject.transform.parent = parent.transform;
         generatedObject.transform.localPosition = position;
-        generatedObject.transform.localRotation = rotation; 
+        generatedObject.transform.localRotation = rotation;
 
         generatedObject.SetActive(true);
         instantiatedObjects.Add(generatedObject);
@@ -66,10 +66,10 @@ public class ObjectCreator : ScriptableObject
         }
     }
 
-    public GameObject CreateInteractionObject(userSettingsData currentDataSet)
+    public GameObject CreateInteractionObject(ObjectData currentData)
     {
         // set first object in list to test Object
-        GameObject loadedObj = Resources.Load<GameObject>(prefabFolderName + "/" + currentDataSet.gameObjects[0].Objectname.ToString());
+        GameObject loadedObj = Resources.Load<GameObject>(prefabFolderName + "/" + currentData.gameObjects[0].Objectname.ToString());
 
         if (loadedObj == null)
         {
@@ -79,17 +79,17 @@ public class ObjectCreator : ScriptableObject
         return loadedObj;
     }
 
-    public GameObject[] CreateInteractionObjects(userSettingsData currentDataSet)
+    public GameObject[] CreateInteractionObjects(ObjectData currentData)
     {
-        int length = currentDataSet.gameObjects.Count;
+        int length = currentData.gameObjects.Count;
         GameObject[] objs = new GameObject[length];
 
         for (int i = 0; i < length; i++)
         {
-            var loadedObj = Resources.Load<GameObject>(prefabFolderName + "/" + currentDataSet.gameObjects[i].Objectname.ToString());
+            var loadedObj = Resources.Load<GameObject>(prefabFolderName + "/" + currentData.gameObjects[i].Objectname.ToString());
             if (loadedObj == null)
             {
-                throw new FileNotFoundException("... ObjectManager::CreateInteractionObjects no file found");
+                throw new FileNotFoundException("... ObjectManager::CreateInteractionObjects Object " + currentData.gameObjects[i].Objectname.ToString() + " not found");
             }
             else
             {
@@ -134,8 +134,6 @@ public class ObjectCreator : ScriptableObject
                 }
                     
 
-                if (obj.TryGetComponent(out NearInteractionTouchable nI))
-                    nI.enabled = false;
             }
             catch (InvalidCastException e)
             {
@@ -161,10 +159,7 @@ public class ObjectCreator : ScriptableObject
                     rb.useGravity = true;
                     rb.constraints = RigidbodyConstraints.FreezeRotation; 
                 }
-                    
 
-                if (obj.TryGetComponent(out NearInteractionTouchable nI))
-                    nI.enabled = false;
             }
             catch (InvalidCastException e)
             {
@@ -189,9 +184,6 @@ public class ObjectCreator : ScriptableObject
                     
                 if (obj.TryGetComponent(out BoxCollider col))
                     col.enabled = true;
-
-                if (obj.TryGetComponent(out NearInteractionTouchable nI))
-                    nI.enabled = true;
         }
         else
         {
@@ -199,13 +191,12 @@ public class ObjectCreator : ScriptableObject
         }
     }
 
-
     private void ApplyRelevantComponents(GameObject loadedObj)
     {
         loadedObj.tag = "InteractionObject"; 
 
         // Custom Object Helper
-        var helper = loadedObj.EnsureComponent<CustomObjectHelper>();
+        var helper = loadedObj.EnsureComponent<ObjectHelper>();
 
         // Rigidbody
         var rb = loadedObj.EnsureComponent<Rigidbody>();
@@ -218,13 +209,6 @@ public class ObjectCreator : ScriptableObject
 
         // BoxCollider
         var col = loadedObj.EnsureComponent<BoxCollider>();
-
-        // Near Interaction Touchable for Scrolling
-        var nI = loadedObj.EnsureComponent<NearInteractionTouchable>();
-        nI.enabled = false;
-        nI.EventsToReceive = TouchableEventType.Touch; 
-        nI.SetTouchableCollider(col);
-        
 
         // Audio Source
         var audio = loadedObj.EnsureComponent<AudioSource>();
@@ -276,13 +260,11 @@ public class ObjectCreator : ScriptableObject
             objMan.EnableConstraints = true;
             objMan.ConstraintsManager = constMan;
 
-        // Events
-        objMan.OnManipulationStarted.AddListener(helper.AddObject);
-        objMan.OnManipulationEnded.AddListener(helper.RemoveObject);
+
 
         // BoundsControl
         var boundsControl = loadedObj.EnsureComponent<BoundsControl>();
-        boundsControl.Target = loadedObj;
+            boundsControl.Target = loadedObj;
             boundsControl.BoundsControlActivation = Microsoft.MixedReality.Toolkit.UI.BoundsControlTypes.BoundsControlActivationType.ActivateOnStart;
             boundsControl.BoundsOverride = col;
             boundsControl.CalculationMethod = Microsoft.MixedReality.Toolkit.UI.BoundsControlTypes.BoundsCalculationMethod.RendererOverCollider;
@@ -316,21 +298,23 @@ public class ObjectCreator : ScriptableObject
             if (go == null)
                 throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file found");
             rotationHandle.HandlePrefab = go;
+            
+        boundsControl.RotationHandlesConfig = rotationHandle;
+        boundsControl.RotationHandlesConfig.ShowHandleForX = false;
+        boundsControl.RotationHandlesConfig.ShowHandleForY = true;
+        boundsControl.RotationHandlesConfig.ShowHandleForZ = false;
 
-            boundsControl.RotationHandlesConfig = rotationHandle;
+        boundsControl.ConstraintsManager = constMan;
 
         // Events
-        boundsControl.RotateStarted.AddListener(helper.AddMovingObject);
-        boundsControl.RotateStopped.AddListener(helper.RemoveMovingObject);
+        //boundsControl.RotateStarted.AddListener(boundsControl.gameObject.GetComponent<ObjectHelper>().AddMovingObject);    //helper.AddMovingObject);
+        //boundsControl.RotateStopped.AddListener(helper.RemoveMovingObject);
+
+        // Events
+        objMan.OnManipulationStarted.AddListener(helper.AddObject);
+        objMan.OnManipulationEnded.AddListener(helper.RemoveObject);
     }
 
     #endregion private methods
 
-    //\TODO benötigt??
-    public GameObject[] GetInteractionObjectsInScene()
-    {
-        GameObject[] ObjInScene;
-        ObjInScene = GameObject.FindGameObjectsWithTag("InteractionObject");
-        return ObjInScene;
-    }
 }

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.UI;
 using UnityEngine.Events;
-
+using Microsoft.MixedReality.Toolkit.Input;
 
 /// <summary>
 /// Provide Functionality to Interaction Object. Add To Components when instantiating
 /// </summary>
-public class CustomObjectHelper : MonoBehaviour
+public class ObjectHelper : MonoBehaviour
 {
     /// <summary>
     /// Helper Methods to add to OnRotationStarted Event
@@ -36,4 +36,5 @@ public class CustomObjectHelper : MonoBehaviour
     {
         RemoveMovingObject();
     }
+
 }

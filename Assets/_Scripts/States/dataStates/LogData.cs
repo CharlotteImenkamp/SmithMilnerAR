@@ -8,21 +8,33 @@ class LogData : IState
     #region private parameters
 
     private string dataFolder;
+    private string generalFolder; 
     private string directoryPath;
-    private string persistentPath; 
+    private string persistentPath;
+    private string userID; 
+
+    // filenames
     private string fileName_continuousLogging;
     private string fileName_endState;
-    private string fileName_headData; 
-    private float sampleRate;
-    private long time1, time2;
+    private string fileName_headData;
 
+    // file path
     private string filePath_continuousLogging;
     private string filePath_endState;
     private string filePath_headData;
 
-    #endregion private parameters
+    // json strings
+    private string json_continuousLogging;
+    private string json_endState;
+    private string json_headData; 
 
-    private GameType gameType; 
+    // data parameters
+    private float sampleRate;
+    private long time1, time2;
+    private GameType gameType;
+
+
+    #endregion private parameters
 
     public LogData(GameType gameType)
     {
@@ -32,13 +44,20 @@ class LogData : IState
     public void Enter()
     {
         GameManager.Instance.debugText.text = "LogData Enter"; 
-
         Debug.Log("LogData::Enter");
+
         sampleRate = DataManager.Instance.CurrentSettings.updateRate;
+        dataFolder = GameManager.Instance.generalSettings.dataFolder;
+        generalFolder = GameManager.Instance.mainFolder;
+        userID = DataManager.Instance.CurrentSettings.UserID.ToString();
+
+        // default
+        json_continuousLogging = "";
+        json_endState = "";
+        json_headData = ""; 
 
         // Directory
-        dataFolder = GameManager.Instance.generalSettings.dataFolder;   //TODO nutzen
-        directoryPath = Path.Combine(Application.persistentDataPath, "data", "User_" + DataManager.Instance.CurrentSettings.UserID.ToString());
+        directoryPath = Path.Combine(Application.persistentDataPath,generalFolder,dataFolder , "User_" + userID);
 
         // Generate Directory
         if (!Directory.Exists(directoryPath))
@@ -103,35 +122,31 @@ class LogData : IState
         fileName_continuousLogging = "User" + currentSet.UserID.ToString() + "_" + currentSet.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_MovingObject";
         fileName_endState = "User" + currentSet.UserID.ToString() + "_" + currentSet.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_EndObject";
 
-        filePath_continuousLogging = DataFile.GenerateFilePath(directoryPath, fileName_continuousLogging);
-        filePath_endState =          DataFile.GenerateFilePath(directoryPath, fileName_endState); 
+        AddFileToGeneralSettings(fileName_continuousLogging);
+
 
         // start Writing
-        DataFile.StartFile(filePath_continuousLogging);
-        AddFileToGeneralSettings(fileName_continuousLogging); 
-
-        DataFile.StartFile(filePath_endState);
-        AddFileToGeneralSettings(fileName_endState); 
+        json_continuousLogging += DataFile.StartFile();
+        json_endState += DataFile.StartFile();
     }
 
     void ExecuteObjectData()
     {
         var data = GetMovingObject();
-        if (data != null && data.movingObjects.Count != 0)
-            DataFile.AddLine<ObjectData>(data, filePath_continuousLogging); 
-
-        if(data.movingObjects.Count != 0)
-            Debug.Log(data.movingObjects.Count); 
+        if (data != null && data.gameObjects.Count != 0)
+            json_continuousLogging += DataFile.AddLine<ObjectData>(data); 
     }
 
     void EndObjectData()
     {
         // End continuus logging
-        DataFile.EndFile(filePath_continuousLogging);
+        json_continuousLogging += DataFile.EndFile();
 
         // Save last Object Positions in new File
-        DataFile.AddLine(GetObjectsInScene(), filePath_endState);
-        DataFile.EndFile(filePath_endState);
+        json_endState += DataFile.AddLine(GetObjectsInScene());
+        json_endState += DataFile.EndFile();
+
+        DataFile.Save(json_endState, directoryPath, fileName_endState); 
     }
 
     void PrepareHeadData()
@@ -140,10 +155,14 @@ class LogData : IState
         var currentSet = DataManager.Instance.CurrentSettings;
         fileName_headData = "User" + currentSet.UserID.ToString() + "_" + currentSet.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_headData";
 
-        filePath_headData = DataFile.GenerateFilePath(directoryPath, fileName_headData); 
+        directoryPath = DataFile.GenerateDirectory(directoryPath);
+        fileName_headData = DataFile.GenerateUniqueFileName(directoryPath, fileName_headData);
+        AddFileToGeneralSettings(fileName_headData);
+
+        filePath_headData = Path.Combine(directoryPath, fileName_headData + ".json");
 
         // start Writing
-        DataFile.StartFile(filePath_headData);
+        json_headData += DataFile.StartFile();
         AddFileToGeneralSettings(fileName_headData); 
     }
 
@@ -151,13 +170,16 @@ class LogData : IState
     {
         var data = GetCurrentHeadData();
         if (data != null)
-            DataFile.AddLine<HeadData>(data, filePath_headData);
+            json_headData += DataFile.AddLine<HeadData>(data);
     }
 
     void EndHeadData()
     {
         // End continuus logging
-        DataFile.EndFile(filePath_headData);
+        json_headData += DataFile.EndFile();
+
+        DataFile.Save(json_headData, directoryPath, fileName_headData);
+        
     }
 
     #endregion 

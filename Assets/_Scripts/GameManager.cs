@@ -34,11 +34,9 @@ public class GameManager : MonoBehaviour
 
     #region FileParameters
     [NonSerialized]
-    public string persistentPath;
+    public ApplicationData generalSettings;
     [NonSerialized]
-    public ApplicationData generalSettings; 
-
-    private string generalSettingsPath;
+    public string mainFolder;
 
     #endregion FileParameters
 
@@ -112,10 +110,7 @@ public class GameManager : MonoBehaviour
         if (OnUserButtonClicked == null)
             OnUserButtonClicked = new UnityEvent();
 
-
-        // Load General Settings
-        persistentPath = Application.persistentDataPath;
-        generalSettingsPath = "DataFiles" + "/generalSettings";
+        mainFolder = "DataFiles";
 
         ResetToDefault(); 
 
@@ -168,8 +163,12 @@ public class GameManager : MonoBehaviour
     }
     #endregion buttons
 
-
     #region Script Management
+
+    /// <summary>
+    /// Managers of are added to the gameObject and collected in the list
+    /// </summary>
+    /// <param name="classType">Inherited type of Monobehaviour is required. Use with typeof().</param>
     private void AddManagerToScene(Type classType)
     {
         if (this.gameObject.GetComponent(classType) == null)
@@ -202,20 +201,6 @@ public class GameManager : MonoBehaviour
 
     #endregion Script Management
 
-
-    #region fileManagement
-    public void GenerateNewUserSettingsFile()
-    {
-        DataManager.Instance.GenerateNewUserSettings(); 
-    }
-
-    /// <summary>
-    /// Managers of are added to the gameObject and collected in the list
-    /// </summary>
-    /// <param name="classType">Inherited type of Monobehaviour is required. Use with typeof().</param>
-
-    #endregion fileManagement
-
     #region Game Flow
 
     public void NewGame()
@@ -240,14 +225,8 @@ public class GameManager : MonoBehaviour
         // game
         gameType = GameType.Locations;
 
-        // try from persistent path first
-        generalSettings = ApplicationData.Load(Path.Combine(Application.persistentDataPath, "generalSettings"), false);
-
-        if(generalSettings == null)
-        {
-            // then from resources
-            generalSettings = ApplicationData.Load(Path.Combine("DataFiles", "generalSettings"), false);
-        }
+        // load application data
+        generalSettings = DataFile.SecureLoad<ApplicationData>(mainFolder, "generalSettings");
     }
 
     public void QuitGame()

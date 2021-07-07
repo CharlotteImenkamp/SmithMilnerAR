@@ -6,8 +6,6 @@ using System.IO;
 class LoadSettings : IState
 {
 
-    private string settingsFolder; 
-
     /// <summary>
     /// load saved setting files. The filepath is listed in the GameManager
     /// </summary>
@@ -16,24 +14,9 @@ class LoadSettings : IState
         GameManager.Instance.debugText.text = "LoadSettings Enter"; 
         Debug.Log("LoadSettings Enter");
 
-        // get parameters from GameManager
-        int n = GameManager.Instance.generalSettings.settingFiles.Count;
-        string persistentPath = GameManager.Instance.persistentPath;
-        settingsFolder = GameManager.Instance.generalSettings.settingsFolder;
-
-        // load each file into own parameter and save in DataManager
-        for (int i = 0; i < n; i++)
-        {
-            var file = GameManager.Instance.generalSettings.settingFiles[i];
-            var set = userSettingsData.LoadUserSettings(Path.Combine(Application.persistentDataPath, "DataFiles", "settings", file), false);
-
-            // use backup in resources
-            if (set == null)
-            {
-                set = userSettingsData.LoadUserSettings("DataFiles/settings/" + file, true);
-            }
-            DataManager.Instance.UserSettings.Add(set);
-        }
+        DataManager.Instance.NewSets = LoadNewSets();
+        DataManager.Instance.IncompleteUserData = LoadIncompleteSets();
+        DataManager.Instance.CompleteUserData = LoadCompleteSets(); 
     }
 
     public void Execute()
@@ -41,7 +24,7 @@ class LoadSettings : IState
     }
 
     /// <summary>
-    /// Saves new user settings, if the user applied new 
+    /// Saves new user settings, if the user applied new    //\TODO
     /// </summary>
     public void Exit()
     {
@@ -51,9 +34,68 @@ class LoadSettings : IState
 
     }
 
-    #region dataManagement
+    #region Load Data
 
+    private List<ObjectData> LoadNewSets()
+    {
+        List<ObjectData> newData = new List<ObjectData>(); 
 
+        // get parameters from GameManager
+        int NumNew = GameManager.Instance.generalSettings.newSets.Count;
+
+        // load each file into own parameter and save in DataManager
+        for (int i = 0; i < NumNew; i++)
+        {
+            var filePath = GameManager.Instance.mainFolder + "/" + GameManager.Instance.generalSettings.newSets[i];
+            var set = DataFile.Load<ObjectData>(filePath);
+
+            newData.Add(set); 
+        }
+
+        return newData; 
+    }
+
+    private List<userSettingsData> LoadIncompleteSets()
+    {
+        List<userSettingsData> newData = new List<userSettingsData>();
+
+        // get parameters from GameManager
+        int N = GameManager.Instance.generalSettings.incompleteUserData.Count;
+
+        // filepath
+        string mainFolder = GameManager.Instance.mainFolder; 
+
+        // load each file into own parameter and save in DataManager
+        for (int i = 0; i < N; i++)
+        {
+            var filePath = mainFolder + "/" + GameManager.Instance.generalSettings.incompleteUserData[i];
+            var set = DataFile.Load<userSettingsData>(filePath);
+
+            newData.Add(set);
+        }
+
+        return newData;
+    }
+
+    private List<userSettingsData> LoadCompleteSets()
+    {
+        List<userSettingsData> newData = new List<userSettingsData>();
+
+        // get parameters from GameManager
+        int NumNew = GameManager.Instance.generalSettings.completeUserData.Count;
+
+        string mainFolder = GameManager.Instance.mainFolder;
+        // load each file into own parameter and save in DataManager
+        for (int i = 0; i < NumNew; i++)
+        {
+            var filePath = mainFolder + "/" +  GameManager.Instance.generalSettings.completeUserData[i];
+            var set = DataFile.Load<userSettingsData>(filePath);
+
+            newData.Add(set);
+        }
+
+        return newData;
+    }
 
     #endregion 
 }

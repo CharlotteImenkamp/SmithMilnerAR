@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6541255241787402670}
   - component: {fileID: 6541255241787402671}
   - component: {fileID: 6571843305272465922}
-  - component: {fileID: 869314687372253737}
   - component: {fileID: 569870810825368770}
   - component: {fileID: 2295793501312417242}
   - component: {fileID: 4573583982158043780}
@@ -76,18 +75,6 @@ MonoBehaviour:
   localCenter: {x: 0, y: 0, z: -0.0145}
   bounds: {x: 0.029, y: 0.029}
   touchableCollider: {fileID: 6541255241787402671}
---- !u!114 &869314687372253737
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6541255241787402666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b289913ae93102a47b48faececba6545, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!54 &569870810825368770
 Rigidbody:
   m_ObjectHideFlags: 0

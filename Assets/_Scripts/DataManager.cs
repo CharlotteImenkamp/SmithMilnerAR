@@ -29,17 +29,24 @@ public class DataManager : MonoBehaviour
     private static StateMachine dataStateMachine = new StateMachine();
 
     #region public parameters
-    public List<userSettingsData> UserSettings { get => userSettings; set => userSettings = value; }
+    public List<ObjectData> NewSets { get => newSettings; set => newSettings = value; }
     public userSettingsData CurrentSettings { get => currentSettings; set => currentSettings = value; }
     public List<GameObject> ObjectsInScene { get => objectsInScene; set => objectsInScene = value; }
     public List<GameObject> MovingObjects { get => movingObjects; set => movingObjects = value; }
     public HeadData CurrentHeadData { get => currentHeadData; set => currentHeadData = value; }
+    public List<userSettingsData> IncompleteUserData { get => incompleteSettings; set => incompleteSettings = value; }
+    public List<userSettingsData> CompleteUserData { get => completeSettings; set => completeSettings = value; }
+    public ObjectData CurrentObjectData { get => currentObjectData; set => currentObjectData = value; }
 
     #endregion public parameters
 
     #region private paramters
-    private List<userSettingsData> userSettings;
+    private List<ObjectData> newSettings;
+    private List<userSettingsData> incompleteSettings;
+    private List<userSettingsData> completeSettings;
+
     private userSettingsData currentSettings;
+    private ObjectData currentObjectData; 
     private List<GameObject> objectsInScene;
     private List<GameObject> movingObjects;
     private HeadData currentHeadData;
@@ -67,21 +74,10 @@ public class DataManager : MonoBehaviour
     /// <param name="radioButtonIndex"></param>
     public void SetCurrentUserSettings(int radioButtonIndex)
     {
-        currentSettings = userSettings[radioButtonIndex];
-    }
+        currentSettings = GameManager.Instance.radioButtonCollection.GetComponent<CustomToggleListPopulator>().chosenSet[radioButtonIndex];
+        // currentObjectData = ...
 
-    public void GenerateNewUserSettings()
-    {
-        var set = new userSettingsData();
-        set.updateRate = 1.0f;
-        set.UserID = 2;
-
-        var t = new CustomObject("CoffeeCupGravity", new Vector3(-0.162803515791893f, -0.14000004529953004f, 1.7623728513717652f), new Quaternion(8.940696716308594e-8f, 0.005584994331002235f, -4.656612873077393e-10f, 0.9999845027923584f));
-
-        var f = new CustomObject("Pear_MPI01_fbx", new Vector3(0f, 0.005f, 1.759580373764038f), new Quaternion(8.940696716308594e-8f, 0.005584994331002235f,-4.656612873077393e-10f, 0.9999845027923584f));
-        set.gameObjects = new List<CustomObject> { t, f };
-
-        currentSettings = set; 
+        throw new System.NotImplementedException(); 
     }
 
     /// <summary>
@@ -102,7 +98,10 @@ public class DataManager : MonoBehaviour
     public void ResetToDefault()
     {
         // parameters
-        userSettings = new List<userSettingsData>();
+        newSettings = new List<ObjectData>();
+        completeSettings = new List<userSettingsData>();
+        incompleteSettings = new List<userSettingsData>();
+
         movingObjects = new List<GameObject>();
         objectsInScene = new List<GameObject>();
         currentHeadData = new HeadData();
@@ -112,15 +111,20 @@ public class DataManager : MonoBehaviour
     }
 
 
-    public void SetAndSaveNewSettings(userSettingsData data)
+    public void SetAndSaveNewSettings(userSettingsData data, ObjectData objectData)
     {
-        if (data != null && data.gameObjects.Count != 0)
+        if (data != null && objectData.gameObjects.Count != 0)
         {
             currentSettings = data;
-
+            string settingsFolder = GameManager.Instance.generalSettings.settingsFolder;
+            string dataFolder = GameManager.Instance.generalSettings.dataFolder + "/User_" + data.UserID.ToString();
+            string mainFolder = GameManager.Instance.mainFolder;
+            
             // Save into user folder and into settings folder
-            userSettingsData.SaveNewFile(data, "DataFiles/data/User_" + data.UserID.ToString(), "userSettings");
-            userSettingsData.SaveNewFile(data, "DataFiles/settings", "settings" + data.UserID.ToString());
+            DataFile.Save<ObjectData>(objectData, Path.Combine(mainFolder, dataFolder), "userSettings" + data.UserID.ToString());
+            DataFile.Save<ObjectData>(objectData, Path.Combine(mainFolder, settingsFolder), "objectData" + data.UserID.ToString());
+
+            DataFile.Save<userSettingsData>(data, Path.Combine(mainFolder, dataFolder), "user" + data.UserID.ToString()); 
         }
         else
         {

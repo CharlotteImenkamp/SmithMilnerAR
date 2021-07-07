@@ -17,13 +17,11 @@ public class End : IState
         }
 
         // Save Data
-        ApplicationData.SaveToPersistentPath(GameManager.Instance.generalSettings); 
-        GameManager.Instance.debugText.text = "General Settings saved.";
+        DataFile.Save<ApplicationData>(GameManager.Instance.generalSettings, GameManager.Instance.mainFolder, "generalSettings"); 
 
+        // debug
         GameManager.Instance.debugText.text = "General Settings saved.";
         Debug.Log("General Settings saved.");
-
-        // End Game 
     }
 
     /// <summary>

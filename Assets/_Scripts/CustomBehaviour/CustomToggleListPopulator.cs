@@ -6,6 +6,7 @@ using Microsoft.MixedReality.Toolkit.Utilities;
 
 public class CustomToggleListPopulator : MonoBehaviour
 {
+
     [SerializeField]
     [Tooltip("Object to duplicate in ScrollCollection")]
     private GameObject dynamicItem;
@@ -23,20 +24,12 @@ public class CustomToggleListPopulator : MonoBehaviour
         set { dynamicItem = value; }
     }
 
-    private int numItems;
-    /// <summary>
-    /// Number of items to generate
-    /// </summary>
-    public int NumItems
-    {
-        get { return numItems; }
-        set { numItems = value; }
-    }
-
+    private List<GameObject> ItemsInScene;
+    public List<userSettingsData> chosenSet; 
     private GridObjectCollection gridObjectCollection = null;
     private InteractableToggleCollection toggleCollection = null;
 
-    public void Initialize()
+    private void Start()
     {
         //  Check components
         if (gridObjectCollection == null)
@@ -49,31 +42,6 @@ public class CustomToggleListPopulator : MonoBehaviour
             toggleCollection = parentTransform.GetComponent<InteractableToggleCollection>();
         }
 
-        if (DataManager.Instance != null)
-        {
-            // Get Size
-            if (DataManager.Instance.UserSettings.Count == 0)
-            {
-                GameManager.Instance.debugText.text = "CustomScrollableListPopulator::Start no items in DataManager.UserSettings found. Using Default Value of 3.";
-
-                Debug.LogWarning("CustomScrollableListPopulator::Start no items in DataManager.UserSettings found. Using Default Value of 3.");
-                numItems = 3;
-            }
-            else
-            {
-                numItems = DataManager.Instance.UserSettings.Count;
-            }
-        }
-        else
-        {
-            GameManager.Instance.debugText.text = "CustomToggleList Populator:: Initialize not able to get DataManager Instance"; 
-            Debug.LogError("CustomToggleList Populator:: Initialize not able to get DataManager Instance"); 
-        }
-
-    }
-
-    public void MakeToggleList()
-    {
         // Grid Object Collection to organize Buttons
         if (gridObjectCollection == null)
         {
@@ -91,20 +59,51 @@ public class CustomToggleListPopulator : MonoBehaviour
         {
             toggleCollection = parentTransform.AddComponent<InteractableToggleCollection>();
         }
-        Interactable[] newToggleList = new Interactable[numItems]; 
+        ItemsInScene = new List<GameObject>();
+        chosenSet = new List<userSettingsData>();
+    }
 
+
+    public void MakeToggleList(string userSet)
+    {
+        ClearList(); 
+        
+        if(userSet == "incompleteSet")
+        {
+            chosenSet = DataManager.Instance.IncompleteUserData;
+        }
+        else if(userSet == "completeSet")
+        {
+            chosenSet = DataManager.Instance.CompleteUserData;
+        }
+        else
+        {
+            throw new System.Exception("CustomToggle List Populator, incorrect input"); 
+        }
+
+        Interactable[] newToggleList = new Interactable[chosenSet.Count]; 
 
         // Generate Objects
-        for (int i = 0; i < numItems; i++)
+        for (int i = 0; i < chosenSet.Count; i++)
         {
             GameObject itemInstance = Instantiate(dynamicItem, parentTransform.transform);
-            itemInstance.GetComponent<ButtonConfigHelper>().MainLabelText = "UserID " + DataManager.Instance.UserSettings[i].UserID.ToString() +
-                                                                            " SetType " + DataManager.Instance.UserSettings[i].set.ToString() ; 
+            itemInstance.GetComponent<ButtonConfigHelper>().MainLabelText = "UserID " + chosenSet[i].UserID.ToString() +
+                                                                            " SetType " + chosenSet[i].set.ToString() ; 
             itemInstance.SetActive(true);
-            newToggleList[i] = itemInstance.GetComponent<Interactable>(); 
+            newToggleList[i] = itemInstance.GetComponent<Interactable>();
+
+            ItemsInScene.Add(itemInstance); 
         }
 
         gridObjectCollection.UpdateCollection();
         toggleCollection.ToggleList = newToggleList; 
+    }
+
+    private void ClearList()
+    {
+        foreach (GameObject item in ItemsInScene)
+        {
+            Destroy(item); 
+        }
     }
 }

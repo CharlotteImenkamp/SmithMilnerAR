@@ -210,11 +210,15 @@ public class CustomScrollableListPopulator : MonoBehaviour
         float updateRate = 2.0f;
         userSettingsData.userSet userSet = userSettingsData.userSet.AG;
         int UserId = 5;
-        userSettingsData.gameState state = userSettingsData.gameState.None; 
+        userSettingsData.gameState state = userSettingsData.gameState.None;     // TODO
 
-        userSettingsData data = new userSettingsData(objectCreator.InstantiatedObjects, updateRate,UserId, userSet, state );
+        string dataFolder = GameManager.Instance.generalSettings.dataFolder + "/User_" + UserId;
+        string mainFolder = GameManager.Instance.mainFolder;
 
-        DataManager.Instance.SetAndSaveNewSettings(data);
+        userSettingsData data = new userSettingsData(updateRate , UserId, System.IO.Path.Combine(mainFolder, dataFolder, "userSettings" + UserId),  userSet, state );
+        ObjectData objData = new ObjectData(objectCreator.InstantiatedObjects, Time.realtimeSinceStartup); 
+
+        DataManager.Instance.SetAndSaveNewSettings(data, objData);
 
         objectCreator.RemoveAllObjects(); 
     }

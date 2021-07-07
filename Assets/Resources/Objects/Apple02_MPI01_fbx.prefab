@@ -23,7 +23,6 @@ GameObject:
   - component: {fileID: -4388554413758996185}
   - component: {fileID: -3566214529670493533}
   - component: {fileID: 6976585751296246915}
-  - component: {fileID: 2774816456192281549}
   - component: {fileID: 1533467020148173379}
   m_Layer: 0
   m_Name: Apple02_MPI01_fbx
@@ -534,18 +533,6 @@ MonoBehaviour:
   useConstraint: 1
   referenceTransform: {fileID: 0}
   constraintOnMovement: 2
---- !u!114 &2774816456192281549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7229500906948068818}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b289913ae93102a47b48faececba6545, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1533467020148173379
 MonoBehaviour:
   m_ObjectHideFlags: 0

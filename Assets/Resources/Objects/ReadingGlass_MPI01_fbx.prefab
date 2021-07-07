@@ -17,7 +17,6 @@ GameObject:
   - component: {fileID: 158569253907951279}
   - component: {fileID: 158569253907951278}
   - component: {fileID: 158569253907951284}
-  - component: {fileID: -729117464809911901}
   - component: {fileID: 7246947802921812793}
   - component: {fileID: -1347243679681834688}
   - component: {fileID: 563135513717234140}
@@ -304,18 +303,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DistanceThreshold: 20
---- !u!114 &-729117464809911901
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3248250350714142220}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b289913ae93102a47b48faececba6545, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!54 &7246947802921812793
 Rigidbody:
   m_ObjectHideFlags: 0

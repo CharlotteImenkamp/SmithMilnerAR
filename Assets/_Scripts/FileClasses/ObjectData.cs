@@ -5,23 +5,45 @@ using UnityEngine;
 public class ObjectData
 {
     public float time;
-    public List<CustomObject> movingObjects;
+
+    public List<CustomObject> gameObjects;
 
     public ObjectData(GameObject[] movingObj, float time)
     {
-        movingObjects = new List<CustomObject>();
+        gameObjects = new List<CustomObject>();
 
         this.time = time;
         foreach (GameObject obj in movingObj)
         {
             var intObj = new CustomObject(obj.name, obj.transform.position, obj.transform.rotation);
-            movingObjects.Add(intObj);
+            gameObjects.Add(intObj);
         }
     }
+    public Vector3[] GetObjectPositions()
+    {
+        Vector3[] positions = new Vector3[gameObjects.Count];
+        for (int i = 0; i < gameObjects.Count; i++)
+        {
+            positions[i] = gameObjects[i].localPosition;
+        }
+        return positions;
+    }
+
+    public Quaternion[] GetObjectRotations()
+    {
+        Quaternion[] rotations = new Quaternion[gameObjects.Count];
+        for (int i = 0; i < gameObjects.Count; i++)
+        {
+            rotations[i] = gameObjects[i].localRotation;
+        }
+        return rotations;
+    }
+
+    public ObjectData() { }
 
     public ObjectData(List<GameObject> movingObj, float time)
     {
-        movingObjects = new List<CustomObject>();
+        gameObjects = new List<CustomObject>();
 
         this.time = time;
         foreach (GameObject obj in movingObj)
@@ -32,13 +54,13 @@ public class ObjectData
                 obj.name = obj.name.Replace("(Clone)", "");
             }
             var intObj = new CustomObject(obj.name, obj.transform.localPosition, obj.transform.localRotation);
-            movingObjects.Add(intObj);
+            gameObjects.Add(intObj);
         }
     }
 
     public ObjectData(List<CustomObject> objList, float time)
     {
-        this.movingObjects = objList;
+        this.gameObjects = objList;
         this.time = time;
     }
 
