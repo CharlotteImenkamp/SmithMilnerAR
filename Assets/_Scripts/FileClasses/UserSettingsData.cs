@@ -6,12 +6,11 @@ using UnityEngine;
 public class userSettingsData
 {
     #region constructors
-    public userSettingsData(float updateRate, int userId, string ObjectDataPath, userSet set, gameState state)
+    public userSettingsData(float updateRate, int userId, userSet set, gameState state)
     {
         this.updateRate = updateRate;
         this.UserID = userId;
         this.set = set;
-        this.ObjectDataPath = ObjectDataPath; 
         this.state = state;
     }
 
@@ -27,8 +26,6 @@ public class userSettingsData
     public enum userSet { JG, AG, AK };
     public enum gameState { locationsCompleted, pricesCompleted, None }
 
-    // Game State
-    public string ObjectDataPath; 
 
     // Saving
     public float updateRate;

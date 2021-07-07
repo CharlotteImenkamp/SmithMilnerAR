@@ -47,7 +47,7 @@ class LogData : IState
         Debug.Log("LogData::Enter");
 
         sampleRate = DataManager.Instance.CurrentSettings.updateRate;
-        dataFolder = GameManager.Instance.generalSettings.dataFolder;
+        dataFolder = GameManager.Instance.generalSettings.userDataFolder;
         generalFolder = GameManager.Instance.mainFolder;
         userID = DataManager.Instance.CurrentSettings.UserID.ToString();
 
@@ -122,9 +122,6 @@ class LogData : IState
         fileName_continuousLogging = "User" + currentSet.UserID.ToString() + "_" + currentSet.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_MovingObject";
         fileName_endState = "User" + currentSet.UserID.ToString() + "_" + currentSet.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_EndObject";
 
-        AddFileToGeneralSettings(fileName_continuousLogging);
-
-
         // start Writing
         json_continuousLogging += DataFile.StartFile();
         json_endState += DataFile.StartFile();
@@ -157,13 +154,11 @@ class LogData : IState
 
         directoryPath = DataFile.GenerateDirectory(directoryPath);
         fileName_headData = DataFile.GenerateUniqueFileName(directoryPath, fileName_headData);
-        AddFileToGeneralSettings(fileName_headData);
 
         filePath_headData = Path.Combine(directoryPath, fileName_headData + ".json");
 
         // start Writing
         json_headData += DataFile.StartFile();
-        AddFileToGeneralSettings(fileName_headData); 
     }
 
     void ExecuteHeadData()
@@ -202,15 +197,6 @@ class LogData : IState
     }
 
     #endregion get data
-
-
-    #region handle data
-
-    private void AddFileToGeneralSettings(string fileName)
-    {
-        GameManager.Instance.generalSettings.dataFiles.Add(fileName);
-    }
-    #endregion 
 
 }
 

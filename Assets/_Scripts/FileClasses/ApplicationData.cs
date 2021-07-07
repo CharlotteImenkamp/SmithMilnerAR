@@ -11,10 +11,8 @@ public class ApplicationData
     {
         ApplicationData defaultData = new ApplicationData();
 
-        defaultData.settingsFolder = "settings";
-        defaultData.dataFolder = "data";
-
-        defaultData.dataFiles = new List<string> { "default1.json" };
+        defaultData.objectDataFolder = "settings";
+        defaultData.userDataFolder = "data";
 
         defaultData.newSets = new List<string> { };
         defaultData.incompleteUserData = new List<string> { };
@@ -24,11 +22,8 @@ public class ApplicationData
     }
 
     // Folders 
-    public string settingsFolder;
-    public string dataFolder;
-
-    // Files
-    public List<string> dataFiles;      //\TODO einbinden? 
+    public string objectDataFolder;
+    public string userDataFolder;
 
     // Sets
     public List<string> newSets;

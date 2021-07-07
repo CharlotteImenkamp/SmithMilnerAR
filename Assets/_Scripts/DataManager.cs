@@ -34,19 +34,20 @@ public class DataManager : MonoBehaviour
     public List<GameObject> ObjectsInScene { get => objectsInScene; set => objectsInScene = value; }
     public List<GameObject> MovingObjects { get => movingObjects; set => movingObjects = value; }
     public HeadData CurrentHeadData { get => currentHeadData; set => currentHeadData = value; }
-    public List<userSettingsData> IncompleteUserData { get => incompleteSettings; set => incompleteSettings = value; }
-    public List<userSettingsData> CompleteUserData { get => completeSettings; set => completeSettings = value; }
+    public List<ObjectData> IncompleteUserData { get => incompleteSettings; set => incompleteSettings = value; }
+    public List<ObjectData> CompleteUserData { get => completeSettings; set => completeSettings = value; }
     public ObjectData CurrentObjectData { get => currentObjectData; set => currentObjectData = value; }
 
     #endregion public parameters
 
     #region private paramters
     private List<ObjectData> newSettings;
-    private List<userSettingsData> incompleteSettings;
-    private List<userSettingsData> completeSettings;
+    private List<ObjectData> incompleteSettings;
+    private List<ObjectData> completeSettings;
 
     private userSettingsData currentSettings;
     private ObjectData currentObjectData; 
+
     private List<GameObject> objectsInScene;
     private List<GameObject> movingObjects;
     private HeadData currentHeadData;
@@ -99,8 +100,8 @@ public class DataManager : MonoBehaviour
     {
         // parameters
         newSettings = new List<ObjectData>();
-        completeSettings = new List<userSettingsData>();
-        incompleteSettings = new List<userSettingsData>();
+        completeSettings = new List<ObjectData>();
+        incompleteSettings = new List<ObjectData>();
 
         movingObjects = new List<GameObject>();
         objectsInScene = new List<GameObject>();
@@ -116,8 +117,8 @@ public class DataManager : MonoBehaviour
         if (data != null && objectData.gameObjects.Count != 0)
         {
             currentSettings = data;
-            string settingsFolder = GameManager.Instance.generalSettings.settingsFolder;
-            string dataFolder = GameManager.Instance.generalSettings.dataFolder + "/User_" + data.UserID.ToString();
+            string settingsFolder = GameManager.Instance.generalSettings.objectDataFolder;
+            string dataFolder = GameManager.Instance.generalSettings.userDataFolder + "/User_" + data.UserID.ToString();
             string mainFolder = GameManager.Instance.mainFolder;
             
             // Save into user folder and into settings folder

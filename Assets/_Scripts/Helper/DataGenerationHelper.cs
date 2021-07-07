@@ -15,9 +15,8 @@ public class DataGenerationHelper : MonoBehaviour
         if (saveNewSettings)
         {
             ApplicationData data = new ApplicationData();
-            data.dataFolder = "data";
-            data.settingsFolder = "settings";
-            data.dataFiles = new List<string> { "data1", "data2" };
+            data.userDataFolder = "data";
+            data.objectDataFolder = "settings";
 
             data.newSets = new List<string> { "settings_user_4" };
             data.completeUserData = new List<string> { "settingssettings_1" };

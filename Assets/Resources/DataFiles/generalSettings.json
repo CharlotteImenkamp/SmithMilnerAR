@@ -1,22 +1,18 @@
-{ 
- "entries Mittwoch, 7. Juli 2021Mittwoch, 7. Juli 2021 13:23:21":[
-  {
-    "settingsFolder": "settings",
-    "dataFolder": "data",
-    "dataFiles": [
-      "d1",
-      "d2"
-    ],
-    "newSets": [
-      "settings_user_4"
-    ],
-    "incompleteSets": [
-      "settings_1",
-      "settings_4"
-    ],
-    "completeSets": [
-      "settingssettings_1"
-    ]
-  },
- "END"
- ]}
+{
+  "completeUserData": [
+    "User1/settings1"
+  ],
+  "userDataFolder": "userData",
+  "incompleteUserData": [
+    "User2/settings2",
+    "User3/settings3",
+    "User4/settings4"
+  ],
+  "newSets": [
+    "objectData1",
+    "objectData2",
+    "objectData3"
+  ],
+  "objectDataFolder": "objectData"
+}
+
