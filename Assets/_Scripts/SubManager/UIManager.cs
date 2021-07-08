@@ -83,7 +83,9 @@ public class UIManager : SubManager
                 if (GameManager.Instance.radioButtonCollection.GetComponentInChildren<InteractableToggleCollection>() != null)
                 {
                     DataManager.Instance.SetCurrentUserSettings(
-                                        GameManager.Instance.radioButtonCollection.GetComponentInChildren<InteractableToggleCollection>().CurrentIndex);
+                                        GameManager.Instance.radioButtonCollection
+                                        .transform.Find("ScrollParent")
+                                        .GetComponentInChildren<InteractableToggleCollection>().CurrentIndex);
                 }              
                 break;
 

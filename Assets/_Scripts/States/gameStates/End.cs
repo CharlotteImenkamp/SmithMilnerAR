@@ -17,7 +17,7 @@ public class End : IState
         }
 
         // Save Data
-        DataFile.Save<ApplicationData>(GameManager.Instance.generalSettings, GameManager.Instance.mainFolder, "generalSettings"); 
+        DataFile.Override<ApplicationData>(GameManager.Instance.generalSettings, GameManager.Instance.mainFolder, "generalSettings"); 
 
         // debug
         GameManager.Instance.debugText.text = "General Settings saved.";

@@ -25,7 +25,7 @@ public class CustomToggleListPopulator : MonoBehaviour
     }
 
     private List<GameObject> ItemsInScene;
-    public List<userSettingsData> chosenSet; 
+    public List<DataManager.Data> chosenSet; 
     private GridObjectCollection gridObjectCollection = null;
     private InteractableToggleCollection toggleCollection = null;
 
@@ -60,7 +60,7 @@ public class CustomToggleListPopulator : MonoBehaviour
             toggleCollection = parentTransform.AddComponent<InteractableToggleCollection>();
         }
         ItemsInScene = new List<GameObject>();
-        chosenSet = new List<userSettingsData>();
+        chosenSet = new List<DataManager.Data>();
     }
 
 
@@ -70,11 +70,11 @@ public class CustomToggleListPopulator : MonoBehaviour
         
         if(userSet == "incompleteSet")
         {
-            chosenSet = DataManager.Instance.IncompleteUserData;
+            chosenSet = DataManager.Instance.IncompleteSets;
         }
         else if(userSet == "completeSet")
         {
-            chosenSet = DataManager.Instance.CompleteUserData;
+            chosenSet = DataManager.Instance.CompleteSets;
         }
         else
         {
@@ -87,8 +87,8 @@ public class CustomToggleListPopulator : MonoBehaviour
         for (int i = 0; i < chosenSet.Count; i++)
         {
             GameObject itemInstance = Instantiate(dynamicItem, parentTransform.transform);
-            itemInstance.GetComponent<ButtonConfigHelper>().MainLabelText = "UserID " + chosenSet[i].UserID.ToString() +
-                                                                            " SetType " + chosenSet[i].set.ToString() ; 
+            itemInstance.GetComponent<ButtonConfigHelper>().MainLabelText = "UserID " + chosenSet[i].UserData.UserID.ToString() +
+                                                                            " SetType " + chosenSet[i].UserData.set.ToString() ; 
             itemInstance.SetActive(true);
             newToggleList[i] = itemInstance.GetComponent<Interactable>();
 

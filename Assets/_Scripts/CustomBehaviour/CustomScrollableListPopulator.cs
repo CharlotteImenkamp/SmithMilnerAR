@@ -216,9 +216,11 @@ public class CustomScrollableListPopulator : MonoBehaviour
         string mainFolder = GameManager.Instance.mainFolder;
 
         userSettingsData data = new userSettingsData(updateRate , UserId, userSet, state );
-        ObjectData objData = new ObjectData(objectCreator.InstantiatedObjects, Time.realtimeSinceStartup); 
+        ObjectData objData = new ObjectData(objectCreator.InstantiatedObjects, Time.realtimeSinceStartup);
 
-        DataManager.Instance.SetAndSaveNewSettings(data, objData);
+        DataManager.Data newData = new DataManager.Data(objData, data); 
+
+        DataManager.Instance.SetAndSaveNewSettings(newData);
 
         objectCreator.RemoveAllObjects(); 
     }

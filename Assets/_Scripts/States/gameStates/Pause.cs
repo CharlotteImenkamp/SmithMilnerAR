@@ -14,6 +14,9 @@ public class Pause : IState
         {
             subManager.OnGameStateEntered(this.ToString());
         }
+
+        // Save Data
+        DataFile.Override<ApplicationData>(GameManager.Instance.generalSettings, GameManager.Instance.mainFolder, "generalSettings");
     }
 
     public void Execute()

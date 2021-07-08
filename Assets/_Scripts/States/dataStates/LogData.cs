@@ -46,10 +46,10 @@ class LogData : IState
         GameManager.Instance.debugText.text = "LogData Enter"; 
         Debug.Log("LogData::Enter");
 
-        sampleRate = DataManager.Instance.CurrentSettings.updateRate;
+        sampleRate = DataManager.Instance.CurrentSettings.UserData.updateRate;
         dataFolder = GameManager.Instance.generalSettings.userDataFolder;
         generalFolder = GameManager.Instance.mainFolder;
-        userID = DataManager.Instance.CurrentSettings.UserID.ToString();
+        userID = DataManager.Instance.CurrentSettings.UserData.UserID.ToString();
 
         // default
         json_continuousLogging = "";
@@ -57,7 +57,7 @@ class LogData : IState
         json_headData = ""; 
 
         // Directory
-        directoryPath = Path.Combine(Application.persistentDataPath,generalFolder,dataFolder , "User_" + userID);
+        directoryPath = Path.Combine(Application.persistentDataPath, generalFolder, dataFolder , "User" + userID);
 
         // Generate Directory
         if (!Directory.Exists(directoryPath))
@@ -67,10 +67,14 @@ class LogData : IState
         if(gameType == GameType.Locations)
         {
             PrepareHeadData(); 
-            PrepareObjectData(); 
+            PrepareObjectData();
+            GameManager.Instance.UpdateGeneralSettings(userID, GameType.Locations);
         }
         else if(gameType == GameType.Prices)
-            PrepareHeadData(); 
+        {
+            PrepareHeadData();
+            GameManager.Instance.UpdateGeneralSettings(userID, GameType.Prices);
+        }
         else
             throw new ArgumentException("LogData::Enter no valid GameType."); 
         
@@ -106,9 +110,12 @@ class LogData : IState
         {
             EndHeadData();
             EndObjectData();
+            
         }
         else if (gameType == GameType.Prices)
+        {
             EndHeadData();
+        }  
         else
             throw new ArgumentException("LogData::Exit no valid GameType.");
     }
@@ -119,8 +126,8 @@ class LogData : IState
     {
         // Filenames
         var currentSet = DataManager.Instance.CurrentSettings;
-        fileName_continuousLogging = "User" + currentSet.UserID.ToString() + "_" + currentSet.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_MovingObject";
-        fileName_endState = "User" + currentSet.UserID.ToString() + "_" + currentSet.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_EndObject";
+        fileName_continuousLogging = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_MovingObject";
+        fileName_endState = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_EndObject";
 
         // start Writing
         json_continuousLogging += DataFile.StartFile();
@@ -150,7 +157,7 @@ class LogData : IState
     {
         // Filenames
         var currentSet = DataManager.Instance.CurrentSettings;
-        fileName_headData = "User" + currentSet.UserID.ToString() + "_" + currentSet.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_headData";
+        fileName_headData = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_headData";
 
         directoryPath = DataFile.GenerateDirectory(directoryPath);
         fileName_headData = DataFile.GenerateUniqueFileName(directoryPath, fileName_headData);

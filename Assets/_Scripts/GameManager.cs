@@ -237,6 +237,25 @@ public class GameManager : MonoBehaviour
 
     #endregion Game Flow 
 
+    #region filemanagement
+    public void UpdateGeneralSettings(string userID, GameType completedType)
+    {
+        if (completedType == GameType.Locations)
+        {
+            generalSettings.incompleteUserData.Remove("User" + userID + "/" + "user" + userID);
+            generalSettings.completeUserData.Add("User" + userID + "/" + "user" + userID); 
+        }
+        else if(completedType == GameType.Prices)
+        {
+            generalSettings.incompleteUserData.Add("User" + userID + "/" + "user" + userID); 
+            // \TODO remove used set from new Sets
+        }
+        else
+        {
+            throw new ArgumentNullException(); 
+        }
+    }
+    #endregion filemanagement
 }
 
 

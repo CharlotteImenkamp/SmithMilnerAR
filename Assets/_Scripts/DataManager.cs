@@ -30,27 +30,45 @@ public class DataManager : MonoBehaviour
 
     #region public parameters
     public List<ObjectData> NewSets { get => newSettings; set => newSettings = value; }
-    public userSettingsData CurrentSettings { get => currentSettings; set => currentSettings = value; }
+    public Data CurrentSettings { get => currentSet; set => currentSet = value; }
     public List<GameObject> ObjectsInScene { get => objectsInScene; set => objectsInScene = value; }
     public List<GameObject> MovingObjects { get => movingObjects; set => movingObjects = value; }
     public HeadData CurrentHeadData { get => currentHeadData; set => currentHeadData = value; }
-    public List<ObjectData> IncompleteUserData { get => incompleteSettings; set => incompleteSettings = value; }
-    public List<ObjectData> CompleteUserData { get => completeSettings; set => completeSettings = value; }
-    public ObjectData CurrentObjectData { get => currentObjectData; set => currentObjectData = value; }
+    //public List<ObjectData> IncompleteUserData { get => incompleteSettings; set => incompleteSettings = value; }
+    //public List<ObjectData> CompleteUserData { get => completeSettings; set => completeSettings = value; }
+    //public ObjectData CurrentObjectData { get => currentObjectData; set => currentObjectData = value; }
+    public List<Data> IncompleteSets { get => incompleteSets; set => incompleteSets = value; }
+    public List<Data> CompleteSets { get => completeSets; set => completeSets = value; }
 
+    public struct Data
+    {
+        ObjectData objData;
+        userSettingsData userData;
+
+        public Data(ObjectData objData, userSettingsData userData)
+        {
+            this.objData = objData ?? throw new ArgumentNullException(nameof(objData));
+            this.userData = userData ?? throw new ArgumentNullException(nameof(userData));
+        }
+
+        public userSettingsData UserData { get => userData; set => userData = value; }
+        public ObjectData ObjData { get => objData; set => objData = value; }
+    }
     #endregion public parameters
 
     #region private paramters
-    private List<ObjectData> newSettings;
-    private List<ObjectData> incompleteSettings;
-    private List<ObjectData> completeSettings;
+    private List<Data> incompleteSets;
+    private List<Data> completeSets; 
 
-    private userSettingsData currentSettings;
-    private ObjectData currentObjectData; 
+    private List<ObjectData> newSettings;
+
+    private Data currentSet;
 
     private List<GameObject> objectsInScene;
     private List<GameObject> movingObjects;
     private HeadData currentHeadData;
+
+
     #endregion private parameters
 
 
@@ -75,10 +93,7 @@ public class DataManager : MonoBehaviour
     /// <param name="radioButtonIndex"></param>
     public void SetCurrentUserSettings(int radioButtonIndex)
     {
-        currentSettings = GameManager.Instance.radioButtonCollection.GetComponent<CustomToggleListPopulator>().chosenSet[radioButtonIndex];
-        // currentObjectData = ...
-
-        throw new System.NotImplementedException(); 
+        currentSet = GameManager.Instance.radioButtonCollection.GetComponent<CustomToggleListPopulator>().chosenSet[radioButtonIndex];
     }
 
     /// <summary>
@@ -100,8 +115,9 @@ public class DataManager : MonoBehaviour
     {
         // parameters
         newSettings = new List<ObjectData>();
-        completeSettings = new List<ObjectData>();
-        incompleteSettings = new List<ObjectData>();
+
+        completeSets = new List<Data>();
+        incompleteSets = new List<Data>();
 
         movingObjects = new List<GameObject>();
         objectsInScene = new List<GameObject>();
@@ -112,20 +128,20 @@ public class DataManager : MonoBehaviour
     }
 
 
-    public void SetAndSaveNewSettings(userSettingsData data, ObjectData objectData)
+    public void SetAndSaveNewSettings(Data data)
     {
-        if (data != null && objectData.gameObjects.Count != 0)
+        if (data.UserData != null && data.ObjData.gameObjects.Count != 0)
         {
-            currentSettings = data;
+            currentSet = data;
             string settingsFolder = GameManager.Instance.generalSettings.objectDataFolder;
-            string dataFolder = GameManager.Instance.generalSettings.userDataFolder + "/User_" + data.UserID.ToString();
+            string dataFolder = GameManager.Instance.generalSettings.userDataFolder + "/User_" + data.UserData.UserID.ToString();
             string mainFolder = GameManager.Instance.mainFolder;
             
             // Save into user folder and into settings folder
-            DataFile.Save<ObjectData>(objectData, Path.Combine(mainFolder, dataFolder), "userSettings" + data.UserID.ToString());
-            DataFile.Save<ObjectData>(objectData, Path.Combine(mainFolder, settingsFolder), "objectData" + data.UserID.ToString());
+            DataFile.Save<ObjectData>(data.ObjData, Path.Combine(mainFolder, dataFolder), "userSettings" + data.UserData.UserID.ToString());
+            DataFile.Save<ObjectData>(data.ObjData, Path.Combine(mainFolder, settingsFolder), "objectData" + data.UserData.UserID.ToString());
 
-            DataFile.Save<userSettingsData>(data, Path.Combine(mainFolder, dataFolder), "user" + data.UserID.ToString()); 
+            DataFile.Save<userSettingsData>(data.UserData, Path.Combine(mainFolder, dataFolder), "user" + data.UserData.UserID.ToString()); 
         }
         else
         {

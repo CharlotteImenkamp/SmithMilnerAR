@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEngine;
@@ -22,12 +23,15 @@ public class DataFile
         if (File.Exists(path + ".json"))
         {
             jsonString = File.ReadAllText(path + ".json");
-            newData = JsonUtility.FromJson<T>(jsonString);
-            GameManager.Instance.debugText.text = "UserSettings data loaded from persistent Path.";
-            Debug.Log("UserSettings data loaded from persistent Path.");
+            JsonFile<T> file = JsonUtility.FromJson<JsonFile<T>>(jsonString);
+            newData = file.entries;
+
+            GameManager.Instance.debugText.text = "data loaded from persistent Path.";
+            Debug.Log("data loaded from persistent Path.");
         }
         else
         {
+            throw new System.NotImplementedException(" apply new structiure"); 
             // else load from Resources
             path = Path.Combine(filepath, filename);
             var textFile = Resources.Load<TextAsset>(path);
@@ -68,7 +72,8 @@ public class DataFile
         if (File.Exists(path + ".json"))
         {
             jsonString = File.ReadAllText(path + ".json");
-            T newData = JsonUtility.FromJson<T>(jsonString);
+            JsonFile<T> file = JsonUtility.FromJson<JsonFile<T>>(jsonString);
+            T newData = file.entries; 
 
             // debug
             GameManager.Instance.debugText.text = "data loaded from persistent Path.";
@@ -78,7 +83,7 @@ public class DataFile
         }
         else
         {
-            throw new Exception("... path not found"); 
+            throw new Exception("... path " + path + " not found"); 
         }
     }
 
@@ -109,6 +114,30 @@ public class DataFile
     }
 
     /// <summary>
+    /// Save into persistent data path. generates new name if it exists
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="folderAfterPersistentPath"></param>
+    /// <param name="name"></param>
+    public static void Override<T>(T data, string folderAfterPersistentPath, string name)
+    {
+
+        string directory = Path.Combine(Application.persistentDataPath, folderAfterPersistentPath);
+        string filePath = Path.Combine(directory, name);
+
+        string jsonString = StartFile();
+        jsonString += AddLine<T>(data);
+        jsonString += EndFile();
+
+        // override existing text
+        UnityEngine.Windows.File.WriteAllBytes(filePath + ".json", Encoding.ASCII.GetBytes(jsonString));
+
+        // debug
+        GameManager.Instance.debugText.text = "Data overritten in " + filePath;
+        Debug.LogWarning("Data overritten in " + filePath);
+    }
+
+    /// <summary>
     /// Save complete json string. generates new filename if exists and saves
     /// </summary>
     /// <param name="jsonString"></param>
@@ -134,13 +163,15 @@ public class DataFile
 
     public static string StartFile()
     {
-        return "{ \n \"start\": \"" + DateTime.Now.ToString("F") + "\"," + Environment.NewLine;
+        return "{\n \"start\": \"" + DateTime.Now.ToString("F") + "\"," 
+            + Environment.NewLine
+            + "\"entries\":";
     }
 
     public static string AddLine<T>(T data)
     {
-        string jsonString = JsonUtility.ToJson(data, true);
 
+        string jsonString = JsonUtility.ToJson(data, true);
         jsonString += "," + System.Environment.NewLine;
 
         return jsonString; 
@@ -148,7 +179,7 @@ public class DataFile
 
     public static string EndFile()
     {
-        return " \"end\" : \"END\"\n}";
+        return ", \n \"ende\" : \"END\"\n }";
     }
 
     /// <summary>
@@ -185,4 +216,12 @@ public class DataFile
 
         return filename; 
     }
+
+}
+
+public class JsonFile<T>
+{
+    public string start;
+    public T entries;
+    public string ende; 
 }

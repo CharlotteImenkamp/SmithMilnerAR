@@ -11,8 +11,9 @@ public class ObjectManager : SubManager
     private Vector3 testPosition;
     private Quaternion testRotation;
 
-    private userSettingsData currentUserSettings;
-    private ObjectData currentObjectData; 
+    private DataManager.Data currentData; 
+    //private userSettingsData currentUserSettings;
+    //private ObjectData currentObjectData; 
 
     private ObjectCreator objectCreator; 
 
@@ -46,8 +47,8 @@ public class ObjectManager : SubManager
             case "LocationEstimation":
                 objectCreator.SpawnObjects(interactionObjects,
                     parent,
-                    currentObjectData.GetObjectPositions(),
-                    currentObjectData.GetObjectRotations(), 
+                    currentData.ObjData.GetObjectPositions(),
+                    currentData.ObjData.GetObjectRotations(), 
                     ConfigType.MovementEnabled);
                 DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects;
                 break;
@@ -60,8 +61,8 @@ public class ObjectManager : SubManager
 
             case "PriceEstimation":
                 objectCreator.SpawnObjects(interactionObjects, parent,
-                    currentObjectData.GetObjectPositions(),
-                    currentObjectData.GetObjectRotations(), 
+                    currentData.ObjData.GetObjectPositions(),
+                    currentData.ObjData.GetObjectRotations(), 
                     ConfigType.MovementDisabled);
                 DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects;
                 break; 
@@ -130,29 +131,26 @@ public class ObjectManager : SubManager
         testObject = null;
         testPosition= Vector3.zero;
         testRotation = Quaternion.identity;
-        currentUserSettings = null;
+        currentData.ObjData = null;
+        currentData.UserData = null; 
         objectCreator = null;
     }
 
 
     private void CheckDefaultParameters()
     {
-        if (currentUserSettings == null)
+        if (currentData.UserData == null || currentData.ObjData == null)
         {
-            currentUserSettings = DataManager.Instance.CurrentSettings;
-        }
-        if(currentObjectData == null)
-        {
-            currentObjectData = DataManager.Instance.CurrentObjectData; 
+            currentData = DataManager.Instance.CurrentSettings;
         }
         if (interactionObjects == null)
         {
-            interactionObjects = objectCreator.CreateInteractionObjects(currentObjectData);
+            interactionObjects = objectCreator.CreateInteractionObjects(currentData.ObjData);
 
         }
         if (testObject == null)
         {
-            testObject = objectCreator.CreateInteractionObject(currentObjectData);
+            testObject = objectCreator.CreateInteractionObject(currentData.ObjData);
             testPosition = new Vector3(-0.0f, -0f, 0f);                                        // \TODO add to general settings
             testRotation = Quaternion.identity;
         }

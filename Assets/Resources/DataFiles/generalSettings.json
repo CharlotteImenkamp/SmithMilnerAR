@@ -1,18 +1,17 @@
 {
-  "completeUserData": [
-    "User1/settings1"
-  ],
-  "userDataFolder": "userData",
-  "incompleteUserData": [
-    "User2/settings2",
-    "User3/settings3",
-    "User4/settings4"
-  ],
-  "newSets": [
-    "objectData1",
-    "objectData2",
-    "objectData3"
-  ],
-  "objectDataFolder": "objectData"
-}
-
+  "start": "Donnerstag, 8. Juli 2021 14:13:10",
+  "entries": 
+    {
+      "objectDataFolder": "objectData",
+      "userDataFolder": "userData",
+      "newSets": [
+        "objectData1"
+      ],
+      "incompleteUserData": [],
+      "completeUserData": [
+        "User1/user1",
+        "User1/user1"
+      ]
+    },
+ "end" : "END"
+ }
