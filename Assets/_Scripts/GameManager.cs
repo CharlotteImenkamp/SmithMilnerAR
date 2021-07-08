@@ -134,6 +134,8 @@ public class GameManager : MonoBehaviour
 
     #region buttons
 
+
+
     /// <summary>
     /// Add to Toggle Buttons, to get their input
     /// </summary>

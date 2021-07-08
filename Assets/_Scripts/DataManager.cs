@@ -143,8 +143,9 @@ public class DataManager : MonoBehaviour
         if (data.UserData != null && data.ObjData.gameObjects.Count != 0)
         {
             currentSet = data;
+
             string settingsFolder = GameManager.Instance.generalSettings.objectDataFolder;
-            string dataFolder = GameManager.Instance.generalSettings.userDataFolder + "/User_" + data.UserData.UserID.ToString();
+            string dataFolder = GameManager.Instance.generalSettings.userDataFolder + "/User" + data.UserData.UserID.ToString();
             string mainFolder = GameManager.Instance.mainFolder;
             
             // Save into user folder and into settings folder

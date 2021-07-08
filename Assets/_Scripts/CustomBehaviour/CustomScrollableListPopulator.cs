@@ -202,25 +202,12 @@ public class CustomScrollableListPopulator : MonoBehaviour
     }
 
     /// <summary>
-    /// Called on Apply Button to save the settings and remove the objects
+    /// Called in userInputHelper to combine user data and object data
     /// </summary>
-    public void SaveNewSettings()
+    /// <returns></returns>
+    public ObjectData GetInstantiatedObjects()
     {
-        float updateRate = 2.0f;
-        UserSettingsData.userSet userSet = UserSettingsData.userSet.AG;
-        int UserId = 5;
-        UserSettingsData.gameState state = UserSettingsData.gameState.None;     // TODO
-
-        string dataFolder = GameManager.Instance.generalSettings.userDataFolder + "/User_" + UserId;
-        string mainFolder = GameManager.Instance.mainFolder;
-
-        UserSettingsData data = new UserSettingsData(updateRate , UserId, userSet, state );
-        ObjectData objData = new ObjectData(objectCreator.InstantiatedObjects, Time.realtimeSinceStartup);
-
-        DataManager.Data newData = new DataManager.Data(objData, data); 
-
-        DataManager.Instance.SetAndSaveNewSettings(newData);
-
-        objectCreator.RemoveAllObjects(); 
+        objectCreator.RemoveAllObjects();
+        return new ObjectData(objectCreator.InstantiatedObjects, Time.realtimeSinceStartup);
     }
 }

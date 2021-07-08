@@ -6,7 +6,7 @@ using UnityEngine;
 public class UserSettingsData
 {
     #region constructors
-    public UserSettingsData(float updateRate, int userId, userSet set, gameState state)
+    public UserSettingsData(float updateRate, string userId, userSet set, gameState state)
     {
         this.updateRate = updateRate;
         this.UserID = userId;
@@ -16,7 +16,7 @@ public class UserSettingsData
 
     public UserSettingsData() { }
 
-    public UserSettingsData(int userID, userSet set)
+    public UserSettingsData(string userID, userSet set)
     {
         UserID = userID;
         this.set = set;
@@ -27,7 +27,7 @@ public class UserSettingsData
     #region parameters
 
     // User
-    public int UserID;
+    public string UserID;
     public userSet set;
     public gameState state;
     public enum userSet { JG, AG, AK };
