@@ -3,10 +3,10 @@ using System.IO;
 using UnityEngine;
 
 [System.Serializable]
-public class userSettingsData
+public class UserSettingsData
 {
     #region constructors
-    public userSettingsData(float updateRate, int userId, userSet set, gameState state)
+    public UserSettingsData(float updateRate, int userId, userSet set, gameState state)
     {
         this.updateRate = updateRate;
         this.UserID = userId;
@@ -14,7 +14,14 @@ public class userSettingsData
         this.state = state;
     }
 
-    public userSettingsData() { }
+    public UserSettingsData() { }
+
+    public UserSettingsData(int userID, userSet set)
+    {
+        UserID = userID;
+        this.set = set;
+    }
+
     #endregion  constructors
 
     #region parameters
@@ -24,7 +31,7 @@ public class userSettingsData
     public userSet set;
     public gameState state;
     public enum userSet { JG, AG, AK };
-    public enum gameState { locationsCompleted, pricesCompleted, None }
+    public enum gameState { locationsCompleted, pricesCompleted, None } // \TODO ändern in GameType
 
 
     // Saving

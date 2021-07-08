@@ -31,13 +31,13 @@ public class DataFile
         }
         else
         {
-            throw new System.NotImplementedException(" apply new structiure"); 
             // else load from Resources
             path = Path.Combine(filepath, filename);
             var textFile = Resources.Load<TextAsset>(path);
             if (textFile != null)
             {
-                newData = JsonUtility.FromJson<T>(textFile.text);
+                JsonFile<T> file = JsonUtility.FromJson<JsonFile<T>>(textFile.text);
+                newData = file.entries;
                 GameManager.Instance.debugText.text = "UserSettings data loaded from Resources.";
                 Debug.Log("UserSettings data from Resources.");
 
@@ -155,7 +155,7 @@ public class DataFile
 
         // debug
         GameManager.Instance.debugText.text = "Data saved into persistent Path.";
-        Debug.LogWarning("Data saved into persistent Path.");
+        Debug.Log("Data saved into " + filePath);
 
         return filePath; 
     }
@@ -179,7 +179,7 @@ public class DataFile
 
     public static string EndFile()
     {
-        return ", \n \"ende\" : \"END\"\n }";
+        return " \n \"ende\" : \"END\"\n }";
     }
 
     /// <summary>
@@ -216,9 +216,12 @@ public class DataFile
 
         return filename; 
     }
-
 }
 
+/// <summary>
+/// Helper Class used in DataFile, to maintain a file structure 
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class JsonFile<T>
 {
     public string start;

@@ -6,6 +6,10 @@ public class End : IState
 {
     public void Enter()
     {
+        // Save Data
+        DataFile.Override<ApplicationData>(GameManager.Instance.generalSettings, GameManager.Instance.mainFolder, "generalSettings");
+
+
         // Call Submanagers
         GameManager.Instance.debugText.text = "End::Enter()";
 
@@ -16,27 +20,19 @@ public class End : IState
             subManager.OnGameStateEntered(this.ToString());
         }
 
-        // Save Data
-        DataFile.Override<ApplicationData>(GameManager.Instance.generalSettings, GameManager.Instance.mainFolder, "generalSettings"); 
-
         // debug
         GameManager.Instance.debugText.text = "General Settings saved.";
         Debug.Log("General Settings saved.");
     }
 
-    /// <summary>
-    /// Not called, cause game quits on enter
-    /// </summary>
+
     public void Execute()
     {
         throw new System.NotImplementedException();
     }
 
-    /// <summary>
-    /// Not called, cause game quits on enter
-    /// </summary>
+
     public void Exit()
     {
-        throw new System.NotImplementedException();
     }
 }

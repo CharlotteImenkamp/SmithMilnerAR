@@ -31,8 +31,6 @@ public class GameStateManager: MonoBehaviour
 
     private static StateMachine gameStateMachine = new StateMachine();
 
-    private bool enableUserButton; 
-
 
     private void Start()
     {
@@ -46,7 +44,7 @@ public class GameStateManager: MonoBehaviour
     /// Called at Event of menu button press
     /// </summary>
     /// <param name="startWithPrices"></param>
-    private void StartTestRun(GameType gameType)
+    public void StartTestRun(GameType gameType)
     {
         if (gameType == GameType.Prices)
         {
@@ -65,7 +63,7 @@ public class GameStateManager: MonoBehaviour
         GameManager.Instance.OnUserButtonClicked.AddListener(() => StartGame(GameManager.Instance.gameType)); 
     }
 
-    private void StartGame(GameType gameType)
+    public void StartGame(GameType gameType)
     {
         if (gameType == GameType.Prices)
         {

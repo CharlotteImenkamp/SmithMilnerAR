@@ -82,12 +82,12 @@ public class AudioManager : SubManager
 
     private void PlayAudioClip()
     {
-        Debug.LogWarning("AudioManager::PlayAudioClip not implemented.");
+        //Debug.LogWarning("AudioManager::PlayAudioClip not implemented.");
     }
 
     private AudioClip[] LoadAudioClips(string[] audioClipAdresses)
     {
-        Debug.LogWarning("AudioManager::LoadAudioClips not implemented.");
+       // Debug.LogWarning("AudioManager::LoadAudioClips not implemented.");
 
         return null; 
     }

@@ -9,6 +9,7 @@ public class UIManager : SubManager
     private GameObject generalSettingsMenu;
     private GameObject newSettingsMenu;
     private GameObject oldSettingsMenu;
+    private GameObject pauseMenu; 
     private GameObject[] allMenus;
 
     public void Initialize()
@@ -17,8 +18,9 @@ public class UIManager : SubManager
         generalSettingsMenu = GameManager.Instance.GeneralSettingsMenu;
         newSettingsMenu = GameManager.Instance.NewSettingsMenu;
         oldSettingsMenu = GameManager.Instance.OldSettingsMenu;
+        pauseMenu = GameManager.Instance.PauseMenu; 
 
-        allMenus = new GameObject[] { generalSettingsMenu, newSettingsMenu, oldSettingsMenu };
+        allMenus = new GameObject[] { generalSettingsMenu, newSettingsMenu, oldSettingsMenu, pauseMenu };
 
         CloseAllMenus(); 
     }
@@ -56,12 +58,13 @@ public class UIManager : SubManager
 
             case "Pause":
                 CloseAllMenus();
-                OpenMenu(generalSettingsMenu);
+                OpenMenu(pauseMenu);
                 break;
 
             case "End":
                 CloseAllMenus(); 
-                OpenMenu(generalSettingsMenu); 
+                OpenMenu(pauseMenu);
+                SetChildActive(false, pauseMenu, "ContinueWithLocations"); //\TODO was besseres als string
                 break;
 
             default:
@@ -102,11 +105,11 @@ public class UIManager : SubManager
                 break;
 
             case "Pause":
+                CloseAllMenus(); 
                 Debug.LogWarning("UIManager::OnGameStateLeft Pause not implemented.");
                 break;
 
             case "End":
-                Debug.LogWarning("UIManager::OnGameStateLeft End not implemented.");
                 break;
 
             default:
@@ -136,6 +139,19 @@ public class UIManager : SubManager
         foreach (GameObject obj in allMenus)
         {
             obj.SetActive(false); 
+        }
+    }
+
+    private void SetChildActive(bool setActive, GameObject menu, string objectName)
+    {
+        var child = menu.transform.Find(objectName);
+        if(child != null)
+        {
+            child.gameObject.SetActive(setActive);
+        }
+        else
+        {
+            Debug.LogWarning("UIManager::SetChildActive no child found"); 
         }
     }
 

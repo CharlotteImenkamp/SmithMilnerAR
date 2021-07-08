@@ -12,8 +12,6 @@ public class ObjectManager : SubManager
     private Quaternion testRotation;
 
     private DataManager.Data currentData; 
-    //private userSettingsData currentUserSettings;
-    //private ObjectData currentObjectData; 
 
     private ObjectCreator objectCreator; 
 
@@ -151,8 +149,8 @@ public class ObjectManager : SubManager
         if (testObject == null)
         {
             testObject = objectCreator.CreateInteractionObject(currentData.ObjData);
-            testPosition = new Vector3(-0.0f, -0f, 0f);                                        // \TODO add to general settings
-            testRotation = Quaternion.identity;
+            testPosition = testObject.transform.position;                                        // \TODO add to general settings
+            testRotation = testObject.transform.rotation;
         }
     }
 }

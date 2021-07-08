@@ -29,44 +29,50 @@ public class DataManager : MonoBehaviour
     private static StateMachine dataStateMachine = new StateMachine();
 
     #region public parameters
-    public List<ObjectData> NewSets { get => newSettings; set => newSettings = value; }
+
     public Data CurrentSettings { get => currentSet; set => currentSet = value; }
+
+    // Data to Save
     public List<GameObject> ObjectsInScene { get => objectsInScene; set => objectsInScene = value; }
     public List<GameObject> MovingObjects { get => movingObjects; set => movingObjects = value; }
     public HeadData CurrentHeadData { get => currentHeadData; set => currentHeadData = value; }
-    //public List<ObjectData> IncompleteUserData { get => incompleteSettings; set => incompleteSettings = value; }
-    //public List<ObjectData> CompleteUserData { get => completeSettings; set => completeSettings = value; }
-    //public ObjectData CurrentObjectData { get => currentObjectData; set => currentObjectData = value; }
-    public List<Data> IncompleteSets { get => incompleteSets; set => incompleteSets = value; }
-    public List<Data> CompleteSets { get => completeSets; set => completeSets = value; }
+
+    // Data from general Settings
+    public List<ObjectData> NewSets { get => newSettings; set => newSettings = value; }
+    public List<Data> IncompleteUserData { get => incompleteUserData; set => incompleteUserData = value; }
+    public List<Data> CompleteUserData { get => completeUserData; set => completeUserData = value; }
+    public List<Data> NewUserData { get => newUserData; set => newUserData = value; }
 
     public struct Data
     {
         ObjectData objData;
-        userSettingsData userData;
+        UserSettingsData userData;
 
-        public Data(ObjectData objData, userSettingsData userData)
+        public Data(ObjectData objData, UserSettingsData userData)
         {
             this.objData = objData ?? throw new ArgumentNullException(nameof(objData));
             this.userData = userData ?? throw new ArgumentNullException(nameof(userData));
         }
 
-        public userSettingsData UserData { get => userData; set => userData = value; }
+        public UserSettingsData UserData { get => userData; set => userData = value; }
         public ObjectData ObjData { get => objData; set => objData = value; }
     }
     #endregion public parameters
 
     #region private paramters
-    private List<Data> incompleteSets;
-    private List<Data> completeSets; 
+    private List<Data> newUserData; 
+    private List<Data> incompleteUserData;
+    private List<Data> completeUserData; 
 
     private List<ObjectData> newSettings;
-
-    private Data currentSet;
 
     private List<GameObject> objectsInScene;
     private List<GameObject> movingObjects;
     private HeadData currentHeadData;
+
+    private Data currentSet;
+
+
 
 
     #endregion private parameters
@@ -93,7 +99,10 @@ public class DataManager : MonoBehaviour
     /// <param name="radioButtonIndex"></param>
     public void SetCurrentUserSettings(int radioButtonIndex)
     {
-        currentSet = GameManager.Instance.radioButtonCollection.GetComponent<CustomToggleListPopulator>().chosenSet[radioButtonIndex];
+        currentSet = 
+            GameManager.Instance.radioButtonCollection
+            .GetComponent<CustomToggleListPopulator>()
+            .chosenSet[radioButtonIndex];
     }
 
     /// <summary>
@@ -116,8 +125,9 @@ public class DataManager : MonoBehaviour
         // parameters
         newSettings = new List<ObjectData>();
 
-        completeSets = new List<Data>();
-        incompleteSets = new List<Data>();
+        completeUserData = new List<Data>();
+        incompleteUserData = new List<Data>();
+        newUserData = new List<Data>();
 
         movingObjects = new List<GameObject>();
         objectsInScene = new List<GameObject>();
@@ -141,7 +151,7 @@ public class DataManager : MonoBehaviour
             DataFile.Save<ObjectData>(data.ObjData, Path.Combine(mainFolder, dataFolder), "userSettings" + data.UserData.UserID.ToString());
             DataFile.Save<ObjectData>(data.ObjData, Path.Combine(mainFolder, settingsFolder), "objectData" + data.UserData.UserID.ToString());
 
-            DataFile.Save<userSettingsData>(data.UserData, Path.Combine(mainFolder, dataFolder), "user" + data.UserData.UserID.ToString()); 
+            DataFile.Save<UserSettingsData>(data.UserData, Path.Combine(mainFolder, dataFolder), "user" + data.UserData.UserID.ToString()); 
         }
         else
         {

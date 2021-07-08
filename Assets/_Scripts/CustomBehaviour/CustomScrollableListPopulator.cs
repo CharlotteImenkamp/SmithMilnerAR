@@ -63,7 +63,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
 
     private ObjectCreator objectCreator; 
     private GridObjectCollection gridObjectCollection;
-    ClippingBox clip; 
+
 
     /// <summary>
     /// Indeterminate loader to hide / show for <see cref="LazyLoad"/> 
@@ -131,9 +131,8 @@ public class CustomScrollableListPopulator : MonoBehaviour
             gridObjectCollection.Columns = cellsPerTier;
             gridObjectCollection.Anchor = LayoutAnchor.UpperLeft;
             scrollView.AddContent(collectionGameObject);
-
         }
-        clip = scrollView.GetComponent<ClippingBox>(); 
+
 
         if (!lazyLoad)
         {
@@ -208,14 +207,14 @@ public class CustomScrollableListPopulator : MonoBehaviour
     public void SaveNewSettings()
     {
         float updateRate = 2.0f;
-        userSettingsData.userSet userSet = userSettingsData.userSet.AG;
+        UserSettingsData.userSet userSet = UserSettingsData.userSet.AG;
         int UserId = 5;
-        userSettingsData.gameState state = userSettingsData.gameState.None;     // TODO
+        UserSettingsData.gameState state = UserSettingsData.gameState.None;     // TODO
 
         string dataFolder = GameManager.Instance.generalSettings.userDataFolder + "/User_" + UserId;
         string mainFolder = GameManager.Instance.mainFolder;
 
-        userSettingsData data = new userSettingsData(updateRate , UserId, userSet, state );
+        UserSettingsData data = new UserSettingsData(updateRate , UserId, userSet, state );
         ObjectData objData = new ObjectData(objectCreator.InstantiatedObjects, Time.realtimeSinceStartup);
 
         DataManager.Data newData = new DataManager.Data(objData, data); 

@@ -24,7 +24,7 @@ public class CustomToggleListPopulator : MonoBehaviour
         set { dynamicItem = value; }
     }
 
-    private List<GameObject> ItemsInScene;
+    private List<GameObject> instantiatedButtons;
     public List<DataManager.Data> chosenSet; 
     private GridObjectCollection gridObjectCollection = null;
     private InteractableToggleCollection toggleCollection = null;
@@ -59,51 +59,80 @@ public class CustomToggleListPopulator : MonoBehaviour
         {
             toggleCollection = parentTransform.AddComponent<InteractableToggleCollection>();
         }
-        ItemsInScene = new List<GameObject>();
+
+        instantiatedButtons = new List<GameObject>();
         chosenSet = new List<DataManager.Data>();
     }
 
 
     public void MakeToggleList(string userSet)
     {
-        ClearList(); 
+        try
+        {
+            ClearList();
+
+            if (userSet == "incompleteSet")
+            {
+                chosenSet = DataManager.Instance.IncompleteUserData;
+            }
+            else if (userSet == "completeSet")
+            {
+                chosenSet = DataManager.Instance.CompleteUserData;
+            }
+            else if (userSet == "newSet")
+            {
+                chosenSet = DataManager.Instance.NewUserData;
+            }
+            else
+            {
+                throw new System.Exception("CustomToggle List Populator, incorrect input");
+            }
+
+            Interactable[] newToggleList = new Interactable[chosenSet.Count];
+
+            // Generate Objects
+            for (int i = 0; i < chosenSet.Count; i++)
+            {
+                GameObject itemInstance = Instantiate(dynamicItem, parentTransform.transform);
+
+                itemInstance.GetComponent<ButtonConfigHelper>().MainLabelText = "UserID " + chosenSet[i].UserData.UserID.ToString() +
+                                                                                " SetType " + chosenSet[i].UserData.set.ToString();
+                
+                itemInstance.SetActive(true);
+                newToggleList[i] = itemInstance.GetComponent<Interactable>();
+
+                instantiatedButtons.Add(itemInstance);
+            }
+
+            gridObjectCollection.UpdateCollection();
+
+            if(newToggleList.Length > 0)
+            {
+                toggleCollection.ToggleList = newToggleList;
+            }
+        }
+        catch (System.Exception)
+        {
+            Debug.LogWarning("Custom Toggle List Populator not able to create a list." +
+                "Check, if it is inactive at start"); 
+        }
+
         
-        if(userSet == "incompleteSet")
-        {
-            chosenSet = DataManager.Instance.IncompleteSets;
-        }
-        else if(userSet == "completeSet")
-        {
-            chosenSet = DataManager.Instance.CompleteSets;
-        }
-        else
-        {
-            throw new System.Exception("CustomToggle List Populator, incorrect input"); 
-        }
-
-        Interactable[] newToggleList = new Interactable[chosenSet.Count]; 
-
-        // Generate Objects
-        for (int i = 0; i < chosenSet.Count; i++)
-        {
-            GameObject itemInstance = Instantiate(dynamicItem, parentTransform.transform);
-            itemInstance.GetComponent<ButtonConfigHelper>().MainLabelText = "UserID " + chosenSet[i].UserData.UserID.ToString() +
-                                                                            " SetType " + chosenSet[i].UserData.set.ToString() ; 
-            itemInstance.SetActive(true);
-            newToggleList[i] = itemInstance.GetComponent<Interactable>();
-
-            ItemsInScene.Add(itemInstance); 
-        }
-
-        gridObjectCollection.UpdateCollection();
-        toggleCollection.ToggleList = newToggleList; 
     }
 
     private void ClearList()
     {
-        foreach (GameObject item in ItemsInScene)
+        if(instantiatedButtons != null)
         {
-            Destroy(item); 
+            foreach (GameObject item in instantiatedButtons)
+            {
+                Destroy(item);
+            }
         }
+
+        gridObjectCollection.UpdateCollection();
+        // toggleCollection.ToggleList
+        instantiatedButtons = new List<GameObject>();
+        chosenSet = new List<DataManager.Data>();
     }
 }

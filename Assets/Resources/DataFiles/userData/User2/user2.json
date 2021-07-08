@@ -1,5 +1,10 @@
 {
-  "UserID": 2,
-  "set": 1,
-  "updateRate": 0.10000000149011612
+  "start": "Montag",
+  "entries": {
+    "UserID": 2,
+    "set": 1,
+    "updateRate": 0.10000000149011612
+  },
+  "ende": "Dienstag"
 }
+

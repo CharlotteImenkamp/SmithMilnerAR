@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public GameObject GeneralSettingsMenu;
     public GameObject NewSettingsMenu;
     public GameObject OldSettingsMenu;
+    public GameObject PauseMenu; 
 
     [Header("ButtonObjects")]
     public GameObject radioButtonCollection; 
@@ -101,7 +102,7 @@ public class GameManager : MonoBehaviour
         debugText = debugTextObject.GetComponent<TextMeshPro>();
 
         // Check Input parameters
-        if (GeneralSettingsMenu == null || NewSettingsMenu == null || OldSettingsMenu == null)
+        if (GeneralSettingsMenu == null || NewSettingsMenu == null || OldSettingsMenu == null || PauseMenu == null)
         {
             debugText.text = "Not all Menu Parameters are Set in GameManager."; 
             Debug.LogError("Not all Menu Parameters are Set in GameManager.");
@@ -112,7 +113,8 @@ public class GameManager : MonoBehaviour
 
         mainFolder = "DataFiles";
 
-        ResetToDefault(); 
+        ResetToDefault();
+        generalSettings = DataFile.SecureLoad<ApplicationData>(mainFolder, "generalSettings");
 
         // Add Managers of Type Monobehaviour
         attachedManagerScripts = new List<Type>();
@@ -124,6 +126,8 @@ public class GameManager : MonoBehaviour
         AddSubManager(new AudioManager());
         AddSubManager(new UIManager());
         AddSubManager(new ObjectManager());
+
+        
 
     }
 
@@ -141,6 +145,45 @@ public class GameManager : MonoBehaviour
             gameType = GameType.Locations;
     }
 
+    /// <summary>
+    /// Called in Old Settings menu on radio buttons 
+    /// </summary>
+    /// <param name="type"></param>
+    public void SetGameType(string type)
+    {
+        if(type == "Locations")
+        {
+            gameType = GameType.Locations; 
+        }
+        else if (type == "Prices")
+        {
+            gameType = GameType.Prices; 
+        }
+        else
+        {
+            throw new ArgumentException("...GameManager SetGameType to " + type + " not possible."); 
+        }
+    }
+
+    /// <summary>
+    /// On Pause Menu button clicked. 
+    /// Current Settings stay the same
+    /// </summary>
+    public void ContinueWithLocations(GameObject button)
+    {
+        if(gameType == GameType.Prices)
+        {
+            gameType = GameType.Locations;
+
+            OnUserButtonClicked.RemoveAllListeners();
+            OnUserButtonClicked.AddListener(() => GameStateManager.Instance.StartTestRun(gameType));
+            button.SetActive(false); 
+        }
+        else
+        {
+            button.SetActive(false); 
+        }
+    }
 
     /// <summary>
     /// Helper function for the interaction with UserButton
@@ -161,6 +204,7 @@ public class GameManager : MonoBehaviour
         }
 
     }
+
     #endregion buttons
 
     #region Script Management
@@ -203,7 +247,10 @@ public class GameManager : MonoBehaviour
 
     #region Game Flow
 
-    public void NewGame()
+    /// <summary>
+    /// Called in Pause UI. Reset attached scripts
+    /// </summary>
+    public void NewUser()
     {
         ResetToDefault();
 
@@ -223,10 +270,8 @@ public class GameManager : MonoBehaviour
         enableUserButton = false;
 
         // game
-        gameType = GameType.Locations;
+        gameType = GameType.None;
 
-        // load application data
-        generalSettings = DataFile.SecureLoad<ApplicationData>(mainFolder, "generalSettings");
     }
 
     public void QuitGame()
@@ -247,12 +292,12 @@ public class GameManager : MonoBehaviour
         }
         else if(completedType == GameType.Prices)
         {
+            generalSettings.newUserData.Remove("User" + userID + "/" + "user" + userID); 
             generalSettings.incompleteUserData.Add("User" + userID + "/" + "user" + userID); 
-            // \TODO remove used set from new Sets
         }
         else
         {
-            throw new ArgumentNullException(); 
+            throw new ArgumentException(); 
         }
     }
     #endregion filemanagement

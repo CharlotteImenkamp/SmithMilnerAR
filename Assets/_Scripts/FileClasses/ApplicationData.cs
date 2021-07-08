@@ -14,7 +14,9 @@ public class ApplicationData
         defaultData.objectDataFolder = "settings";
         defaultData.userDataFolder = "data";
 
-        defaultData.newSets = new List<string> { };
+        defaultData.newObjectData = new List<string> { };
+
+        defaultData.newUserData = new List<string> { }; 
         defaultData.incompleteUserData = new List<string> { };
         defaultData.completeUserData = new List<string> { }; 
         
@@ -26,7 +28,9 @@ public class ApplicationData
     public string userDataFolder;
 
     // Sets
-    public List<string> newSets;
+    public List<string> newObjectData;
+
+    public List<string> newUserData; 
     public List<string> incompleteUserData;
     public List<string> completeUserData;
 }

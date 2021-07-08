@@ -15,58 +15,11 @@ public class DataGenerationHelper : MonoBehaviour
         if (saveNewSettings)
         {
             ApplicationData data = new ApplicationData();
-            data.userDataFolder = "data";
-            data.objectDataFolder = "settings";
 
-            data.newSets = new List<string> { "settings_user_4" };
-            data.completeUserData = new List<string> { "settingssettings_1" };
-            data.incompleteUserData = new List<string> { "settings_1","settings_4"};
-
-            DataFile.Save<ApplicationData>(data, "DataFiles", "generalSettings"); 
-
-            //// generate path
-            //string savePath = Path.Combine(Application.persistentDataPath, "test");
-            //if (!Directory.Exists(savePath))
-            //{
-            //    Directory.CreateDirectory(savePath);
-            //}
-
-            //// generate new file
-            //FileStream file;
-            //string fileName = "testData";
-            //string filePath = Path.Combine(savePath, fileName + ".json");
-            //if (!File.Exists(filePath))
-            //{
-            //    file = File.Create(filePath);
-            //}
-            //else
-            //{
-            //    // unique name
-            //    fileName = fileName + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString();
-            //    filePath = Path.Combine(savePath, fileName + ".json");
-            //    //file = File.Create(filePath);
-            //}
-
-            //// start formatter
-            //BinaryFormatter bf = new BinaryFormatter();
-
-            //// start writer
-            //StartFile(bf, filePath);
+            data = DataFile.Load<ApplicationData>("C:\\Users\\Student\\AppData\\LocalLow\\DefaultCompany\\AR_ProjV63\\DataFiles\\generalSettingsTest16150"); 
 
 
-            //// Write into file
-            //var test = new CustomObject("eins", Vector3.zero, Quaternion.identity);
-            //var list = new List<CustomObject>();
-            //list.Add(test);
 
-            //AddLine(bf, new ObjectData(list, Time.deltaTime), filePath);
-            //AddLine(bf, new ObjectData(list, Time.deltaTime + 1), filePath);
-
-            //// end file
-            //EndFile(bf, filePath);
-
-            //SaveNewUserSettings(SaveCurrentLayout(), "", "settings_1", ".json");
-            //SaveNewUserSettings(GenerateTestSet(), "", "/settings_user_4.json");
         }
     }
     //private void StartFile(BinaryFormatter bf, string filepath)
