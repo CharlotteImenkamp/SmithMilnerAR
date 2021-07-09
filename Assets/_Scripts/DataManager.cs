@@ -29,7 +29,6 @@ public class DataManager : MonoBehaviour
     private static StateMachine dataStateMachine = new StateMachine();
 
     #region public parameters
-
     public Data CurrentSettings { get => currentSet; set => currentSet = value; }
 
     // Data to Save
@@ -142,17 +141,24 @@ public class DataManager : MonoBehaviour
     {
         if (data.UserData != null && data.ObjData.gameObjects.Count != 0)
         {
-            currentSet = data;
-
+            // GameManager
             string settingsFolder = GameManager.Instance.generalSettings.objectDataFolder;
             string dataFolder = GameManager.Instance.generalSettings.userDataFolder + "/User" + data.UserData.UserID.ToString();
             string mainFolder = GameManager.Instance.mainFolder;
-            
-            // Save into user folder and into settings folder
-            DataFile.Save<ObjectData>(data.ObjData, Path.Combine(mainFolder, dataFolder), "userSettings" + data.UserData.UserID.ToString());
-            DataFile.Save<ObjectData>(data.ObjData, Path.Combine(mainFolder, settingsFolder), "objectData" + data.UserData.UserID.ToString());
 
-            DataFile.Save<UserSettingsData>(data.UserData, Path.Combine(mainFolder, dataFolder), "user" + data.UserData.UserID.ToString()); 
+            // FileNames
+            string settingsFileName = "settings" + data.UserData.UserID.ToString();
+            string objectFileName = "objectData" + data.UserData.UserID.ToString();
+            string userFileName = "user" + data.UserData.UserID.ToString(); 
+
+            // Save into user folder and into settings folder
+            DataFile.Save<ObjectData>(data.ObjData, Path.Combine(mainFolder, dataFolder), settingsFileName);
+            DataFile.Save<ObjectData>(data.ObjData, Path.Combine(mainFolder, settingsFolder), objectFileName );
+            DataFile.Save<UserSettingsData>(data.UserData, Path.Combine(mainFolder, dataFolder), userFileName);
+
+            // Add to general settings
+            GameManager.Instance.generalSettings.newObjectData.Add(objectFileName);
+            GameManager.Instance.generalSettings.newUserData.Add("User" + data.UserData.UserID.ToString() + "/"+ userFileName);
         }
         else
         {

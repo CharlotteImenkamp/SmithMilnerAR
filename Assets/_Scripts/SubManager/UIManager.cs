@@ -105,8 +105,7 @@ public class UIManager : SubManager
                 break;
 
             case "Pause":
-                CloseAllMenus(); 
-                Debug.LogWarning("UIManager::OnGameStateLeft Pause not implemented.");
+                CloseAllMenus();
                 break;
 
             case "End":

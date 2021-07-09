@@ -64,6 +64,11 @@ public class CustomToggleListPopulator : MonoBehaviour
         chosenSet = new List<DataManager.Data>();
     }
 
+    public void OnEnable()
+    {
+        ClearList(); 
+    }
+
 
     public void MakeToggleList(string userSet)
     {
@@ -120,6 +125,9 @@ public class CustomToggleListPopulator : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// If the menu is called a second time, it is necessary to clear the list before
+    /// </summary>
     private void ClearList()
     {
         if(instantiatedButtons != null)
@@ -129,9 +137,9 @@ public class CustomToggleListPopulator : MonoBehaviour
                 Destroy(item);
             }
         }
+        if(gridObjectCollection != null)
+            gridObjectCollection.UpdateCollection();
 
-        gridObjectCollection.UpdateCollection();
-        // toggleCollection.ToggleList
         instantiatedButtons = new List<GameObject>();
         chosenSet = new List<DataManager.Data>();
     }

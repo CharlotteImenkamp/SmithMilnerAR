@@ -201,13 +201,15 @@ public class CustomScrollableListPopulator : MonoBehaviour
         gridObjectCollection.UpdateCollection();
     }
 
+
     /// <summary>
     /// Called in userInputHelper to combine user data and object data
     /// </summary>
     /// <returns></returns>
     public ObjectData GetInstantiatedObjects()
     {
+        ObjectData newData = new ObjectData(objectCreator.InstantiatedObjects, Time.realtimeSinceStartup);
         objectCreator.RemoveAllObjects();
-        return new ObjectData(objectCreator.InstantiatedObjects, Time.realtimeSinceStartup);
+        return newData; 
     }
 }
