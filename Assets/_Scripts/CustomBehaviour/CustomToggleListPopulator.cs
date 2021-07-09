@@ -54,12 +54,6 @@ public class CustomToggleListPopulator : MonoBehaviour
             gridObjectCollection.Anchor = LayoutAnchor.UpperLeft;
         }
 
-        // Toggle Collection 
-        if (toggleCollection == null)
-        {
-            toggleCollection = parentTransform.AddComponent<InteractableToggleCollection>();
-        }
-
         instantiatedButtons = new List<GameObject>();
         chosenSet = new List<DataManager.Data>();
     }

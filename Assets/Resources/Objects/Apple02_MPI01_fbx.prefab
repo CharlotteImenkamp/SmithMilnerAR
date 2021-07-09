@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: -3566214529670493533}
   - component: {fileID: 6976585751296246915}
   - component: {fileID: 1533467020148173379}
+  - component: {fileID: 354237054780447870}
   m_Layer: 0
   m_Name: Apple02_MPI01_fbx
   m_TagString: InteractionObject
@@ -141,7 +142,7 @@ MonoBehaviour:
   hostTransform: {fileID: 8007268651012022120}
   manipulationType: 3
   twoHandedManipulationType: 3
-  allowFarManipulation: 1
+  allowFarManipulation: 0
   useForcesForNearManipulation: 0
   oneHandRotationModeNear: 1
   oneHandRotationModeFar: 1
@@ -209,7 +210,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 126
   m_CollisionDetection: 0
 --- !u!65 &8521255145242212215
 BoxCollider:
@@ -335,7 +336,7 @@ MonoBehaviour:
   targetObject: {fileID: 7229500906948068818}
   boundsOverride: {fileID: 8521255145242212215}
   boundsCalculationMethod: 0
-  activation: 1
+  activation: 0
   flattenAxis: 0
   uniformScaleOnFlattenedAxis: 1
   boxPadding: {x: 0, y: 0, z: 0}
@@ -344,8 +345,7 @@ MonoBehaviour:
   linksConfiguration: {fileID: 114435853832332800, guid: e9e54ebd208487c409e32502a50a1f20,
     type: 3}
   scaleHandlesConfiguration: {fileID: 0}
-  rotationHandlesConfiguration: {fileID: 114187175676110674, guid: e9e54ebd208487c409e32502a50a1f20,
-    type: 3}
+  rotationHandlesConfiguration: {fileID: 0}
   translationHandlesConfiguration: {fileID: 0}
   handleProximityEffectConfiguration: {fileID: 114927192352316934, guid: e9e54ebd208487c409e32502a50a1f20,
     type: 3}
@@ -552,3 +552,15 @@ MonoBehaviour:
   localCenter: {x: 0, y: 0, z: 0}
   bounds: {x: 0, y: 0}
   touchableCollider: {fileID: 8521255145242212215}
+--- !u!114 &354237054780447870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7229500906948068818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dd05758fbd494440a3a53ba8b7c96b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

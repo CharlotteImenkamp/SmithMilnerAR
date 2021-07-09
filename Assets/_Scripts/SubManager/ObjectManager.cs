@@ -130,8 +130,8 @@ public class ObjectManager : SubManager
         testPosition= Vector3.zero;
         testRotation = Quaternion.identity;
         currentData.ObjData = null;
-        currentData.UserData = null; 
-        objectCreator = null;
+        currentData.UserData = null;
+        objectCreator.Reset();
     }
 
 

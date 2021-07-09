@@ -20,8 +20,13 @@ public class GameManager : MonoBehaviour
     public GameObject OldSettingsMenu;
     public GameObject PauseMenu; 
 
-    [Header("ButtonObjects")]
-    public GameObject radioButtonCollection; 
+    [Header("Collections")]
+    public GameObject radioButtonCollection;
+    [Tooltip("Collection to choose between complete/incomplete or new set")]
+    public InteractableToggleCollection toggleCollectionSet;
+
+    [Tooltip("Collection to choose between users")]
+    public GameObject toggleCollectionUserParent; 
 
     [Header("InteractionObjects")]
     public GameObject parentInteractionObject;
@@ -114,7 +119,7 @@ public class GameManager : MonoBehaviour
         mainFolder = "DataFiles";
 
         ResetToDefault();
-        generalSettings = DataFile.SecureLoad<ApplicationData>(mainFolder, "generalSettings");
+        generalSettings = DataFile.SecureLoad<ApplicationData>(Path.Combine(mainFolder, "generalSettings"));
 
         // Add Managers of Type Monobehaviour
         attachedManagerScripts = new List<Type>();
@@ -276,10 +281,12 @@ public class GameManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Called in General Menu on Quit Game Button 
+    /// </summary>
     public void QuitGame()
     {
-        // Change state to End
-        GameStateManager.Instance.EndGame(GameType.Locations); 
+        Application.Quit(); 
     }
 
     #endregion Game Flow 

@@ -110,6 +110,13 @@ public class ObjectCreator : ScriptableObject
         instantiatedObjects.Clear();
     }
 
+    public void Reset()
+    {
+        if (instantiatedObjects != null)
+            RemoveAllObjects(); 
+
+    }
+
     #endregion public methods
 
     #region private methods
@@ -314,6 +321,8 @@ public class ObjectCreator : ScriptableObject
         objMan.OnManipulationStarted.AddListener(helper.AddObject);
         objMan.OnManipulationEnded.AddListener(helper.RemoveObject);
     }
+
+    
 
     #endregion private methods
 

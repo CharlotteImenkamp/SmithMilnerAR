@@ -51,7 +51,7 @@ class LoadSettings : IState
         for (int i = 0; i < NumNew; i++)
         {
             var filePath = Path.Combine(mainFolder, objectDataFolder, GameManager.Instance.generalSettings.newObjectData[i]);
-            var set = DataFile.Load<ObjectData>(filePath);
+            var set = DataFile.SecureLoad<ObjectData>(filePath);
 
             newData.Add(set); 
         }
@@ -73,11 +73,11 @@ class LoadSettings : IState
         // load each file into own parameter and save in DataManager
         for (int i = 0; i < N; i++)
         {
-            var filePath = Path.Combine(mainFolder, userDataFolder, path[i]);
-            var userData = DataFile.Load<UserSettingsData>(filePath);
+            var filePath = Path.Combine(mainFolder, userDataFolder, path[i]); 
+            var userData = DataFile.SecureLoad<UserSettingsData>(filePath );       
 
             var objPath = Path.Combine(mainFolder, userDataFolder, "User" + userData.UserID.ToString(), "settings" + userData.UserID.ToString());
-            var objData = DataFile.Load<ObjectData>(objPath);
+            var objData = DataFile.SecureLoad<ObjectData>(objPath);
 
             newData.Add(new DataManager.Data(objData, userData));
         }

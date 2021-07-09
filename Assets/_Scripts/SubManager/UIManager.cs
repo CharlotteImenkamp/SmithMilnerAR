@@ -82,14 +82,11 @@ public class UIManager : SubManager
             case "SettingsMenu":
                 CloseAllMenus();
 
-                // Apply user Settings, if old ones were used
-                if (GameManager.Instance.radioButtonCollection.GetComponentInChildren<InteractableToggleCollection>() != null)
-                {
+                // Apply user Settings, if old ones were use
                     DataManager.Instance.SetCurrentUserSettings(
-                                        GameManager.Instance.radioButtonCollection
-                                        .transform.Find("ScrollParent")
+                                        GameManager.Instance.toggleCollectionUserParent
                                         .GetComponentInChildren<InteractableToggleCollection>().CurrentIndex);
-                }              
+                          
                 break;
 
             case "LocationTest":

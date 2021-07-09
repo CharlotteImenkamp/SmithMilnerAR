@@ -1,28 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
 public class DataFile
 {
+    static string fileending = ".json"; 
 
     /// <summary>
     /// Try from persistent datapath first, then try from resources or generate a default set
     /// </summary>
     /// <param name="filepath">local path with filename without ending</param>
     /// <returns></returns>
-    public static T SecureLoad<T>(string filepath, string filename) where T: new()
+    public static T SecureLoad<T>(string filepath) where T: new()
     {
         string jsonString;
+
         T newData = new T(); 
 
         // Load from persistent Datapath
-        string path = Path.Combine(Application.persistentDataPath, filepath, filename);
+        string path = Path.Combine(Application.persistentDataPath, filepath);
 
-        if (File.Exists(path + ".json"))
+        if (File.Exists(path + fileending))
         {
-            jsonString = File.ReadAllText(path + ".json");
+            jsonString = File.ReadAllText(path + fileending);
             JsonFile<T> file = JsonUtility.FromJson<JsonFile<T>>(jsonString);
             newData = file.entries;
 
@@ -32,24 +35,21 @@ public class DataFile
         else
         {
             // else load from Resources
-            path = Path.Combine(filepath, filename);
-            var textFile = Resources.Load<TextAsset>(path);
+            var textFile = Resources.Load<TextAsset>(filepath);
             if (textFile != null)
             {
                 JsonFile<T> file = JsonUtility.FromJson<JsonFile<T>>(textFile.text);
                 newData = file.entries;
-                GameManager.Instance.debugText.text = "UserSettings data loaded from Resources.";
-                Debug.Log("UserSettings data from Resources.");
+                GameManager.Instance.debugText.text = " data loaded from Resources.";
+                Debug.Log(" data from Resources.");
 
                 // Save in persistent Datapath for next time
-                Save(newData, filepath, filename);
+                Save(newData, Path.GetDirectoryName(filepath), Path.GetFileName(filepath));
             }
-
-            // or generate default data
             else
             {
-                GameManager.Instance.debugText.text = "UserSettings data not found.";
-                Debug.LogWarning("UserSettings data not found.");
+                GameManager.Instance.debugText.text = "data not found at path " + filepath;
+                Debug.LogWarning("data not found at path " + filepath);
 
             }
         }
@@ -69,9 +69,9 @@ public class DataFile
         // Load from persistent Datapath
         string path = Path.Combine(Application.persistentDataPath, completePath);
 
-        if (File.Exists(path + ".json"))
+        if (File.Exists(path + fileending))
         {
-            jsonString = File.ReadAllText(path + ".json");
+            jsonString = File.ReadAllText(path + fileending);
             JsonFile<T> file = JsonUtility.FromJson<JsonFile<T>>(jsonString);
             T newData = file.entries; 
 
@@ -106,7 +106,7 @@ public class DataFile
         jsonString += EndFile(); 
 
         // override existing text
-        UnityEngine.Windows.File.WriteAllBytes( filePath + ".json", Encoding.ASCII.GetBytes(jsonString));
+        UnityEngine.Windows.File.WriteAllBytes( filePath + fileending, Encoding.ASCII.GetBytes(jsonString)); // \TODO Löschen!!
 
         // debug
         GameManager.Instance.debugText.text = "Data saved into persistent Path.";
@@ -130,7 +130,7 @@ public class DataFile
         jsonString += EndFile();
 
         // override existing text
-        UnityEngine.Windows.File.WriteAllBytes(filePath + ".json", Encoding.ASCII.GetBytes(jsonString));
+        UnityEngine.Windows.File.WriteAllBytes(filePath + fileending, Encoding.ASCII.GetBytes(jsonString));
 
         // debug
         GameManager.Instance.debugText.text = "Data overritten in " + filePath;
@@ -151,7 +151,7 @@ public class DataFile
         string filePath = Path.Combine(directory, fileName);
 
         // override existing text
-        UnityEngine.Windows.File.WriteAllBytes(filePath + ".json", Encoding.ASCII.GetBytes(jsonString));
+        UnityEngine.Windows.File.WriteAllBytes(filePath + fileending, Encoding.ASCII.GetBytes(jsonString));
 
         // debug
         GameManager.Instance.debugText.text = "Data saved into persistent Path.";
@@ -204,7 +204,7 @@ public class DataFile
     /// <returns></returns>
     public static string GenerateUniqueFileName(string directoryPath, string filename)
     {
-        string filePath = Path.Combine(directoryPath, filename + ".json");
+        string filePath = Path.Combine(directoryPath, filename + fileending);
 
         // File
         if (File.Exists(filePath))

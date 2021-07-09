@@ -75,6 +75,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
     }
 
     public ScrollingObjectCollection ScrollView { get => scrollView; set => scrollView = value; }
+    private ClippingBox clippingBox; 
 
     private void OnEnable()
     {
@@ -115,6 +116,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
         }
 
         gridObjectCollection = scrollView.GetComponentInChildren<GridObjectCollection>();
+        clippingBox = scrollView.GetComponentInChildren<ClippingBox>(); 
 
         if (gridObjectCollection == null)
         {
@@ -174,7 +176,12 @@ public class CustomScrollableListPopulator : MonoBehaviour
             parent.GetComponent<ButtonConfigHelper>().MainLabelText = obj.name;
             parent.GetComponent<ButtonConfigHelper>().OnClick.AddListener(() => InstantiateObject(obj, parent));
 
-            // clip.AddRenderer(parent.GetComponent<Renderer>());
+            var renderer = parent.GetComponentsInChildren<MeshRenderer>(); 
+            foreach (var r in renderer)
+            {
+                clippingBox.AddRenderer(r);
+            }
+            
 
             yield return null;
         }
@@ -185,6 +192,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
 
         // Finally, manually call UpdateCollection to set up the collection
         gridObjectCollection.UpdateCollection();
+        //clippingBox.
     }
 
     /// <summary>
