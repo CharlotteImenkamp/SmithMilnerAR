@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     public InteractableToggleCollection toggleCollectionSet;
 
     [Tooltip("Collection to choose between users")]
-    public GameObject toggleCollectionUserParent; 
+    public InteractableToggleCollection toggleCollectionUser; 
 
     [Header("InteractionObjects")]
     public GameObject parentInteractionObject;

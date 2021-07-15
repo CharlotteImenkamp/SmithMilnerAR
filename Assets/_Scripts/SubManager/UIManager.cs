@@ -81,12 +81,9 @@ public class UIManager : SubManager
 
             case "SettingsMenu":
                 CloseAllMenus();
-
-                // Apply user Settings, if old ones were use
-                    DataManager.Instance.SetCurrentUserSettings(
-                                        GameManager.Instance.toggleCollectionUserParent
-                                        .GetComponentInChildren<InteractableToggleCollection>().CurrentIndex);
-                          
+                // Apply user Settings
+                DataManager.Instance.SetCurrentUserSettings(
+                                     GameManager.Instance.toggleCollectionUser.CurrentIndex);
                 break;
 
             case "LocationTest":

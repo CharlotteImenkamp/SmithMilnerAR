@@ -135,30 +135,12 @@ public class CustomScrollableListPopulator : MonoBehaviour
             scrollView.AddContent(collectionGameObject);
         }
 
-
-        if (!lazyLoad)
+        if (loader != null)
         {
-            // Buttons
-            var parent = Instantiate<GameObject>(buttonObject);
-            parent.transform.parent = gridObjectCollection.gameObject.transform;
-            parent.SetActive(true); 
-
-            var buttonContent = parent.transform.Find("ButtonContent"); 
-
-            // Objects
-            scrollView.gameObject.SetActive(true);
-            gridObjectCollection.UpdateCollection();
-        }
-        else
-        {
-            if (loader != null)
-            {
-                loader.SetActive(true);
-            }
-
-            StartCoroutine(UpdateListOverTime(loader));
+            loader.SetActive(true);
         }
 
+        StartCoroutine(UpdateListOverTime(loader));
         
     }
 
@@ -169,20 +151,18 @@ public class CustomScrollableListPopulator : MonoBehaviour
             // Buttons
             var parent = Instantiate<GameObject>(buttonObject);
             parent.transform.parent = gridObjectCollection.gameObject.transform;
-            parent.transform.localRotation = Quaternion.identity; 
+            parent.transform.localRotation = Quaternion.identity;
             parent.SetActive(true);
 
             var obj = dynamicItems[currItemCount];
             parent.GetComponent<ButtonConfigHelper>().MainLabelText = obj.name;
             parent.GetComponent<ButtonConfigHelper>().OnClick.AddListener(() => InstantiateObject(obj, parent));
 
-            var renderer = parent.GetComponentsInChildren<MeshRenderer>(); 
+            var renderer = parent.GetComponentsInChildren<MeshRenderer>();
             foreach (var r in renderer)
             {
                 clippingBox.AddRenderer(r);
             }
-            
-
             yield return null;
         }
 
@@ -192,7 +172,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
 
         // Finally, manually call UpdateCollection to set up the collection
         gridObjectCollection.UpdateCollection();
-        //clippingBox.
+        scrollView.UpdateContent(); 
     }
 
     /// <summary>
@@ -207,6 +187,12 @@ public class CustomScrollableListPopulator : MonoBehaviour
         // Disable Button to prevent several objects of the save type in scene  //\ TODO bessere lösung?
         button.SetActive(false);
         gridObjectCollection.UpdateCollection();
+
+        var renderer = button.GetComponentsInChildren<MeshRenderer>();
+        foreach (var r in renderer)
+        {
+            clippingBox.RemoveRenderer(r);
+        }
     }
 
 
@@ -219,5 +205,13 @@ public class CustomScrollableListPopulator : MonoBehaviour
         ObjectData newData = new ObjectData(objectCreator.InstantiatedObjects, Time.realtimeSinceStartup);
         objectCreator.RemoveAllObjects();
         return newData; 
+    }
+
+    /// <summary>
+    /// Smoothly moves the scroll container a relative number of tiers of cells.
+    /// </summary>
+    public void ScrollByTier(int amount)
+    {
+        scrollView.MoveByTiers(amount);
     }
 }

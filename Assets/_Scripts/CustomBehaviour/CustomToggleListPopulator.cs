@@ -29,17 +29,20 @@ public class CustomToggleListPopulator : MonoBehaviour
     private GridObjectCollection gridObjectCollection = null;
     private InteractableToggleCollection toggleCollection = null;
 
+    /// <summary>
+    /// TODO Struktur ändern, sodass auch GameObjects unter der Parent Transform erstellt werden. Wie in Custom Scrollable List Populator
+    /// </summary>
     private void Start()
     {
         //  Check components
         if (gridObjectCollection == null)
         {
-            gridObjectCollection = parentTransform.GetComponent<GridObjectCollection>();
+            gridObjectCollection = parentTransform.GetComponentInChildren<GridObjectCollection>();
         }
 
         if (toggleCollection == null)
         {
-            toggleCollection = parentTransform.GetComponent<InteractableToggleCollection>();
+            toggleCollection = parentTransform.GetComponentInChildren<InteractableToggleCollection>();
         }
 
         // Grid Object Collection to organize Buttons
@@ -47,7 +50,7 @@ public class CustomToggleListPopulator : MonoBehaviour
         {
             gridObjectCollection = parentTransform.AddComponent<GridObjectCollection>();
             gridObjectCollection.CellWidth = 0.15f;
-            gridObjectCollection.CellHeight = 0.03f;
+            gridObjectCollection.CellHeight = 0.035f;
             gridObjectCollection.SurfaceType = ObjectOrientationSurfaceType.Plane;
             gridObjectCollection.Layout = LayoutOrder.ColumnThenRow;
             gridObjectCollection.Columns = 1;
@@ -63,7 +66,10 @@ public class CustomToggleListPopulator : MonoBehaviour
         ClearList(); 
     }
 
-
+    /// <summary>
+    /// Called on Buttons in Scene 
+    /// </summary>
+    /// <param name="userSet"></param>
     public void MakeToggleList(string userSet)
     {
         try
@@ -87,12 +93,13 @@ public class CustomToggleListPopulator : MonoBehaviour
                 throw new System.Exception("CustomToggle List Populator, incorrect input");
             }
 
+            // List for Toggle Collection 
             Interactable[] newToggleList = new Interactable[chosenSet.Count];
 
             // Generate Objects
             for (int i = 0; i < chosenSet.Count; i++)
             {
-                GameObject itemInstance = Instantiate(dynamicItem, parentTransform.transform);
+                GameObject itemInstance = Instantiate(dynamicItem, gridObjectCollection.transform);
 
                 itemInstance.GetComponent<ButtonConfigHelper>().MainLabelText = "UserID " + chosenSet[i].UserData.UserID.ToString() +
                                                                                 " SetType " + chosenSet[i].UserData.set.ToString();
@@ -103,6 +110,7 @@ public class CustomToggleListPopulator : MonoBehaviour
                 instantiatedButtons.Add(itemInstance);
             }
 
+            // Update and Assign Changes
             gridObjectCollection.UpdateCollection();
 
             if(newToggleList.Length > 0)
@@ -112,8 +120,7 @@ public class CustomToggleListPopulator : MonoBehaviour
         }
         catch (System.Exception)
         {
-            Debug.LogWarning("Custom Toggle List Populator not able to create a list." +
-                "Check, if it is inactive at start"); 
+            Debug.LogWarning("Custom Toggle List Populator not able to create a list."); 
         }
 
         

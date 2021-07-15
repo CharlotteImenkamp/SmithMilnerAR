@@ -110,7 +110,7 @@ public class DataFile
 
         // debug
         GameManager.Instance.debugText.text = "Data saved into persistent Path.";
-        Debug.LogWarning("Data saved into persistent Path.");
+        Debug.Log("Data saved into persistent Path: " + filePath);
     }
 
     /// <summary>
