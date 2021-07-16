@@ -10,7 +10,7 @@ using Microsoft.MixedReality.Toolkit.Utilities;
 using Microsoft.MixedReality.Toolkit.UI.BoundsControl;
 using Microsoft.MixedReality.Toolkit;
 
-// EnsureComponnet< besser? fügt hinzu, wenn nicht da ist
+
 
 
 /// <summary>
@@ -23,8 +23,12 @@ public class ObjectCreator : ScriptableObject
     public List<GameObject> InstantiatedObjects { get => instantiatedObjects; set => instantiatedObjects = value; }
     
     private string boundingBoxFolderName;
+    private string soundFolderName; 
     private string prefabFolderName;
     private List<GameObject> instantiatedObjects;
+
+    AudioClip rotateStart;
+    AudioClip rotateStop; 
 
     #region public methods
     public ObjectCreator()
@@ -33,21 +37,65 @@ public class ObjectCreator : ScriptableObject
 
         prefabFolderName = "Objects";
         boundingBoxFolderName = "BoundingBox";
+        soundFolderName = "Sound";
 
+        
     }
+
+    public void OnEnable()
+    {
+        // Audio Sounds
+        var rotfileName = "/MRTK_Rotate_Start";
+        rotateStart = Resources.Load<AudioClip>(soundFolderName + rotfileName);
+        if (rotateStart == null)
+            throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file {0} found", rotfileName);
+
+        var fileName = "/MRTK_Rotate_Stop";
+        rotateStop = Resources.Load<AudioClip>(soundFolderName + fileName);
+        if (rotateStop == null)
+            throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file {0} found", fileName);
+    }
+
+
     public void SpawnObject(GameObject obj, GameObject parent, Vector3 position, Quaternion rotation, ConfigType config)
     {
+
         ApplyRelevantComponents(obj);
         ApplyConfiguration(obj, config);
 
         var generatedObject = Instantiate(obj, position, rotation);
+
+
+        // Add Sounds to Movement
+        generatedObject.GetComponent<BoundsControl>().RotateStarted.RemoveAllListeners(); 
+        generatedObject.GetComponent<BoundsControl>().RotateStarted.AddListener(() => {
+            generatedObject.GetComponent<BoundsControl>().GetComponent<AudioSource>().PlayOneShot(rotateStart);
+            Debug.Log("Manipulated.............................");
+        });
+
+        generatedObject.GetComponent<BoundsControl>().RotateStopped.RemoveAllListeners();
+        generatedObject.GetComponent<BoundsControl>().RotateStopped.AddListener(() => {
+            generatedObject.GetComponent<BoundsControl>().GetComponent<AudioSource>().PlayOneShot(rotateStop);
+            Debug.Log("Manipulated.............................");
+        });
+
+        generatedObject.GetComponent<ObjectManipulator>().OnManipulationStarted.RemoveAllListeners();
+        generatedObject.GetComponent<ObjectManipulator>().OnManipulationStarted.RemoveAllListeners();
+
+        generatedObject.GetComponent<ObjectManipulator>().OnManipulationStarted.AddListener(HandleOnManipulationStarted); 
+        generatedObject.GetComponent<ObjectManipulator>().OnManipulationEnded.AddListener(HandleOnManipulationStopped);
+
+
+        generatedObject.SetActive(true);
+
+
 
         generatedObject.name = generatedObject.name.Replace("(Clone)", ""); 
         generatedObject.transform.parent = parent.transform;
         generatedObject.transform.localPosition = position;
         generatedObject.transform.localRotation = rotation;
 
-        generatedObject.SetActive(true);
+        
         instantiatedObjects.Add(generatedObject);
     }
 
@@ -272,31 +320,34 @@ public class ObjectCreator : ScriptableObject
         // BoundsControl
         var boundsControl = loadedObj.EnsureComponent<BoundsControl>();
             boundsControl.Target = loadedObj;
-            boundsControl.BoundsControlActivation = Microsoft.MixedReality.Toolkit.UI.BoundsControlTypes.BoundsControlActivationType.ActivateOnStart;
+            boundsControl.BoundsControlActivation = Microsoft.MixedReality.Toolkit.UI.BoundsControlTypes.BoundsControlActivationType.ActivateByProximity;
             boundsControl.BoundsOverride = col;
             boundsControl.CalculationMethod = Microsoft.MixedReality.Toolkit.UI.BoundsControlTypes.BoundsCalculationMethod.RendererOverCollider;
 
-            // Scale Handle
-            ScaleHandlesConfiguration config = CreateInstance<ScaleHandlesConfiguration>();
+        // Scale Handle
+        ScaleHandlesConfiguration config = CreateInstance<ScaleHandlesConfiguration>(); 
             config.ShowScaleHandles = false;  
             boundsControl.ScaleHandlesConfig = config;
 
-            // Translation Handle
-            TranslationHandlesConfiguration tConfig = CreateInstance<TranslationHandlesConfiguration>();
-            tConfig.ShowHandleForX = false;
+        // Translation Handle
+        TranslationHandlesConfiguration tConfig = CreateInstance<TranslationHandlesConfiguration>();
+        tConfig.ShowHandleForX = false;
             tConfig.ShowHandleForY = false;
             tConfig.ShowHandleForZ = false; 
             boundsControl.TranslationHandlesConfig = tConfig;
 
-            // Rotation Handle
-            var rotationHandle = CreateInstance<RotationHandlesConfiguration>();
+        // Rotation Handle
+        var rotationHandle = CreateInstance<RotationHandlesConfiguration>();
 
-            var mat = Resources.Load<Material>(boundingBoxFolderName + "/BoundingBoxHandleWhite");
-            if (mat == null)
-                throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file found");
-            rotationHandle.HandleMaterial = mat;
 
-            var grMat = Resources.Load<Material>(boundingBoxFolderName + "/BoundingBoxHandleBlueGrabbed");
+        // TODO nicht aus resources laden. steht hier: https://docs.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/features/ux-building-blocks/bounds-control?view=mrtkunity-2021-05
+        var mat = Resources.Load<Material>(boundingBoxFolderName + "/BoundingBoxHandleWhite");
+
+        if (mat == null)
+            throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file found");
+        rotationHandle.HandleMaterial = mat;
+
+        var grMat = Resources.Load<Material>(boundingBoxFolderName + "/BoundingBoxHandleBlueGrabbed");
             if (grMat == null)
                 throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file found");
             rotationHandle.HandleGrabbedMaterial = grMat;
@@ -322,7 +373,31 @@ public class ObjectCreator : ScriptableObject
         objMan.OnManipulationEnded.AddListener(helper.RemoveObject);
     }
 
-    
+    private void HandleOnManipulationStarted(ManipulationEventData eventData)
+    {
+        Debug.Log("Manipulated............................."); 
+
+        var fileName = "/MRTK_Manipulation_Start";
+        var manStart = Resources.Load<AudioClip>(soundFolderName + fileName);
+        if (manStart == null)
+            throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file {0} found", fileName);
+        eventData.ManipulationSource.GetComponent<AudioSource>().PlayOneShot(manStart); 
+    }
+
+    private void HandleOnManipulationStopped(ManipulationEventData eventData)
+    {
+        Debug.Log("Manipulated.............................");
+
+        var fileName = "/MRTK_Manipulation_End"; 
+        var manStop = Resources.Load<AudioClip>(soundFolderName + fileName);
+        if (manStop == null)
+            throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file {0} found", fileName);
+        eventData.ManipulationSource.GetComponent<AudioSource>().PlayOneShot(manStop);
+    }
+
+
+
+
 
     #endregion private methods
 

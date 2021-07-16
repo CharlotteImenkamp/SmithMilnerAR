@@ -90,7 +90,6 @@ public class CustomScrollableListPopulator : MonoBehaviour
     {
         objectCreator = ScriptableObject.CreateInstance<ObjectCreator>();
         objectCreator.PrefabFolderName = "Objects";
-        objectCreator.BoundingBoxFolderName = "BoundingBox";
 
         dynamicItems = Resources.LoadAll<GameObject>("Objects/");
         numItems = dynamicItems.Length;

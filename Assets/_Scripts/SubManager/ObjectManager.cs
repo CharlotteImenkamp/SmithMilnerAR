@@ -20,7 +20,6 @@ public class ObjectManager : SubManager
         objectCreator = ScriptableObject.CreateInstance<ObjectCreator>();
         parent = GameManager.Instance.parentInteractionObject; 
         objectCreator.PrefabFolderName = "Objects";
-        objectCreator.BoundingBoxFolderName = "BoundingBox";
     }
 
     #region gameStates
