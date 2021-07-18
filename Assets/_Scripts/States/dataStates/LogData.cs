@@ -147,10 +147,11 @@ class LogData : IState
         json_continuousLogging += DataFile.EndFile();
 
         // Save last Object Positions in new File
-        json_endState += DataFile.AddLine(GetObjectsInScene());
+        json_endState += DataFile.AddLine<ObjectData>(GetObjectsInScene());
         json_endState += DataFile.EndFile();
 
-        DataFile.Save(json_endState, directoryPath, fileName_endState); 
+        DataFile.Save(json_endState, directoryPath, fileName_endState);
+        DataFile.Save(json_continuousLogging, directoryPath, fileName_continuousLogging); 
     }
 
     void PrepareHeadData()

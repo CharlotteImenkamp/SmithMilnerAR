@@ -88,21 +88,25 @@ public class GameStateManager: MonoBehaviour
     {
         if (gameType == GameType.Prices)
         {
+            // stop logging before state change to get the objects in the scene
+            DataManager.Instance.StopDataLogging();
+
+            // Change State
             gameStateMachine.ChangeState(new Pause());
-            DataManager.Instance.StopDataLogging(); 
         }
         else if (gameType == GameType.Locations)
         {
+            // stop logging before state change to get the objects in the scene
+            DataManager.Instance.StopDataLogging();
+
+            // Change State
             gameStateMachine.ChangeState(new End());
-            DataManager.Instance.StopDataLogging(); 
         }
         else
         {
             throw new ArgumentException("GameStateManager::EndGame no valid GameType.");
         }
-
         GameManager.Instance.OnUserButtonClicked.RemoveAllListeners(); 
-
     }
     #endregion
 

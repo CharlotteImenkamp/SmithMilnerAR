@@ -11,8 +11,6 @@ using Microsoft.MixedReality.Toolkit.UI.BoundsControl;
 using Microsoft.MixedReality.Toolkit;
 
 
-
-
 /// <summary>
 ///  Helper class to use Functions from MonoBehaviour in ObjectManager
 /// </summary>
@@ -26,25 +24,22 @@ public class ObjectCreator : ScriptableObject
     private string soundFolderName; 
     private string prefabFolderName;
     private List<GameObject> instantiatedObjects;
-
-    AudioClip rotateStart;
-    AudioClip rotateStop; 
+    private AudioClip rotateStart;
+    private AudioClip rotateStop;
+    private AudioClip manStart;
+    private AudioClip manStop; 
 
     #region public methods
-    public ObjectCreator()
-    {
-        instantiatedObjects = new List<GameObject>();
 
+    public void OnEnable()
+    {
+        // parameters
+        instantiatedObjects = new List<GameObject>();
         prefabFolderName = "Objects";
         boundingBoxFolderName = "BoundingBox";
         soundFolderName = "Sound";
 
-        
-    }
-
-    public void OnEnable()
-    {
-        // Audio Sounds
+        // Audio Rotation
         var rotfileName = "/MRTK_Rotate_Start";
         rotateStart = Resources.Load<AudioClip>(soundFolderName + rotfileName);
         if (rotateStart == null)
@@ -54,6 +49,17 @@ public class ObjectCreator : ScriptableObject
         rotateStop = Resources.Load<AudioClip>(soundFolderName + fileName);
         if (rotateStop == null)
             throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file {0} found", fileName);
+
+        // Audio Manipulation
+        var fileNameManipulation = "/MRTK_Manipulation_End";
+        manStop = Resources.Load<AudioClip>(soundFolderName + fileNameManipulation);
+        if (manStop == null)
+            throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file {0} found", fileNameManipulation);
+
+        var fileNameManStart = "/MRTK_Manipulation_Start";
+        manStart = Resources.Load<AudioClip>(soundFolderName + fileNameManStart);
+        if (manStart == null)
+            throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file {0} found", fileNameManStart);
     }
 
 
@@ -68,16 +74,10 @@ public class ObjectCreator : ScriptableObject
 
         // Add Sounds to Movement
         generatedObject.GetComponent<BoundsControl>().RotateStarted.RemoveAllListeners(); 
-        generatedObject.GetComponent<BoundsControl>().RotateStarted.AddListener(() => {
-            generatedObject.GetComponent<BoundsControl>().GetComponent<AudioSource>().PlayOneShot(rotateStart);
-            Debug.Log("Manipulated.............................");
-        });
+        generatedObject.GetComponent<BoundsControl>().RotateStarted.AddListener(()=>HandleOnRotationStarted(generatedObject));
 
         generatedObject.GetComponent<BoundsControl>().RotateStopped.RemoveAllListeners();
-        generatedObject.GetComponent<BoundsControl>().RotateStopped.AddListener(() => {
-            generatedObject.GetComponent<BoundsControl>().GetComponent<AudioSource>().PlayOneShot(rotateStop);
-            Debug.Log("Manipulated.............................");
-        });
+        generatedObject.GetComponent<BoundsControl>().RotateStopped.AddListener(() => HandleOnRotationStopped(generatedObject));
 
         generatedObject.GetComponent<ObjectManipulator>().OnManipulationStarted.RemoveAllListeners();
         generatedObject.GetComponent<ObjectManipulator>().OnManipulationStarted.RemoveAllListeners();
@@ -85,10 +85,7 @@ public class ObjectCreator : ScriptableObject
         generatedObject.GetComponent<ObjectManipulator>().OnManipulationStarted.AddListener(HandleOnManipulationStarted); 
         generatedObject.GetComponent<ObjectManipulator>().OnManipulationEnded.AddListener(HandleOnManipulationStopped);
 
-
         generatedObject.SetActive(true);
-
-
 
         generatedObject.name = generatedObject.name.Replace("(Clone)", ""); 
         generatedObject.transform.parent = parent.transform;
@@ -250,9 +247,6 @@ public class ObjectCreator : ScriptableObject
     {
         loadedObj.tag = "InteractionObject"; 
 
-        // Custom Object Helper
-        var helper = loadedObj.EnsureComponent<ObjectHelper>();
-
         // Rigidbody
         var rb = loadedObj.EnsureComponent<Rigidbody>();
         rb.mass = 1;
@@ -363,36 +357,38 @@ public class ObjectCreator : ScriptableObject
         boundsControl.RotationHandlesConfig.ShowHandleForZ = false;
 
         boundsControl.ConstraintsManager = constMan;
-
-        // Events
-        //boundsControl.RotateStarted.AddListener(boundsControl.gameObject.GetComponent<ObjectHelper>().AddMovingObject);    //helper.AddMovingObject);
-        //boundsControl.RotateStopped.AddListener(helper.RemoveMovingObject);
-
-        // Events
-        objMan.OnManipulationStarted.AddListener(helper.AddObject);
-        objMan.OnManipulationEnded.AddListener(helper.RemoveObject);
     }
 
     private void HandleOnManipulationStarted(ManipulationEventData eventData)
     {
-        Debug.Log("Manipulated............................."); 
+        Debug.Log("Manipulation Started"); 
 
-        var fileName = "/MRTK_Manipulation_Start";
-        var manStart = Resources.Load<AudioClip>(soundFolderName + fileName);
-        if (manStart == null)
-            throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file {0} found", fileName);
-        eventData.ManipulationSource.GetComponent<AudioSource>().PlayOneShot(manStart); 
+        eventData.ManipulationSource.GetComponent<AudioSource>().PlayOneShot(manStart);
+        DataManager.Instance.MovingObjects.Add(eventData.ManipulationSource);
     }
 
     private void HandleOnManipulationStopped(ManipulationEventData eventData)
     {
-        Debug.Log("Manipulated.............................");
+        Debug.Log("Manipulation Stopped");
 
-        var fileName = "/MRTK_Manipulation_End"; 
-        var manStop = Resources.Load<AudioClip>(soundFolderName + fileName);
-        if (manStop == null)
-            throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file {0} found", fileName);
         eventData.ManipulationSource.GetComponent<AudioSource>().PlayOneShot(manStop);
+        DataManager.Instance.MovingObjects.Remove(eventData.ManipulationSource);
+    }
+
+    private void HandleOnRotationStarted(GameObject generatedObject)
+    {
+        Debug.Log("Rotation Started");
+
+        generatedObject.GetComponent<BoundsControl>().GetComponent<AudioSource>().PlayOneShot(rotateStart);
+        DataManager.Instance.MovingObjects.Add(generatedObject);
+    }
+
+    private void HandleOnRotationStopped(GameObject generatedObject)
+    {
+        Debug.Log("Rotation Stopped");
+
+        generatedObject.GetComponent<BoundsControl>().GetComponent<AudioSource>().PlayOneShot(rotateStop);
+        DataManager.Instance.MovingObjects.Remove(generatedObject);
     }
 
 

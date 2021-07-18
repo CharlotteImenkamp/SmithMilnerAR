@@ -32,7 +32,7 @@ public class DataManager : MonoBehaviour
     public Data CurrentSettings { get => currentSet; set => currentSet = value; }
 
     // Data to Save
-    public List<GameObject> ObjectsInScene { get => objectsInScene; set => objectsInScene = value; }
+    public List<GameObject> ObjectsInScene { get => objectsInScene; set { objectsInScene = value; } }
     public List<GameObject> MovingObjects { get => movingObjects; set => movingObjects = value; }
     public HeadData CurrentHeadData { get => currentHeadData; set => currentHeadData = value; }
 
@@ -135,7 +135,6 @@ public class DataManager : MonoBehaviour
         // start loading
         dataStateMachine.ChangeState(new LoadSettings());
     }
-
 
     public void SetAndSaveNewSettings(Data data)
     {
