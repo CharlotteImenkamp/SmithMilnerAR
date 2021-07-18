@@ -141,8 +141,8 @@ public class DataManager : MonoBehaviour
         if (data.UserData != null && data.ObjData.gameObjects.Count != 0)
         {
             // GameManager
-            string settingsFolder = GameManager.Instance.generalSettings.objectDataFolder;
-            string dataFolder = GameManager.Instance.generalSettings.userDataFolder + "/User" + data.UserData.UserID.ToString();
+            string settingsFolder = GameManager.Instance.GeneralSettings.objectDataFolder;
+            string dataFolder = GameManager.Instance.GeneralSettings.userDataFolder + "/User" + data.UserData.UserID.ToString();
             string mainFolder = GameManager.Instance.mainFolder;
 
             // FileNames
@@ -156,8 +156,11 @@ public class DataManager : MonoBehaviour
             DataFile.Save<UserSettingsData>(data.UserData, Path.Combine(mainFolder, dataFolder), userFileName);
 
             // Add to general settings
-            GameManager.Instance.generalSettings.newObjectData.Add(objectFileName);
-            GameManager.Instance.generalSettings.newUserData.Add("User" + data.UserData.UserID.ToString() + "/"+ userFileName);
+            GameManager.Instance.GeneralSettings.newObjectData.Add(objectFileName);
+            GameManager.Instance.GeneralSettings.newUserData.Add("User" + data.UserData.UserID.ToString() + "/" + userFileName);
+
+            var dat = GameManager.Instance.GeneralSettings;
+            GameManager.Instance.GeneralSettings = dat;             
         }
         else
         {

@@ -50,13 +50,13 @@ public class GameStateManager: MonoBehaviour
         {
             gameStateMachine.ChangeState(new PriceTest()); 
         }
-        else if(gameType ==GameType.Locations)
+        else if(gameType == GameType.Locations)
         {
             gameStateMachine.ChangeState(new LocationTest());
         }
         else
         {
-            throw new ArgumentException("GameStateManager::StartTestRun no valid GameType."); 
+            throw new ArgumentException("GameStateManager::StartTestRun no valid GameType {0}", gameType.ToString()); 
         }
 
         GameManager.Instance.OnUserButtonClicked.RemoveAllListeners();

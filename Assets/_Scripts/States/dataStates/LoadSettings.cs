@@ -15,9 +15,9 @@ class LoadSettings : IState
         Debug.Log("LoadSettings Enter");
 
         DataManager.Instance.NewSets = LoadNewSets();
-        DataManager.Instance.NewUserData = LoadSets(GameManager.Instance.generalSettings.newUserData); 
-        DataManager.Instance.IncompleteUserData = LoadSets(GameManager.Instance.generalSettings.incompleteUserData);
-        DataManager.Instance.CompleteUserData = LoadSets(GameManager.Instance.generalSettings.completeUserData); 
+        DataManager.Instance.NewUserData = DataFile.LoadUserSets(GameManager.Instance.GeneralSettings.newUserData); 
+        DataManager.Instance.IncompleteUserData = DataFile.LoadUserSets(GameManager.Instance.GeneralSettings.incompleteUserData);
+        DataManager.Instance.CompleteUserData = DataFile.LoadUserSets(GameManager.Instance.GeneralSettings.completeUserData); 
     }
 
     public void Execute()
@@ -42,15 +42,15 @@ class LoadSettings : IState
         List<ObjectData> newData = new List<ObjectData>(); 
 
         // get parameters from GameManager
-        int NumNew = GameManager.Instance.generalSettings.newObjectData.Count;
+        int NumNew = GameManager.Instance.GeneralSettings.newObjectData.Count;
 
         string mainFolder = GameManager.Instance.mainFolder; 
-        string objectDataFolder = GameManager.Instance.generalSettings.objectDataFolder; 
+        string objectDataFolder = GameManager.Instance.GeneralSettings.objectDataFolder; 
 
         // load each file into own parameter and save in DataManager
         for (int i = 0; i < NumNew; i++)
         {
-            var filePath = Path.Combine(mainFolder, objectDataFolder, GameManager.Instance.generalSettings.newObjectData[i]);
+            var filePath = Path.Combine(mainFolder, objectDataFolder, GameManager.Instance.GeneralSettings.newObjectData[i]);
             var set = DataFile.SecureLoad<ObjectData>(filePath);
 
             newData.Add(set); 
@@ -59,29 +59,5 @@ class LoadSettings : IState
         return newData; 
     }
 
-    private List<DataManager.Data> LoadSets(List<string> path)
-    {
-        List<DataManager.Data> newData = new List<DataManager.Data>();
-
-        // get parameters from GameManager
-        int N = path.Count;
-
-        // filepath
-        string mainFolder = GameManager.Instance.mainFolder;
-        string userDataFolder = GameManager.Instance.generalSettings.userDataFolder; 
-
-        // load each file into own parameter and save in DataManager
-        for (int i = 0; i < N; i++)
-        {
-            var filePath = Path.Combine(mainFolder, userDataFolder, path[i]); 
-            var userData = DataFile.SecureLoad<UserSettingsData>(filePath );       
-
-            var objPath = Path.Combine(mainFolder, userDataFolder, "User" + userData.UserID.ToString(), "settings" + userData.UserID.ToString());
-            var objData = DataFile.SecureLoad<ObjectData>(objPath);
-
-            newData.Add(new DataManager.Data(objData, userData));
-        }
-        return newData;
-    }
     #endregion 
 }

@@ -34,15 +34,29 @@ public class GameManager : MonoBehaviour
     [Header("Debug")]
     public GameObject debugTextObject;
     [NonSerialized]
-    public TextMeshPro debugText; 
+    public TextMeshPro debugText;
 
     #endregion Serialized in Editor
 
     #region FileParameters
+    public ApplicationData GeneralSettings { 
+        get => generalSettings;
+        set 
+        { 
+            generalSettings = value;
+            DataManager.Instance.CompleteUserData = DataFile.LoadUserSets(generalSettings.completeUserData);
+            DataManager.Instance.IncompleteUserData = DataFile.LoadUserSets(generalSettings.incompleteUserData);
+            DataManager.Instance.NewUserData = DataFile.LoadUserSets(generalSettings.newUserData);
+        }
+    }
+
     [NonSerialized]
-    public ApplicationData generalSettings;
+    private ApplicationData generalSettings;
     [NonSerialized]
     public string mainFolder;
+    private float updateRate;
+    public float UpdateRate { get => updateRate; set => updateRate = value; }
+
 
     #endregion FileParameters
 
@@ -117,6 +131,7 @@ public class GameManager : MonoBehaviour
             OnUserButtonClicked = new UnityEvent();
 
         mainFolder = "DataFiles";
+        updateRate = 1.0f; 
 
         ResetToDefault();
         generalSettings = DataFile.SecureLoad<ApplicationData>(Path.Combine(mainFolder, "generalSettings"));
@@ -139,13 +154,16 @@ public class GameManager : MonoBehaviour
 
     #region buttons
 
-
-
     /// <summary>
     /// Add to Toggle Buttons, to get their input
     /// </summary>
     public void ToggleGameType()
     {
+        // first set game type
+        if (gameType == GameType.None)
+            gameType = GameType.Prices;
+
+        // toggle game type
         if (gameType == GameType.Locations)
             gameType = GameType.Prices; 
         else if (gameType == GameType.Prices)
@@ -188,7 +206,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            button.SetActive(false); 
+            button.SetActive(false); // \TODO disable button earlier
         }
     }
 

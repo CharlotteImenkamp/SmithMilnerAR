@@ -7,7 +7,7 @@ public class End : IState
     public void Enter()
     {
         // Save Data
-        DataFile.Override<ApplicationData>(GameManager.Instance.generalSettings, GameManager.Instance.mainFolder, "generalSettings");
+        DataFile.Override<ApplicationData>(GameManager.Instance.GeneralSettings, GameManager.Instance.mainFolder, "generalSettings");
 
 
         // Call Submanagers

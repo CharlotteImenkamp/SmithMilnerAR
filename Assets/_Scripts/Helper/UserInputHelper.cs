@@ -6,25 +6,33 @@ using UnityEngine;
 
 public class UserInputHelper : MonoBehaviour
 {
+    #region serialized
     [SerializeField]
     private TextMeshPro idObj;
     [SerializeField]
     private TextMeshPro setObj;
     [SerializeField]
-    private CustomScrollableListPopulator newObjectList; 
+    private CustomScrollableListPopulator newObjectList;
 
+    #endregion serialized
+
+    #region private params
     private string userID;
     private string userSet;
 
     private string idText;
     private string setText;
-    private UserSettingsData.userSet set; 
+    private UserSettingsData.userSet set;
+    private DataManager.Data newData;
 
+    #endregion private params
+
+    #region public params
     public string UserID { get => userID; set => userID = value; }
     public UserSettingsData.userSet Set { get => set; set => set = value; }
     public DataManager.Data NewData { get => newData; set => newData = value; }
 
-    private DataManager.Data newData;
+    #endregion public params
 
 
     // Start is called before the first frame update
@@ -112,7 +120,7 @@ public class UserInputHelper : MonoBehaviour
     /// </summary>
     public void GenerateNewData()
     {
-        UserSettingsData userData = new UserSettingsData(UserID, Set);
+        UserSettingsData userData = new UserSettingsData(UserID, Set, GameManager.Instance.UpdateRate);
         ObjectData objData = newObjectList.GetInstantiatedObjects(); 
 
         DataManager.Instance.SetAndSaveNewSettings(new DataManager.Data(objData, userData));

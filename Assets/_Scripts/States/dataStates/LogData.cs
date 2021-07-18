@@ -47,7 +47,7 @@ class LogData : IState
         Debug.Log("LogData::Enter");
 
         sampleRate = DataManager.Instance.CurrentSettings.UserData.updateRate;
-        dataFolder = GameManager.Instance.generalSettings.userDataFolder;
+        dataFolder = GameManager.Instance.GeneralSettings.userDataFolder;
         generalFolder = GameManager.Instance.mainFolder;
         userID = DataManager.Instance.CurrentSettings.UserData.UserID.ToString();
 

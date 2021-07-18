@@ -23,7 +23,6 @@ GameObject:
   - component: {fileID: -4827454928394248300}
   - component: {fileID: 8526349557157012857}
   - component: {fileID: 2279157416458442613}
-  - component: {fileID: -6301650387441934858}
   m_Layer: 0
   m_Name: Grapes_MPI01_fbx
   m_TagString: InteractionObject
@@ -482,15 +481,3 @@ MonoBehaviour:
   useConstraint: 1
   referenceTransform: {fileID: 0}
   constraintOnMovement: 2
---- !u!114 &-6301650387441934858
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 149844060797336463}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7dd05758fbd494440a3a53ba8b7c96b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

@@ -16,10 +16,11 @@ public class UserSettingsData
 
     public UserSettingsData() { }
 
-    public UserSettingsData(string userID, userSet set)
+    public UserSettingsData(string userID, userSet set, float updateRate)
     {
         UserID = userID;
         this.set = set;
+        this.updateRate = updateRate; 
     }
 
     #endregion  constructors

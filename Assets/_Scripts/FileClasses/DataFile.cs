@@ -216,6 +216,36 @@ public class DataFile
 
         return filename; 
     }
+
+    /// <summary>
+    /// Helper Function to load User sets into game.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    public static List<DataManager.Data> LoadUserSets(List<string> path)
+    {
+        List<DataManager.Data> newData = new List<DataManager.Data>();
+
+        // get parameters from GameManager
+        int N = path.Count;
+
+        // filepath
+        string mainFolder = GameManager.Instance.mainFolder;
+        string userDataFolder = GameManager.Instance.GeneralSettings.userDataFolder;
+
+        // load each file into own parameter and save in DataManager
+        for (int i = 0; i < N; i++)
+        {
+            var filePath = Path.Combine(mainFolder, userDataFolder, path[i]);
+            var userData = DataFile.SecureLoad<UserSettingsData>(filePath);
+
+            var objPath = Path.Combine(mainFolder, userDataFolder, "User" + userData.UserID.ToString(), "settings" + userData.UserID.ToString());
+            var objData = DataFile.SecureLoad<ObjectData>(objPath);
+
+            newData.Add(new DataManager.Data(objData, userData));
+        }
+        return newData;
+    }
 }
 
 /// <summary>

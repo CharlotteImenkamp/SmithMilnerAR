@@ -15,6 +15,13 @@ public class CustomToggleListPopulator : MonoBehaviour
     [Tooltip("Parent Transform for Collection")]
     private GameObject parentTransform;
 
+    [SerializeField]
+    [Tooltip("The ScrollingObjectCollection to populate, if left empty. the populator will create on your behalf.")]
+    private ScrollingObjectCollection scrollView;
+
+    public ScrollingObjectCollection ScrollView { get => scrollView; set => scrollView = value; }
+    private ClippingBox clippingBox;
+
     /// <summary>
     /// Object to duplicate/>. 
     /// </summary>
@@ -55,6 +62,24 @@ public class CustomToggleListPopulator : MonoBehaviour
             gridObjectCollection.Layout = LayoutOrder.ColumnThenRow;
             gridObjectCollection.Columns = 1;
             gridObjectCollection.Anchor = LayoutAnchor.UpperLeft;
+        }
+
+        // Scroll View
+        if (scrollView == null)
+        {
+            GameObject newScroll = new GameObject("Scrolling Object Collection");
+            newScroll.transform.parent = parentTransform.transform; 
+            newScroll.transform.localPosition = Vector3.zero;
+            newScroll.transform.localRotation = Quaternion.identity;
+            newScroll.SetActive(false);
+            scrollView = newScroll.AddComponent<ScrollingObjectCollection>();
+
+            // Prevent the scrolling collection from running until we're done dynamically populating it.
+            scrollView.CellWidth = 0.04f;
+            scrollView.CellHeight = 0.4f;
+            scrollView.CellDepth = 0.04f;
+            scrollView.CellsPerTier = 3;
+            scrollView.TiersPerPage = 5;
         }
 
         instantiatedButtons = new List<GameObject>();
@@ -108,10 +133,12 @@ public class CustomToggleListPopulator : MonoBehaviour
                 newToggleList[i] = itemInstance.GetComponent<Interactable>();
 
                 instantiatedButtons.Add(itemInstance);
+
+                // Update and Assign Changes
+                gridObjectCollection.UpdateCollection();
             }
 
-            // Update and Assign Changes
-            gridObjectCollection.UpdateCollection();
+
 
             if(newToggleList.Length > 0)
             {
@@ -140,6 +167,12 @@ public class CustomToggleListPopulator : MonoBehaviour
         }
         if(gridObjectCollection != null)
             gridObjectCollection.UpdateCollection();
+
+        // Make sure we find a collection
+        if (scrollView == null)
+        {
+            scrollView = GetComponentInChildren<ScrollingObjectCollection>();
+        }
 
         instantiatedButtons = new List<GameObject>();
         chosenSet = new List<DataManager.Data>();
