@@ -181,17 +181,17 @@ public class CustomScrollableListPopulator : MonoBehaviour
     /// <param name="button"> reference to button object to disable it after use </param>
     private void InstantiateObject(GameObject obj, GameObject button)
     {
-        objectCreator.SpawnObject(obj, GameManager.Instance.parentInteractionObject, Vector3.zero, Quaternion.identity, ConfigType.MovementEnabled);
+        objectCreator.SpawnObject(obj, GameManager.Instance.parentPlayTable, Vector3.zero, Quaternion.identity, ConfigType.MovementEnabled);
 
-        // Disable Button to prevent several objects of the save type in scene  //\ TODO bessere lösung?
+        // Disable Button to prevent several objects of the same type in scene  //\ TODO bessere lösung?
         button.SetActive(false);
+        
         gridObjectCollection.UpdateCollection();
+        GameManager.Instance.parentPlayTable.GetComponent<GridObjectCollection>().UpdateCollection(); 
 
         var renderer = button.GetComponentsInChildren<MeshRenderer>();
         foreach (var r in renderer)
-        {
             clippingBox.RemoveRenderer(r);
-        }
     }
 
 

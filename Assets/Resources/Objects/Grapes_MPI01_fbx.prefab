@@ -39,7 +39,7 @@ Transform:
   m_GameObject: {fileID: 149844060797336463}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.3300721, y: -0.20794435, z: 0.930044}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -196,7 +196,7 @@ MonoBehaviour:
   targetObject: {fileID: 149844060797336463}
   boundsOverride: {fileID: 4388862674867293423}
   boundsCalculationMethod: 0
-  activation: 0
+  activation: 1
   flattenAxis: 0
   uniformScaleOnFlattenedAxis: 1
   boxPadding: {x: 0, y: 0, z: 0}
@@ -479,5 +479,4 @@ MonoBehaviour:
   handType: 2
   proximityType: 3
   useConstraint: 1
-  referenceTransform: {fileID: 0}
   constraintOnMovement: 2

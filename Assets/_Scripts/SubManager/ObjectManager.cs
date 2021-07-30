@@ -2,11 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Microsoft.MixedReality.Toolkit.Utilities;
+
 
 public class ObjectManager : SubManager
 {
     private GameObject[] interactionObjects;
-    private GameObject parent; 
+
+    // Game Objects
+    private GameObject parentPlayTable;
+    private GameObject parentSideTable;
+
+    // Grid Object Collections
+    private GridObjectCollection playTableObjectCollection;
+    private GridObjectCollection sideTableObjectCollection;
+
+
     private GameObject testObject; 
     private Vector3 testPosition;
     private Quaternion testRotation;
@@ -18,7 +29,28 @@ public class ObjectManager : SubManager
     public void Initialize()
     {
         objectCreator = ScriptableObject.CreateInstance<ObjectCreator>();
-        parent = GameManager.Instance.parentInteractionObject; 
+
+        // Game Objects
+        parentPlayTable = GameManager.Instance.parentPlayTable;
+        parentSideTable = GameManager.Instance.parentSideTable;
+
+        // Object Collections
+        playTableObjectCollection = parentPlayTable.GetComponent<GridObjectCollection>();
+        if(playTableObjectCollection == null)
+        {
+            playTableObjectCollection.SurfaceType = ObjectOrientationSurfaceType.Plane; 
+            playTableObjectCollection.CellHeight = 0.25f;
+            playTableObjectCollection.CellWidth = 0.25f; 
+        }
+
+        sideTableObjectCollection = parentSideTable.GetComponent<GridObjectCollection>();
+        if (sideTableObjectCollection == null)
+        {
+            sideTableObjectCollection.SurfaceType = ObjectOrientationSurfaceType.Plane;
+            sideTableObjectCollection.CellHeight = 0.19f;
+            sideTableObjectCollection.CellWidth = 0.19f;
+        }
+
         objectCreator.PrefabFolderName = "Objects";
     }
 
@@ -37,27 +69,33 @@ public class ObjectManager : SubManager
 
             case "LocationTest":
                 CheckDefaultParameters();
-                objectCreator.SpawnObject(testObject,parent,testPosition,testRotation, ConfigType.MovementEnabled);
+                objectCreator.SpawnObject(testObject,parentSideTable,testPosition,testRotation, ConfigType.MovementEnabled);
+                sideTableObjectCollection.UpdateCollection(); 
+
                 DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects; 
                 break;
 
             case "LocationEstimation":
                 objectCreator.SpawnObjects(interactionObjects,
-                    parent,
+                    parentSideTable,
                     currentData.ObjData.GetObjectPositions(),
                     currentData.ObjData.GetObjectRotations(), 
                     ConfigType.MovementEnabled);
+                sideTableObjectCollection.UpdateCollection(); 
+
                 DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects;
                 break;
 
             case "PriceTest":
                 CheckDefaultParameters();
-                objectCreator.SpawnObject(testObject, parent, testPosition, testRotation, ConfigType.MovementDisabled);
+                objectCreator.SpawnObject(testObject, parentPlayTable, testPosition, testRotation, ConfigType.MovementDisabled);
+                sideTableObjectCollection.UpdateCollection(); 
+
                 DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects;
                 break;
 
             case "PriceEstimation":
-                objectCreator.SpawnObjects(interactionObjects, parent,
+                objectCreator.SpawnObjects(interactionObjects, parentPlayTable,
                     currentData.ObjData.GetObjectPositions(),
                     currentData.ObjData.GetObjectRotations(), 
                     ConfigType.MovementDisabled);

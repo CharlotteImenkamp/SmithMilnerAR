@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 4715790031859449326}
   - component: {fileID: 4841792597295501088}
   m_Layer: 0
-  m_Name: CandleBurnt_MPI01_fbx 1
+  m_Name: CandleBurnt_MPI01_fbx
   m_TagString: InteractionObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,7 +37,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4333132183906280935}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.16848916, y: -0.092440635, z: 0.8365206}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -331,7 +331,6 @@ MonoBehaviour:
   handType: 2
   proximityType: 3
   useConstraint: 1
-  referenceTransform: {fileID: 0}
   constraintOnMovement: 2
 --- !u!114 &4715790031859449326
 MonoBehaviour:
@@ -391,7 +390,7 @@ MonoBehaviour:
   targetObject: {fileID: 4333132183906280935}
   boundsOverride: {fileID: 5608940953659908042}
   boundsCalculationMethod: 0
-  activation: 0
+  activation: 1
   flattenAxis: 0
   uniformScaleOnFlattenedAxis: 1
   boxPadding: {x: 0, y: 0, z: 0}
@@ -407,7 +406,7 @@ MonoBehaviour:
   scaleLerpTime: 0.001
   translateLerpTime: 0.001
   enableConstraints: 1
-  constraintsManager: {fileID: 0}
+  constraintsManager: {fileID: 2900635081586381497}
   rotateStarted:
     m_PersistentCalls:
       m_Calls: []

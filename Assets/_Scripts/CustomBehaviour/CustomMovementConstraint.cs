@@ -5,7 +5,6 @@ using Microsoft.MixedReality.Toolkit;
 
 public class CustomMovementConstraint : TransformConstraint
 {
-
     #region Properties
 
     /// <summary>
@@ -16,16 +15,11 @@ public class CustomMovementConstraint : TransformConstraint
     [Tooltip("Apply Constraint or not. Use for Debugging")]
     private bool useConstraint = true;
 
-    public bool UseConstraint
-    {
-        get => useConstraint;
-        set => useConstraint = value; 
-    }
-
     /// <summary>
     ///  Referenced Object is used for Movement Boundaries
     /// </summary>
-    [SerializeField]
+    public Transform ReferenceTransform { get => referenceTransform; }
+
     [Tooltip("Use Objects Transformation to calculate MovementBoundaries ")]
     private Transform referenceTransform;
 
@@ -45,26 +39,21 @@ public class CustomMovementConstraint : TransformConstraint
     }
 
     public override TransformFlags ConstraintType => TransformFlags.Move;
-
-    private float minYAxis; 
+    private float minYAxis;
 
     #endregion Properties
 
 
     #region Public Methods
+
     public override void Initialize(MixedRealityTransform worldPose)
     {
         base.Initialize(worldPose);
-        if(referenceTransform == null)
-        {
-            referenceTransform = GameObject.FindGameObjectWithTag("MovementConstraint").transform;
-        }
-        GetLowerBorder(); 
+        GetLowerBorder();
     }
 
     public override void ApplyConstraint(ref MixedRealityTransform transform)
     {
-
         if (useConstraint)
         {
             Vector3 position = transform.Position;
@@ -78,21 +67,19 @@ public class CustomMovementConstraint : TransformConstraint
                     Debug.Log("Position Constraint");
                 }
             }
-
             transform.Position = position;
         }
     }
-
-
-
     #endregion Public Methods
 
     #region Private Methods
     private void GetLowerBorder()
     {
+        if (referenceTransform == null)
+        {
+            referenceTransform = GameObject.FindGameObjectWithTag("MovementConstraint").transform;
+        }
         minYAxis = referenceTransform.position.y; 
     }
     #endregion Private Methods
-
-
 }

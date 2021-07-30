@@ -29,7 +29,11 @@ public class GameManager : MonoBehaviour
     public InteractableToggleCollection toggleCollectionUser; 
 
     [Header("InteractionObjects")]
-    public GameObject parentInteractionObject;
+    public GameObject parentPlayTable;
+    public GameObject parentSideTable;
+
+    [Header("Object to fit sizes to.")]
+    public GameObject referenceInteractionObject; 
 
     [Header("Debug")]
     public GameObject debugTextObject;

@@ -23,7 +23,6 @@ GameObject:
   - component: {fileID: -4388554413758996185}
   - component: {fileID: -3566214529670493533}
   - component: {fileID: 6976585751296246915}
-  - component: {fileID: 1533467020148173379}
   m_Layer: 0
   m_Name: Apple02_MPI01_fbx
   m_TagString: InteractionObject
@@ -40,7 +39,7 @@ Transform:
   m_GameObject: {fileID: 7229500906948068818}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.2, z: 1.244}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -530,24 +529,4 @@ MonoBehaviour:
   handType: 2
   proximityType: 3
   useConstraint: 1
-  referenceTransform: {fileID: 0}
   constraintOnMovement: 2
---- !u!114 &1533467020148173379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7229500906948068818}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98c748f3768ab714a8449b60fb9edc5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  eventsToReceive: 0
-  debounceThreshold: 0.01
-  localForward: {x: -0, y: -0, z: -1}
-  localUp: {x: 0, y: 1, z: 0}
-  localCenter: {x: 0, y: 0, z: 0}
-  bounds: {x: 0, y: 0}
-  touchableCollider: {fileID: 8521255145242212215}

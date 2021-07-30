@@ -71,6 +71,12 @@ public class ObjectCreator : ScriptableObject
 
         var generatedObject = Instantiate(obj, position, rotation);
 
+        // set size //\TODO no reference to GameManager from here
+        //Vector3 refSize = GameManager.Instance.referenceInteractionObject.GetComponent<MeshRenderer>().bounds.size; 
+
+        //Bounds bounds = GetChildRendererBounds(generatedObject);
+        //Vector3 scale = new Vector3(refSize.x / bounds.size.x, refSize.y / bounds.size.y, refSize.z / bounds.size.z); 
+        //generatedObject.transform.localScale = scale; 
 
         // Add Sounds to Movement
         generatedObject.GetComponent<BoundsControl>().RotateStarted.RemoveAllListeners(); 
@@ -92,8 +98,32 @@ public class ObjectCreator : ScriptableObject
         generatedObject.transform.localPosition = position;
         generatedObject.transform.localRotation = rotation;
 
-        
         instantiatedObjects.Add(generatedObject);
+    }
+
+    private Bounds GetChildRendererBounds(GameObject go)
+    {
+        MeshRenderer r = go.GetComponent<MeshRenderer>();
+        MeshRenderer[] renderers = go.GetComponentsInChildren<MeshRenderer>();
+
+        if (renderers.Length > 0)
+        {
+            Bounds bounds = renderers[0].bounds;
+            if(r != null)
+            {
+                bounds.Encapsulate(r.bounds); 
+            }
+
+            for (int i = 1, ni = renderers.Length; i < ni; i++)
+            {
+                bounds.Encapsulate(renderers[i].bounds);
+            }
+            return bounds;
+        }
+        else
+        {
+            return new Bounds();
+        }
     }
 
     public void SpawnObjects(GameObject[] gameObjects, GameObject parent, Vector3[] positions, Quaternion[] rotations, ConfigType config)
@@ -134,7 +164,7 @@ public class ObjectCreator : ScriptableObject
             var loadedObj = Resources.Load<GameObject>(prefabFolderName + "/" + currentData.gameObjects[i].Objectname.ToString());
             if (loadedObj == null)
             {
-                throw new FileNotFoundException("... ObjectManager::CreateInteractionObjects Object " + currentData.gameObjects[i].Objectname.ToString() + " not found");
+                // throw new FileNotFoundException("... ObjectManager::CreateInteractionObjects Object " + currentData.gameObjects[i].Objectname.ToString() + " not found");
             }
             else
             {
@@ -184,8 +214,6 @@ public class ObjectCreator : ScriptableObject
                     rb.useGravity = false;
                     rb.constraints = RigidbodyConstraints.FreezeAll;
                 }
-                    
-
             }
             catch (InvalidCastException e)
             {
@@ -282,8 +310,6 @@ public class ObjectCreator : ScriptableObject
         rotConst.UseLocalSpaceForConstraint = true;
         constMan.AddConstraintToManualSelection(rotConst);
 
-
-
         // Min Max Scale Constraint
         var scaleConst = loadedObj.EnsureComponent<MinMaxScaleConstraint>();
             scaleConst.HandType = ManipulationHandFlags.TwoHanded;
@@ -296,20 +322,17 @@ public class ObjectCreator : ScriptableObject
             constMan.AddConstraintToManualSelection(scaleConst);
 
         // Custom Movement Constraint
+        //\ TODO Only working from editor. Fix
         var moveConst = loadedObj.EnsureComponent<CustomMovementConstraint>();
             moveConst.HandType = ManipulationHandFlags.TwoHanded;
-            moveConst.UseConstraint = true;
             moveConst.ConstraintOnMovement = AxisFlags.YAxis;
-
-            constMan.AddConstraintToManualSelection(moveConst);
+        constMan.AddConstraintToManualSelection(moveConst);
 
         // Object Manipulator
         var objMan = loadedObj.EnsureComponent<ObjectManipulator>();
             objMan.AllowFarManipulation = false;
             objMan.EnableConstraints = true;
             objMan.ConstraintsManager = constMan;
-
-
 
         // BoundsControl
         var boundsControl = loadedObj.EnsureComponent<BoundsControl>();
@@ -364,6 +387,8 @@ public class ObjectCreator : ScriptableObject
         Debug.Log("Manipulation Started"); 
 
         eventData.ManipulationSource.GetComponent<AudioSource>().PlayOneShot(manStart);
+        Destroy(eventData.ManipulationSource.GetComponent<Rigidbody>()); 
+
         DataManager.Instance.MovingObjects.Add(eventData.ManipulationSource);
     }
 
@@ -371,7 +396,17 @@ public class ObjectCreator : ScriptableObject
     {
         Debug.Log("Manipulation Stopped");
 
+        Rigidbody rb = eventData.ManipulationSource.AddComponent<Rigidbody>();
+        rb.mass = 1;
+        rb.drag = 0;
+        rb.angularDrag = 0;
+        rb.useGravity = true;
+        rb.isKinematic = false;
+        rb.freezeRotation = true;
+
         eventData.ManipulationSource.GetComponent<AudioSource>().PlayOneShot(manStop);
+        
+
         DataManager.Instance.MovingObjects.Remove(eventData.ManipulationSource);
     }
 
@@ -380,6 +415,8 @@ public class ObjectCreator : ScriptableObject
         Debug.Log("Rotation Started");
 
         generatedObject.GetComponent<BoundsControl>().GetComponent<AudioSource>().PlayOneShot(rotateStart);
+        Destroy(generatedObject.GetComponent<Rigidbody>()); 
+
         DataManager.Instance.MovingObjects.Add(generatedObject);
     }
 
@@ -388,6 +425,14 @@ public class ObjectCreator : ScriptableObject
         Debug.Log("Rotation Stopped");
 
         generatedObject.GetComponent<BoundsControl>().GetComponent<AudioSource>().PlayOneShot(rotateStop);
+        Rigidbody rb = generatedObject.AddComponent<Rigidbody>();
+        rb.mass = 1;
+        rb.drag = 0;
+        rb.angularDrag = 0;
+        rb.useGravity = true;
+        rb.isKinematic = false;
+        rb.freezeRotation = true;
+
         DataManager.Instance.MovingObjects.Remove(generatedObject);
     }
 
