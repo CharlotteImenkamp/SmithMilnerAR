@@ -1,9 +1,11 @@
 {
-  "start": "Montag",
-  "entries": {
-    "UserID": 4,
+ "start": "Montag, 2. August 2021 15:32:56",
+"entries": {
+    "UserID": "4",
     "set": 1,
+    "state": 0,
     "updateRate": 0.10000000149011612
-  },
-  "ende": "Dienstag"
-}
+},
+ 
+ "ende" : "END"
+ }

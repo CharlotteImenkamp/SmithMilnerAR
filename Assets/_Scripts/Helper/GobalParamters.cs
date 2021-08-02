@@ -1,5 +1,5 @@
 ﻿
 
-public enum ConfigType { MovementEnabled, MovementDisabled, scrollBox }
+public enum ConfigType { MovementEnabled, MovementDisabled }
 
 public enum GameType { None, Prices, Locations }

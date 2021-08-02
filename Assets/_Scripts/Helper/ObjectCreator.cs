@@ -195,6 +195,7 @@ public class ObjectCreator : ScriptableObject
 
                 var comp = (BoundsControl)obj.GetComponent(typeof(BoundsControl));
                 comp.enabled = true;
+                comp.BoundsControlActivation = Microsoft.MixedReality.Toolkit.UI.BoundsControlTypes.BoundsControlActivationType.ActivateByProximity;
 
                 var oM = (ObjectManipulator)obj.GetComponent(typeof(ObjectManipulator));
                 oM.enabled = true;
@@ -214,24 +215,6 @@ public class ObjectCreator : ScriptableObject
                 throw new System.MemberAccessException("ObjectCreator:: ApplyConfiguration, not all Components found.", e);
             }
 
-        }
-        else if(config == ConfigType.scrollBox)
-        {
-                if (obj.TryGetComponent(out BoundsControl bC))
-                bC.enabled = false;
-                if (obj.TryGetComponent(out ObjectManipulator oM))
-
-                oM.enabled = false;
-                if (obj.TryGetComponent(out NearInteractionGrabbable iG))
-
-                iG.enabled = false;
-                if (obj.TryGetComponent(out Rigidbody rb))
-                rb.useGravity = false;
-                rb.constraints = RigidbodyConstraints.FreezeAll; 
-                
-                    
-                if (obj.TryGetComponent(out BoxCollider col))
-                    col.enabled = true;
         }
         else
         {
@@ -302,6 +285,8 @@ public class ObjectCreator : ScriptableObject
             objMan.EnableConstraints = true;
             objMan.ConstraintsManager = constMan;
 
+
+
         // BoundsControl
         var boundsControl = loadedObj.EnsureComponent<BoundsControl>();
             boundsControl.Target = loadedObj;
@@ -309,43 +294,39 @@ public class ObjectCreator : ScriptableObject
             boundsControl.BoundsOverride = col;
             boundsControl.CalculationMethod = Microsoft.MixedReality.Toolkit.UI.BoundsControlTypes.BoundsCalculationMethod.RendererOverCollider;
 
+        // DisplayConfig
+        BoxDisplayConfiguration dispConfig = CreateInstance<BoxDisplayConfiguration>();
+        dispConfig.BoxMaterial = GameManager.Instance.BoundingBox;
+        dispConfig.BoxGrabbedMaterial = GameManager.Instance.BoundingBoxGrabbed;
+        boundsControl.BoxDisplayConfig = dispConfig;
+
         // Scale Handle
-        ScaleHandlesConfiguration config = CreateInstance<ScaleHandlesConfiguration>(); 
-            config.ShowScaleHandles = false;  
-            boundsControl.ScaleHandlesConfig = config;
+        ScaleHandlesConfiguration config = CreateInstance<ScaleHandlesConfiguration>();
+        config.ShowScaleHandles = false;
+        boundsControl.ScaleHandlesConfig = config;
 
         // Translation Handle
         TranslationHandlesConfiguration tConfig = CreateInstance<TranslationHandlesConfiguration>();
         tConfig.ShowHandleForX = false;
-            tConfig.ShowHandleForY = false;
-            tConfig.ShowHandleForZ = false; 
-            boundsControl.TranslationHandlesConfig = tConfig;
+        tConfig.ShowHandleForY = false;
+        tConfig.ShowHandleForZ = false;
+        boundsControl.TranslationHandlesConfig = tConfig;
 
         // Rotation Handle
         var rotationHandle = CreateInstance<RotationHandlesConfiguration>();
+        rotationHandle.HandleMaterial = GameManager.Instance.BoundingBoxHandleWhite;
+        rotationHandle.HandleGrabbedMaterial = GameManager.Instance.BoundingBoxHandleBlueGrabbed;
+        rotationHandle.HandlePrefab = GameManager.Instance.BoundingBox_RotateHandle;
 
-
-        // TODO nicht aus resources laden. steht hier: https://docs.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/features/ux-building-blocks/bounds-control?view=mrtkunity-2021-05
-        var mat = Resources.Load<Material>(boundingBoxFolderName + "/BoundingBoxHandleWhite");
-
-        if (mat == null)
-            throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file found");
-        rotationHandle.HandleMaterial = mat;
-
-        var grMat = Resources.Load<Material>(boundingBoxFolderName + "/BoundingBoxHandleBlueGrabbed");
-            if (grMat == null)
-                throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file found");
-            rotationHandle.HandleGrabbedMaterial = grMat;
-
-            var go = Resources.Load<GameObject>(boundingBoxFolderName + "/MRTK_BoundingBox_RotateHandle");
-            if (go == null)
-                throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file found");
-            rotationHandle.HandlePrefab = go;
-            
         boundsControl.RotationHandlesConfig = rotationHandle;
         boundsControl.RotationHandlesConfig.ShowHandleForX = false;
         boundsControl.RotationHandlesConfig.ShowHandleForY = true;
         boundsControl.RotationHandlesConfig.ShowHandleForZ = false;
+
+        // Links Config
+        var linksConfig = CreateInstance<LinksConfiguration>();
+        linksConfig.ShowWireFrame = false;
+        boundsControl.LinksConfig = linksConfig; 
 
         boundsControl.ConstraintsManager = constMan;
     }

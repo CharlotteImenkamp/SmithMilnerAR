@@ -34,7 +34,14 @@ public class GameManager : MonoBehaviour
 
     [Header("Spawn Points.")]
     public Transform spawnPointGame;
-    public Transform spawnPointSide; 
+    public Transform spawnPointSide;
+
+    [Header("BoundingBox")]
+    public Material BoundingBox;
+    public Material BoundingBoxGrabbed;
+    public Material BoundingBoxHandleWhite;
+    public Material BoundingBoxHandleBlueGrabbed;
+    public GameObject BoundingBox_RotateHandle; 
 
     [Header("Debug")]
     public GameObject debugTextObject;

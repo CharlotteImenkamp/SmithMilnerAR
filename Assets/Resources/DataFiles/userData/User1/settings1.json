@@ -1,79 +1,80 @@
 {
-  "start": "Montag",
-  "entries": 
-    {
-      "gameObjects": [
+ "start": "Montag, 2. August 2021 15:32:57",
+"entries": {
+    "time": 0.0,
+    "gameObjects": [
         {
-          "Objectname": "ReadingGlass_MPI01_fbx",
-          "position": {
-            "x": -0.2390093207359314,
-            "y": -0.07651812583208084,
-            "z": 0.9865810871124268
-          },
-          "rotation": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0,
-            "w": 1.0
-          }
+            "Objectname": "ReadingGlass",
+            "localPosition": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "localRotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
-          "Objectname": "Grapes_MPI01_fbx",
-          "position": {
-            "x": -0.21572428941726685,
-            "y": -0.10364513844251633,
-            "z": 0.8914211392402649
-          },
-          "rotation": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0,
-            "w": 1.0
-          }
+            "Objectname": "Grapes",
+            "localPosition": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "localRotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
-          "Objectname": "Banana_MPI01_fbx",
-          "position": {
-            "x": -0.26717814803123476,
-            "y": -0.0763334110379219,
-            "z": 0.9271277189254761
-          },
-          "rotation": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0,
-            "w": 1.0
-          }
+            "Objectname": "Banana",
+            "localPosition": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "localRotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
-          "Objectname": "Apple02_MPI01_fbx",
-          "position": {
-            "x": -0.16176801919937135,
-            "y": -0.07656895369291306,
-            "z": 0.9064018130302429
-          },
-          "rotation": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0,
-            "w": 1.0
-          }
+            "Objectname": "Apple",
+            "localPosition": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "localRotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         },
         {
-          "Objectname": "AlarmClock_MPI01 Variant 1",
-          "position": {
-            "x": -0.2149747908115387,
-            "y": -0.07652987539768219,
-            "z": 0.9281055927276611
-          },
-          "rotation": {
-            "x": -0.007805769797414541,
-            "y": -0.7070637345314026,
-            "z": -0.7070637345314026,
-            "w": 0.007805769797414541
-          }
+            "Objectname": "AlarmClock",
+            "localPosition": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "localRotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 0.0
+            }
         }
-      ]
-    },
-  "ende": "Dienstag"
-}
+    ]
+},
+ 
+ "ende" : "END"
+ }

@@ -160,17 +160,15 @@ public class DataFile
         return filePath; 
     }
 
-
     public static string StartFile()
     {
         return "{\n \"start\": \"" + DateTime.Now.ToString("F") + "\"," 
             + Environment.NewLine
-            + "\"entries\":";
+            + "\"entries\": ";
     }
 
     public static string AddLine<T>(T data)
     {
-
         string jsonString = JsonUtility.ToJson(data, true);
         jsonString += "," + System.Environment.NewLine;
 

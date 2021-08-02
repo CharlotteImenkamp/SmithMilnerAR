@@ -181,7 +181,6 @@ public class ObjectManager : SubManager
         if (interactionObjects == null)
         {
             interactionObjects = objectCreator.CreateInteractionObjects(currentData.ObjData);
-
         }
         if (testObject == null)
         {
