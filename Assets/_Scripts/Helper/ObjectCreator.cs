@@ -71,13 +71,6 @@ public class ObjectCreator : ScriptableObject
 
         var generatedObject = Instantiate(obj, position, rotation);
 
-        // set size //\TODO no reference to GameManager from here
-        //Vector3 refSize = GameManager.Instance.referenceInteractionObject.GetComponent<MeshRenderer>().bounds.size; 
-
-        //Bounds bounds = GetChildRendererBounds(generatedObject);
-        //Vector3 scale = new Vector3(refSize.x / bounds.size.x, refSize.y / bounds.size.y, refSize.z / bounds.size.z); 
-        //generatedObject.transform.localScale = scale; 
-
         // Add Sounds to Movement
         generatedObject.GetComponent<BoundsControl>().RotateStarted.RemoveAllListeners(); 
         generatedObject.GetComponent<BoundsControl>().RotateStarted.AddListener(()=>HandleOnRotationStarted(generatedObject));
@@ -99,31 +92,6 @@ public class ObjectCreator : ScriptableObject
         generatedObject.transform.localRotation = rotation;
 
         instantiatedObjects.Add(generatedObject);
-    }
-
-    private Bounds GetChildRendererBounds(GameObject go)
-    {
-        MeshRenderer r = go.GetComponent<MeshRenderer>();
-        MeshRenderer[] renderers = go.GetComponentsInChildren<MeshRenderer>();
-
-        if (renderers.Length > 0)
-        {
-            Bounds bounds = renderers[0].bounds;
-            if(r != null)
-            {
-                bounds.Encapsulate(r.bounds); 
-            }
-
-            for (int i = 1, ni = renderers.Length; i < ni; i++)
-            {
-                bounds.Encapsulate(renderers[i].bounds);
-            }
-            return bounds;
-        }
-        else
-        {
-            return new Bounds();
-        }
     }
 
     public void SpawnObjects(GameObject[] gameObjects, GameObject parent, Vector3[] positions, Quaternion[] rotations, ConfigType config)

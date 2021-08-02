@@ -19,8 +19,10 @@ public class ObjectManager : SubManager
 
 
     private GameObject testObject; 
-    private Vector3 testPosition;
-    private Quaternion testRotation;
+    private Vector3 testPositionPrices;
+    private Quaternion testRotationPrices;
+    private Vector3 testPositionLocations;
+    private Quaternion testRotationLocations;
 
     private DataManager.Data currentData; 
 
@@ -69,7 +71,7 @@ public class ObjectManager : SubManager
 
             case "LocationTest":
                 CheckDefaultParameters();
-                objectCreator.SpawnObject(testObject,parentSideTable,testPosition,testRotation, ConfigType.MovementEnabled);
+                objectCreator.SpawnObject(testObject,parentSideTable,testPositionLocations,testRotationLocations, ConfigType.MovementEnabled);
                 sideTableObjectCollection.UpdateCollection(); 
 
                 DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects; 
@@ -88,7 +90,7 @@ public class ObjectManager : SubManager
 
             case "PriceTest":
                 CheckDefaultParameters();
-                objectCreator.SpawnObject(testObject, parentPlayTable, testPosition, testRotation, ConfigType.MovementDisabled);
+                objectCreator.SpawnObject(testObject, parentPlayTable, testPositionPrices, testRotationPrices, ConfigType.MovementDisabled);
                 sideTableObjectCollection.UpdateCollection(); 
 
                 DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects;
@@ -164,8 +166,6 @@ public class ObjectManager : SubManager
 
         interactionObjects = null; 
         testObject = null;
-        testPosition= Vector3.zero;
-        testRotation = Quaternion.identity;
         currentData.ObjData = null;
         currentData.UserData = null;
         objectCreator.Reset();
@@ -186,8 +186,11 @@ public class ObjectManager : SubManager
         if (testObject == null)
         {
             testObject = objectCreator.CreateInteractionObject(currentData.ObjData);
-            testPosition = testObject.transform.position;                                        // \TODO add to general settings
-            testRotation = testObject.transform.rotation;
+            testPositionPrices = GameManager.Instance.spawnPointGame.position;                                    
+            testRotationPrices = GameManager.Instance.spawnPointGame.rotation;
+
+            testPositionLocations = GameManager.Instance.spawnPointSide.position; 
+            testRotationLocations = GameManager.Instance.spawnPointSide.rotation;
         }
     }
 }

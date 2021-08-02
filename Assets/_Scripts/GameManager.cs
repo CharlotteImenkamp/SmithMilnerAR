@@ -32,8 +32,9 @@ public class GameManager : MonoBehaviour
     public GameObject parentPlayTable;
     public GameObject parentSideTable;
 
-    [Header("Object to fit sizes to.")]
-    public GameObject referenceInteractionObject; 
+    [Header("Spawn Points.")]
+    public Transform spawnPointGame;
+    public Transform spawnPointSide; 
 
     [Header("Debug")]
     public GameObject debugTextObject;
