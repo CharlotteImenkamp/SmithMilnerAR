@@ -14,10 +14,14 @@ class LoadSettings : IState
         GameManager.Instance.debugText.text = "LoadSettings Enter"; 
         Debug.Log("LoadSettings Enter");
 
-        DataManager.Instance.NewSets = LoadNewSets();
-        DataManager.Instance.NewUserData = DataFile.LoadUserSets(GameManager.Instance.GeneralSettings.newUserData); 
-        DataManager.Instance.IncompleteUserData = DataFile.LoadUserSets(GameManager.Instance.GeneralSettings.incompleteUserData);
-        DataManager.Instance.CompleteUserData = DataFile.LoadUserSets(GameManager.Instance.GeneralSettings.completeUserData); 
+        if(GameManager.Instance.GeneralSettings.newObjectData.Count != 0)
+            DataManager.Instance.NewSets = LoadNewSets();
+        if(GameManager.Instance.GeneralSettings.newUserData.Count != 0)
+            DataManager.Instance.NewUserData = DataFile.LoadUserSets(GameManager.Instance.GeneralSettings.newUserData);
+        if (GameManager.Instance.GeneralSettings.incompleteUserData.Count != 0)
+            DataManager.Instance.IncompleteUserData = DataFile.LoadUserSets(GameManager.Instance.GeneralSettings.incompleteUserData);
+        if (GameManager.Instance.GeneralSettings.completeUserData.Count != 0)
+            DataManager.Instance.CompleteUserData = DataFile.LoadUserSets(GameManager.Instance.GeneralSettings.completeUserData); 
     }
 
     public void Execute()

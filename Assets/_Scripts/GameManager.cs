@@ -18,7 +18,8 @@ public class GameManager : MonoBehaviour
     public GameObject GeneralSettingsMenu;
     public GameObject NewSettingsMenu;
     public GameObject OldSettingsMenu;
-    public GameObject PauseMenu; 
+    public GameObject PauseMenu;
+    public GameObject ContinueWithLocationsButton;
 
     [Header("Collections")]
     public GameObject radioButtonCollection;
@@ -26,13 +27,13 @@ public class GameManager : MonoBehaviour
     public InteractableToggleCollection toggleCollectionSet;
 
     [Tooltip("Collection to choose between users")]
-    public InteractableToggleCollection toggleCollectionUser; 
+    public int currentIndexUser; 
 
     [Header("InteractionObjects")]
     public GameObject parentPlayTable;
     public GameObject parentSideTable;
 
-    [Header("Spawn Points.")]
+    [Header("Spawn Points")]
     public Transform spawnPointGame;
     public Transform spawnPointSide;
 
@@ -171,13 +172,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void ToggleGameType()
     {
-        // first set game type
-        if (gameType == GameType.None)
-            gameType = GameType.Prices;
-
         // toggle game type
         if (gameType == GameType.Locations)
-            gameType = GameType.Prices; 
+            gameType = GameType.Prices;
         else if (gameType == GameType.Prices)
             gameType = GameType.Locations;
     }
@@ -307,8 +304,7 @@ public class GameManager : MonoBehaviour
         enableUserButton = false;
 
         // game
-        gameType = GameType.None;
-
+        gameType = GameType.Prices;
     }
 
     /// <summary>

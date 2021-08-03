@@ -29,8 +29,8 @@ class LogData : IState
     private string json_headData; 
 
     // data parameters
-    private float sampleRate;
-    private long time1, time2;
+    private float sampleRate; // in miliseconds
+    private float prevTime, currTime, nextTime; 
     private GameType gameType;
 
 
@@ -47,6 +47,7 @@ class LogData : IState
         Debug.Log("LogData::Enter");
 
         sampleRate = DataManager.Instance.CurrentSettings.UserData.updateRate;
+        Debug.Log("************************************" + sampleRate); 
         dataFolder = GameManager.Instance.GeneralSettings.userDataFolder;
         generalFolder = GameManager.Instance.mainFolder;
         userID = DataManager.Instance.CurrentSettings.UserData.UserID.ToString();
@@ -76,17 +77,20 @@ class LogData : IState
             GameManager.Instance.UpdateGeneralSettings(userID, GameType.Prices);
         }
         else
-            throw new ArgumentException("LogData::Enter no valid GameType."); 
-        
+            throw new ArgumentException("LogData::Enter no valid GameType.");
+
 
         // Set Time for updateRate
-        time1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        // time1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        prevTime = Time.time;  
     }
 
     public void Execute()
     {
-        time2 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-        if (time2 - time1 >= sampleRate)
+        // time2 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        currTime = Time.time; 
+        // if (time2 - time1 >= sampleRate)
+        if(currTime-prevTime >= sampleRate)
         {
             if (gameType == GameType.Locations)
             {
@@ -97,6 +101,8 @@ class LogData : IState
                 ExecuteHeadData();
             else
                 throw new ArgumentException("LogData::Execute no valid GameType.");
+
+            prevTime = currTime; 
         }
     }
 
@@ -191,12 +197,12 @@ class LogData : IState
     #region get data
     private ObjectData GetMovingObject()
     {
-        return new ObjectData(DataManager.Instance.MovingObjects, DateTime.Now.Hour); 
+        return new ObjectData(DataManager.Instance.MovingObjects, Time.time); 
     }
 
     private ObjectData GetObjectsInScene()
     {
-        return new ObjectData(DataManager.Instance.ObjectsInScene, DateTime.Now.Hour);
+        return new ObjectData(DataManager.Instance.ObjectsInScene, Time.time);
     }
 
     private HeadData GetCurrentHeadData()

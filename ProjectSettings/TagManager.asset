@@ -6,6 +6,7 @@ TagManager:
   tags:
   - InteractionObject
   - MovementConstraint
+  - ContinueWithLocationsButton
   layers:
   - Default
   - TransparentFX

@@ -17,15 +17,11 @@ public class ObjectManager : SubManager
     private GridObjectCollection playTableObjectCollection;
     private GridObjectCollection sideTableObjectCollection;
 
-
     private GameObject testObject; 
     private Vector3 testPositionPrices;
-    private Quaternion testRotationPrices;
     private Vector3 testPositionLocations;
-    private Quaternion testRotationLocations;
 
     private DataManager.Data currentData; 
-
     private ObjectCreator objectCreator; 
 
     public void Initialize()
@@ -71,8 +67,7 @@ public class ObjectManager : SubManager
 
             case "LocationTest":
                 CheckDefaultParameters();
-                objectCreator.SpawnObject(testObject,parentSideTable,testPositionLocations,testRotationLocations, ConfigType.MovementEnabled);
-                sideTableObjectCollection.UpdateCollection(); 
+                objectCreator.SpawnObject(testObject,parentSideTable,testPositionLocations,testObject.transform.rotation, ConfigType.MovementEnabled);
 
                 DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects; 
                 break;
@@ -90,8 +85,7 @@ public class ObjectManager : SubManager
 
             case "PriceTest":
                 CheckDefaultParameters();
-                objectCreator.SpawnObject(testObject, parentPlayTable, testPositionPrices, testRotationPrices, ConfigType.MovementDisabled);
-                sideTableObjectCollection.UpdateCollection(); 
+                objectCreator.SpawnObject(testObject, parentPlayTable, testPositionPrices, testObject.transform.rotation, ConfigType.MovementDisabled);
 
                 DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects;
                 break;
@@ -180,16 +174,20 @@ public class ObjectManager : SubManager
         }
         if (interactionObjects == null)
         {
-            interactionObjects = objectCreator.CreateInteractionObjects(currentData.ObjData);
+            if(currentData.ObjData != null)
+            {
+                interactionObjects = objectCreator.CreateInteractionObjects(currentData.ObjData);
+            }
+            else
+            {
+                Debug.LogWarning("Choose Object Data!");
+            }
         }
         if (testObject == null)
         {
             testObject = objectCreator.CreateInteractionObject(currentData.ObjData);
             testPositionPrices = GameManager.Instance.spawnPointGame.position;                                    
-            testRotationPrices = GameManager.Instance.spawnPointGame.rotation;
-
             testPositionLocations = GameManager.Instance.spawnPointSide.position; 
-            testRotationLocations = GameManager.Instance.spawnPointSide.rotation;
         }
     }
 }

@@ -24,7 +24,7 @@ public class ObjectData
         Vector3[] positions = new Vector3[gameObjects.Count];
         for (int i = 0; i < gameObjects.Count; i++)
         {
-            positions[i] = gameObjects[i].localPosition;
+            positions[i] = gameObjects[i].globalPosition;
         }
         return positions;
     }
@@ -34,7 +34,7 @@ public class ObjectData
         Quaternion[] rotations = new Quaternion[gameObjects.Count];
         for (int i = 0; i < gameObjects.Count; i++)
         {
-            rotations[i] = gameObjects[i].localRotation;
+            rotations[i] = gameObjects[i].globalRotations;
         }
         return rotations;
     }
@@ -53,7 +53,7 @@ public class ObjectData
             {
                 obj.name = obj.name.Replace("(Clone)", "");
             }
-            var intObj = new CustomObject(obj.name, obj.transform.localPosition, obj.transform.localRotation);
+            var intObj = new CustomObject(obj.name, obj.transform.position, obj.transform.rotation);
             gameObjects.Add(intObj);
         }
     }
@@ -72,13 +72,13 @@ public class ObjectData
 public class CustomObject
 {
     public string Objectname;
-    public Vector3 localPosition;
-    public Quaternion localRotation;
+    public Vector3 globalPosition;
+    public Quaternion globalRotations;
 
     public CustomObject(string name, Vector3 position, Quaternion rotation)
     {
         this.Objectname = name;
-        this.localPosition = position;
-        this.localRotation = rotation;
+        this.globalPosition = position;
+        this.globalRotations = rotation;
     }
 }

@@ -56,7 +56,8 @@ public class GameStateManager: MonoBehaviour
         }
         else
         {
-            throw new ArgumentException("GameStateManager::StartTestRun no valid GameType {0}", gameType.ToString()); 
+            Debug.LogWarning("GameStateManager::StartTest Run no valid game type"); 
+            // throw new ArgumentException("GameStateManager::StartTestRun no valid GameType {0}", gameType.ToString()); 
         }
 
         GameManager.Instance.OnUserButtonClicked.RemoveAllListeners();
@@ -114,6 +115,7 @@ public class GameStateManager: MonoBehaviour
     public void ResetToDefault()
     {
         // Events
+        GameManager.Instance.OnUserButtonClicked.RemoveAllListeners(); 
         GameManager.Instance.OnUserButtonClicked.AddListener(() => StartTestRun(GameManager.Instance.gameType));
 
         // game states

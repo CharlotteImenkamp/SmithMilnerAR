@@ -5,6 +5,7 @@ using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System;
 using System.Linq;
+using TMPro;
 
 public class CustomScrollableListPopulator : MonoBehaviour
 {
@@ -23,6 +24,9 @@ public class CustomScrollableListPopulator : MonoBehaviour
 
     [NonSerialized]
     private int numItems;
+
+    [SerializeField]
+    private TextMeshPro text; 
 
     [SerializeField]
     [Tooltip("Demonstrate lazy loading")]
@@ -75,7 +79,9 @@ public class CustomScrollableListPopulator : MonoBehaviour
     }
 
     public ScrollingObjectCollection ScrollView { get => scrollView; set => scrollView = value; }
-    private ClippingBox clippingBox; 
+    private ClippingBox clippingBox;
+    private List<GameObject> instantatedObjects; 
+
 
     private void OnEnable()
     {
@@ -90,13 +96,9 @@ public class CustomScrollableListPopulator : MonoBehaviour
     {
         objectCreator = ScriptableObject.CreateInstance<ObjectCreator>();
         objectCreator.PrefabFolderName = "Objects";
+        instantatedObjects = new List<GameObject>(); 
 
-        dynamicItems = Resources.LoadAll<GameObject>("Objects/");
-        numItems = dynamicItems.Length;
-    }
 
-    public void MakeScrollingList()
-    {
         if (scrollView == null)
         {
             GameObject newScroll = new GameObject("Scrolling Object Collection");
@@ -111,11 +113,11 @@ public class CustomScrollableListPopulator : MonoBehaviour
             scrollView.CellHeight = cellHeight;
             scrollView.CellDepth = cellDepth;
             scrollView.CellsPerTier = cellsPerTier;
-            scrollView.TiersPerPage = tiersPerPage; 
+            scrollView.TiersPerPage = tiersPerPage;
         }
 
         gridObjectCollection = scrollView.GetComponentInChildren<GridObjectCollection>();
-        clippingBox = scrollView.GetComponentInChildren<ClippingBox>(); 
+        clippingBox = scrollView.GetComponentInChildren<ClippingBox>();
 
         if (gridObjectCollection == null)
         {
@@ -138,26 +140,93 @@ public class CustomScrollableListPopulator : MonoBehaviour
         {
             loader.SetActive(true);
         }
-
-        StartCoroutine(UpdateListOverTime(loader));
-        
     }
 
-    private IEnumerator UpdateListOverTime(GameObject loaderViz)
+    public void MakeScrollingList(string listType)
     {
-        for (int currItemCount = 0; currItemCount < numItems; currItemCount++)
+        ClearList(); 
+
+        if (listType == "incompleteSet")
+        {
+            numItems = DataManager.Instance.IncompleteUserData.Count;
+            StartCoroutine(UpdateUserList(loader, DataManager.Instance.IncompleteUserData));
+
+        }
+        else if (listType == "completeSet")
+        {
+            numItems = DataManager.Instance.CompleteUserData.Count;
+            StartCoroutine(UpdateUserList(loader, DataManager.Instance.CompleteUserData));
+        }
+        else if (listType == "newSet")
+        {
+            numItems = DataManager.Instance.NewUserData.Count;
+            StartCoroutine(UpdateUserList(loader, DataManager.Instance.NewUserData));
+        }
+        else if(listType == "Objects")
+        {
+            dynamicItems = Resources.LoadAll<GameObject>("Objects/");
+            numItems = dynamicItems.Length;
+            this.gameObject.SetActive(true); 
+            StartCoroutine(UpdateObjectList(loader));
+        }
+        else
+        {
+            throw new System.Exception("CustomToggle List Populator, incorrect input");
+        } 
+    }
+
+    private IEnumerator UpdateObjectList(GameObject loaderViz)
+    {
+            for (int currItemCount = 0; currItemCount < numItems; currItemCount++)
+            {
+                // Buttons
+                var parent = Instantiate<GameObject>(buttonObject);
+                parent.transform.parent = gridObjectCollection.gameObject.transform;
+                parent.transform.localRotation = Quaternion.identity;
+                parent.SetActive(true);
+
+                var obj = dynamicItems[currItemCount];
+                parent.GetComponent<ButtonConfigHelper>().MainLabelText = obj.name;
+
+                // spawn Object
+                parent.GetComponent<ButtonConfigHelper>().OnClick.AddListener(() => InstantiateObject(obj, parent));
+                instantatedObjects.Add(parent);
+
+                var renderer = parent.GetComponentsInChildren<MeshRenderer>();
+                foreach (var r in renderer)
+                {
+                    clippingBox.AddRenderer(r);
+                }
+                yield return null;
+            }
+
+            // Now that the list is populated, hide the loader and show the list
+            loaderViz.SetActive(false);
+            scrollView.gameObject.SetActive(true);
+
+            // Finally, manually call UpdateCollection to set up the collection
+            gridObjectCollection.UpdateCollection();
+            scrollView.UpdateContent();
+    }
+
+    private IEnumerator UpdateUserList(GameObject loaderViz, List<DataManager.Data> chosenSet)
+    {
+         
+        for (int i = 0; i < numItems; i++)
         {
             // Buttons
-            var parent = Instantiate<GameObject>(buttonObject);
-            parent.transform.parent = gridObjectCollection.gameObject.transform;
-            parent.transform.localRotation = Quaternion.identity;
-            parent.SetActive(true);
+            var itemInstance = Instantiate<GameObject>(buttonObject, gridObjectCollection.transform);
+            itemInstance.SetActive(true);
 
-            var obj = dynamicItems[currItemCount];
-            parent.GetComponent<ButtonConfigHelper>().MainLabelText = obj.name;
-            parent.GetComponent<ButtonConfigHelper>().OnClick.AddListener(() => InstantiateObject(obj, parent));
+            itemInstance.GetComponent<ButtonConfigHelper>().MainLabelText = "UserID " + chosenSet[i].UserData.UserID.ToString() +
+                                                                               " SetType " + chosenSet[i].UserData.set.ToString();
+            instantatedObjects.Add(itemInstance);
 
-            var renderer = parent.GetComponentsInChildren<MeshRenderer>();
+            // Write Text
+            var Set = chosenSet[i]; 
+            itemInstance.GetComponent<ButtonConfigHelper>().OnClick.AddListener(() => WriteText(itemInstance,Set));
+
+            var renderer = itemInstance.GetComponentsInChildren<MeshRenderer>();
             foreach (var r in renderer)
             {
                 clippingBox.AddRenderer(r);
@@ -171,7 +240,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
 
         // Finally, manually call UpdateCollection to set up the collection
         gridObjectCollection.UpdateCollection();
-        scrollView.UpdateContent(); 
+        scrollView.UpdateContent();
     }
 
     /// <summary>
@@ -194,6 +263,16 @@ public class CustomScrollableListPopulator : MonoBehaviour
             clippingBox.RemoveRenderer(r);
     }
 
+    private void WriteText(GameObject button, DataManager.Data chosenSet)
+    {
+        if (text != null)
+        {
+            text.text = button.GetComponent<ButtonConfigHelper>().MainLabelText;
+            DataManager.Instance.CurrentSettings = chosenSet;
+        }
+        else
+            throw new MissingComponentException("Add text Object to Custom Scrollable List"); 
+    }
 
     /// <summary>
     /// Called in userInputHelper to combine user data and object data
@@ -201,7 +280,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
     /// <returns></returns>
     public ObjectData GetInstantiatedObjects()
     {
-        ObjectData newData = new ObjectData(objectCreator.InstantiatedObjects, Time.realtimeSinceStartup);
+        ObjectData newData = new ObjectData(objectCreator.InstantiatedObjects, Time.time);
         objectCreator.RemoveAllObjects();
         return newData; 
     }
@@ -212,5 +291,32 @@ public class CustomScrollableListPopulator : MonoBehaviour
     public void ScrollByTier(int amount)
     {
         scrollView.MoveByTiers(amount);
+    }
+
+    public void ClearList()
+    {
+        if (instantatedObjects != null)
+        {
+            foreach (GameObject item in instantatedObjects)
+            {
+                Destroy(item);
+            }
+        }
+        if (gridObjectCollection != null)
+            gridObjectCollection.UpdateCollection();
+
+
+        // Make sure we find a collection
+        if (scrollView == null)
+        {
+            scrollView = GetComponentInChildren<ScrollingObjectCollection>();
+        }
+        if(text != null)
+            text.SetText(""); 
+
+        scrollView.gameObject.SetActive(true);
+        gridObjectCollection.gameObject.SetActive(true);
+        loader.SetActive(true); 
+        
     }
 }

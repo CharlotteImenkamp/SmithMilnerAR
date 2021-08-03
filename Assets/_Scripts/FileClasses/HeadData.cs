@@ -16,20 +16,21 @@ public class HeadData
 
     public void SetCameraParameters(Transform t)
     {
+        timeAfterStart = Time.time.ToString();
         CameraPosition = t.position;
         CameraRotation = t.rotation;
     }
 
     public void SetGazeParameters(Vector3 gazeOrigin, Vector3 gazeDirection)
     {
+        timeAfterStart = Time.time.ToString();
         GazeOrigin = gazeOrigin;
         GazeDirection = gazeDirection;
     }
 
-
     public HeadData()
     {
-        timeAfterStart = Time.time.ToString(); ;
+        timeAfterStart = Time.time.ToString(); 
     }
 
     public HeadData(Transform CameraTransform, Vector3 gazeOrigin, Vector3 gazeDirection)

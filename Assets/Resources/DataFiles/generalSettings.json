@@ -1,21 +1,19 @@
 {
  "start": "Donnerstag, 8. Juli 2021 19:26:26",
-"entries":{
+  "entries": {
     "objectDataFolder": "objectData",
     "userDataFolder": "userData",
-    "newObjectData": [
-        "objectData1"
-    ],
+    "newObjectData": [],
     "newUserData": [
-        "User4/user4",
-        "User3/user3"
+      "User11/user11",
+      "User12/user12",
+      "User13/user13",
+      "User14/user14",
+      "User15/user15"
     ],
-    "incompleteUserData": [
-        "User1/user1",
-        "User2/user2"
-    ],
+    "incompleteUserData": [],
     "completeUserData": []
-},
+  },
  
  "ende" : "END"
  }

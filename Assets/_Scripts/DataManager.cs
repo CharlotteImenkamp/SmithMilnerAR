@@ -92,17 +92,6 @@ public class DataManager : MonoBehaviour
 
     #region dataLogging
 
-    /// <summary>
-    /// Called by UIManager from button event
-    /// </summary>
-    /// <param name="radioButtonIndex"></param>
-    public void SetCurrentUserSettings(int radioButtonIndex)
-    {
-        currentSet = 
-            GameManager.Instance.radioButtonCollection
-            .GetComponent<CustomToggleListPopulator>()
-            .chosenSet[radioButtonIndex];
-    }
 
     /// <summary>
     /// start, if GameState changed to Location Estimation or PriceEstimation

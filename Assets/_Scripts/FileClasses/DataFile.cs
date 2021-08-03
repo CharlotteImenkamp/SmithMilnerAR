@@ -134,7 +134,7 @@ public class DataFile
 
         // debug
         GameManager.Instance.debugText.text = "Data overritten in " + filePath;
-        Debug.LogWarning("Data overritten in " + filePath);
+        Debug.Log("Data overritten in " + filePath);
     }
 
     /// <summary>

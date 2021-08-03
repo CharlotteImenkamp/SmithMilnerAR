@@ -88,8 +88,8 @@ public class ObjectCreator : ScriptableObject
 
         generatedObject.name = generatedObject.name.Replace("(Clone)", ""); 
         generatedObject.transform.parent = parent.transform;
-        generatedObject.transform.localPosition = position;
-        generatedObject.transform.localRotation = rotation;
+        generatedObject.transform.position = position;
+        generatedObject.transform.rotation = rotation;
 
         instantiatedObjects.Add(generatedObject);
     }
@@ -124,23 +124,25 @@ public class ObjectCreator : ScriptableObject
 
     public GameObject[] CreateInteractionObjects(ObjectData currentData)
     {
-        int length = currentData.gameObjects.Count;
-        GameObject[] objs = new GameObject[length];
+            int length = currentData.gameObjects.Count;
+            GameObject[] objs = new GameObject[length];
 
-        for (int i = 0; i < length; i++)
-        {
-            var loadedObj = Resources.Load<GameObject>(prefabFolderName + "/" + currentData.gameObjects[i].Objectname.ToString());
-            if (loadedObj == null)
+            for (int i = 0; i < length; i++)
             {
-                // throw new FileNotFoundException("... ObjectManager::CreateInteractionObjects Object " + currentData.gameObjects[i].Objectname.ToString() + " not found");
+                var loadedObj = Resources.Load<GameObject>(prefabFolderName + "/" + currentData.gameObjects[i].Objectname.ToString());
+                if (loadedObj == null)
+                {
+                    // throw new FileNotFoundException("... ObjectManager::CreateInteractionObjects Object " + currentData.gameObjects[i].Objectname.ToString() + " not found");
+                }
+                else
+                {
+                    objs[i] = loadedObj;
+                }
             }
-            else
-            {
-                objs[i] = loadedObj;
-            }
-        }
 
-        return objs;
+            return objs;
+        
+
     }
 
     public void RemoveAllObjects()
@@ -179,8 +181,10 @@ public class ObjectCreator : ScriptableObject
                     iG.enabled = false;
                 if (obj.TryGetComponent(out Rigidbody rb))
                 {
-                    rb.useGravity = false;
-                    rb.constraints = RigidbodyConstraints.FreezeAll;
+                    // Allow Gravity to let the object fall on the table and adjust position
+                    rb.useGravity = true;
+                    rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ |RigidbodyConstraints.FreezeRotation;
+
                 }
             }
             catch (InvalidCastException e)
@@ -256,16 +260,14 @@ public class ObjectCreator : ScriptableObject
         // RotationAxisConstraint
         var rotConst = loadedObj.EnsureComponent<RotationAxisConstraint>();
         rotConst.HandType = ManipulationHandFlags.OneHanded;
-        rotConst.ConstraintOnRotation = AxisFlags.XAxis;
-        rotConst.ConstraintOnRotation = AxisFlags.ZAxis;
+        rotConst.ConstraintOnRotation = AxisFlags.XAxis | AxisFlags.ZAxis;
         rotConst.UseLocalSpaceForConstraint = true;
         constMan.AddConstraintToManualSelection(rotConst);
 
         // Min Max Scale Constraint
         var scaleConst = loadedObj.EnsureComponent<MinMaxScaleConstraint>();
             scaleConst.HandType = ManipulationHandFlags.TwoHanded;
-            scaleConst.ProximityType = ManipulationProximityFlags.Far;
-            scaleConst.ProximityType = ManipulationProximityFlags.Near;
+            scaleConst.ProximityType = ManipulationProximityFlags.Far| ManipulationProximityFlags.Near;
             scaleConst.ScaleMaximum = 1;
             scaleConst.ScaleMinimum = 1;
             scaleConst.RelativeToInitialState = true;

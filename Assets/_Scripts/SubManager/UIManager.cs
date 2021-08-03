@@ -59,12 +59,14 @@ public class UIManager : SubManager
             case "Pause":
                 CloseAllMenus();
                 OpenMenu(pauseMenu);
+                GameManager.Instance.ContinueWithLocationsButton.SetActive(true); 
                 break;
 
             case "End":
                 CloseAllMenus(); 
                 OpenMenu(pauseMenu);
-                SetChildActive(false, pauseMenu, "ContinueWithLocations"); //\TODO was besseres als string
+                GameManager.Instance.ContinueWithLocationsButton.SetActive(false); 
+                
                 break;
 
             default:
@@ -81,9 +83,6 @@ public class UIManager : SubManager
 
             case "SettingsMenu":
                 CloseAllMenus();
-                // Apply user Settings
-                DataManager.Instance.SetCurrentUserSettings(
-                                     GameManager.Instance.toggleCollectionUser.CurrentIndex);
                 break;
 
             case "LocationTest":
@@ -132,19 +131,6 @@ public class UIManager : SubManager
         foreach (GameObject obj in allMenus)
         {
             obj.SetActive(false); 
-        }
-    }
-
-    private void SetChildActive(bool setActive, GameObject menu, string objectName)
-    {
-        var child = menu.transform.Find(objectName);
-        if(child != null)
-        {
-            child.gameObject.SetActive(setActive);
-        }
-        else
-        {
-            Debug.LogWarning("UIManager::SetChildActive no child found"); 
         }
     }
 

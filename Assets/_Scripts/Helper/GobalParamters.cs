@@ -2,4 +2,4 @@
 
 public enum ConfigType { MovementEnabled, MovementDisabled }
 
-public enum GameType { None, Prices, Locations }
+public enum GameType {Prices, Locations }
