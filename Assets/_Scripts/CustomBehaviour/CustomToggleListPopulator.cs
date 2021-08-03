@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
+using Microsoft.MixedReality.Toolkit;
 
 public class CustomToggleListPopulator : MonoBehaviour
 {
@@ -34,7 +35,7 @@ public class CustomToggleListPopulator : MonoBehaviour
     private List<GameObject> instantiatedButtons;
     public List<DataManager.Data> chosenSet; 
     private GridObjectCollection gridObjectCollection = null;
-    private InteractableToggleCollection toggleCollection = null;
+    private InteractableToggleCollection toggleCollection = null; 
 
     /// <summary>
     /// TODO Struktur ändern, sodass auch GameObjects unter der Parent Transform erstellt werden. Wie in Custom Scrollable List Populator
@@ -56,7 +57,8 @@ public class CustomToggleListPopulator : MonoBehaviour
         if (gridObjectCollection == null)
         {
             gridObjectCollection = parentTransform.AddComponent<GridObjectCollection>();
-            gridObjectCollection.CellWidth = 0.15f;
+
+            gridObjectCollection.CellWidth = 0.096f;
             gridObjectCollection.CellHeight = 0.035f;
             gridObjectCollection.SurfaceType = ObjectOrientationSurfaceType.Plane;
             gridObjectCollection.Layout = LayoutOrder.ColumnThenRow;
@@ -68,19 +70,21 @@ public class CustomToggleListPopulator : MonoBehaviour
         if (scrollView == null)
         {
             GameObject newScroll = new GameObject("Scrolling Object Collection");
-            newScroll.transform.parent = parentTransform.transform; 
+            newScroll.transform.parent = parentTransform.transform;
             newScroll.transform.localPosition = Vector3.zero;
             newScroll.transform.localRotation = Quaternion.identity;
             newScroll.SetActive(false);
             scrollView = newScroll.AddComponent<ScrollingObjectCollection>();
-
-            // Prevent the scrolling collection from running until we're done dynamically populating it.
-            scrollView.CellWidth = 0.04f;
-            scrollView.CellHeight = 0.4f;
-            scrollView.CellDepth = 0.04f;
-            scrollView.CellsPerTier = 3;
-            scrollView.TiersPerPage = 5;
         }
+        // Prevent the scrolling collection from running until we're done dynamically populating it.
+        scrollView.CellWidth = 0.04f;
+        scrollView.CellHeight = 0.4f;
+        scrollView.CellDepth = 0.04f;
+        scrollView.CellsPerTier = 3;
+        scrollView.TiersPerPage = 5;
+        scrollView.AddContent(gridObjectCollection.gameObject); 
+
+        clippingBox = scrollView.GetComponentInChildren<ClippingBox>(); 
 
         instantiatedButtons = new List<GameObject>();
         chosenSet = new List<DataManager.Data>();
@@ -127,23 +131,31 @@ public class CustomToggleListPopulator : MonoBehaviour
                 GameObject itemInstance = Instantiate(dynamicItem, gridObjectCollection.transform);
 
                 itemInstance.GetComponent<ButtonConfigHelper>().MainLabelText = "UserID " + chosenSet[i].UserData.UserID.ToString() +
-                                                                                " SetType " + chosenSet[i].UserData.set.ToString();
-                
+                                                                                " SetType " + chosenSet[i].UserData.set.ToString();               
                 itemInstance.SetActive(true);
                 newToggleList[i] = itemInstance.GetComponent<Interactable>();
 
                 instantiatedButtons.Add(itemInstance);
 
+                // Add Renderer to Clipping Box
+                var renderer = itemInstance.GetComponentsInChildren<MeshRenderer>();
+                foreach (var r in renderer)
+                {
+                    clippingBox.AddRenderer(r);
+                }
+
                 // Update and Assign Changes
                 gridObjectCollection.UpdateCollection();
             }
-
-
 
             if(newToggleList.Length > 0)
             {
                 toggleCollection.ToggleList = newToggleList;
             }
+            scrollView.UpdateContent(); 
+
+            // Wait shortly to Update the Object Collection 
+            Invoke("InvokedCall", 0.0001f); 
         }
         catch (System.Exception)
         {
@@ -151,6 +163,11 @@ public class CustomToggleListPopulator : MonoBehaviour
         }
 
         
+    }
+
+    private void InvokedCall()
+    {
+        gridObjectCollection.UpdateCollection(); 
     }
 
     /// <summary>
@@ -168,6 +185,7 @@ public class CustomToggleListPopulator : MonoBehaviour
         if(gridObjectCollection != null)
             gridObjectCollection.UpdateCollection();
 
+        
         // Make sure we find a collection
         if (scrollView == null)
         {
@@ -176,5 +194,13 @@ public class CustomToggleListPopulator : MonoBehaviour
 
         instantiatedButtons = new List<GameObject>();
         chosenSet = new List<DataManager.Data>();
+    }
+
+    /// <summary>
+    /// Smoothly moves the scroll container a relative number of tiers of cells.
+    /// </summary>
+    public void ScrollByTier(int amount)
+    {
+        scrollView.MoveByTiers(amount);
     }
 }
