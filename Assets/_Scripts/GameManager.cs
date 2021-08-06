@@ -21,14 +21,6 @@ public class GameManager : MonoBehaviour
     public GameObject PauseMenu;
     public GameObject ContinueWithLocationsButton;
 
-    [Header("Collections")]
-    public GameObject radioButtonCollection;
-    [Tooltip("Collection to choose between complete/incomplete or new set")]
-    public InteractableToggleCollection toggleCollectionSet;
-
-    [Tooltip("Collection to choose between users")]
-    public int currentIndexUser; 
-
     [Header("InteractionObjects")]
     public GameObject parentPlayTable;
     public GameObject parentSideTable;
@@ -42,7 +34,11 @@ public class GameManager : MonoBehaviour
     public Material BoundingBoxGrabbed;
     public Material BoundingBoxHandleWhite;
     public Material BoundingBoxHandleBlueGrabbed;
-    public GameObject BoundingBox_RotateHandle; 
+    public GameObject BoundingBox_RotateHandle;
+
+    [Header("Button")]
+    public float ReactivationTimeUserButton;
+    public GameObject UserButton; 
 
     [Header("Debug")]
     public GameObject debugTextObject;
@@ -84,7 +80,6 @@ public class GameManager : MonoBehaviour
     // game 
     [NonSerialized]
     public GameType gameType; 
-    private bool enableUserButton;
     #endregion Game Flow Parameters
 
     #region Parameters Script Managerment
@@ -224,20 +219,29 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void UserButtonClicked()
     {
-        // Only activate on every second Click  
-        // /\ TODO change button color
-        // /\ TODO enable after menu
-        if (enableUserButton)
-        {
-            OnUserButtonClicked.Invoke();
-            enableUserButton = false;
-        }
-        else
-        {
-            enableUserButton = true;
-        }
+         OnUserButtonClicked.Invoke();
 
+         // deactivate user button for some seconds
+         UserButton.GetComponent<Interactable>().enabled = false;
+         Invoke("EnableAfterSeconds", ReactivationTimeUserButton);
     }
+
+    /// <summary>
+    /// Called in user Button Clicked to re enable user button 
+    /// </summary>
+    private void EnableAfterSeconds()
+    {
+        UserButton.GetComponent<Interactable>().enabled = true;
+    }
+
+    /// <summary>
+    /// Called in Hand Menu to set rotation to zero
+    /// </summary>
+    public void ResetObjectRotation()
+    {
+        DataManager.Instance.ResetObjectRotation(); 
+    }
+
 
     #endregion buttons
 
@@ -301,7 +305,6 @@ public class GameManager : MonoBehaviour
     private void ResetToDefault()
     {
         OnUserButtonClicked.RemoveAllListeners();
-        enableUserButton = false;
 
         // game
         gameType = GameType.Prices;

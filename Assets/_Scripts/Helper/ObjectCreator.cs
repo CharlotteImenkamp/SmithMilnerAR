@@ -316,9 +316,10 @@ public class ObjectCreator : ScriptableObject
 
         // Rotation Handle
         var rotationHandle = CreateInstance<RotationHandlesConfiguration>();
-        rotationHandle.HandleMaterial = GameManager.Instance.BoundingBoxHandleWhite;
-        rotationHandle.HandleGrabbedMaterial = GameManager.Instance.BoundingBoxHandleBlueGrabbed;
-        rotationHandle.HandlePrefab = GameManager.Instance.BoundingBox_RotateHandle;
+        rotationHandle.HandleMaterial           = GameManager.Instance.BoundingBoxHandleWhite;
+        rotationHandle.HandleGrabbedMaterial    = GameManager.Instance.BoundingBoxHandleBlueGrabbed;
+        rotationHandle.HandlePrefab             = GameManager.Instance.BoundingBox_RotateHandle;
+        boundsControl.RotationHandlesConfig = rotationHandle; 
 
         boundsControl.RotationHandlesConfig = rotationHandle;
         boundsControl.RotationHandlesConfig.ShowHandleForX = false;

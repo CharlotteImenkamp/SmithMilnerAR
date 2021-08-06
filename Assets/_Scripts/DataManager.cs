@@ -157,4 +157,13 @@ public class DataManager : MonoBehaviour
             Debug.LogWarning("DataManager::SetCurrentSettings no valid data.");
         }
     }
+
+    /// <summary>
+    /// TODO not working !!
+    /// </summary>
+    public void ResetObjectRotation()
+    {
+        foreach (GameObject obj in ObjectsInScene)
+            obj.transform.rotation = Quaternion.identity; 
+    }
 }
