@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System;
 using System.IO;
-using System.Text;
 
 class LogData : IState
 {
@@ -17,15 +16,20 @@ class LogData : IState
     private string fileName_continuousLogging;
     private string fileName_endState;
     private string fileName_headData;
+    private string fileName_startState;
+
 
     // file path
     private string filePath_continuousLogging;
     private string filePath_endState;
     private string filePath_headData;
+    private string filePath_startState;
+
 
     // json strings
     private string json_continuousLogging;
     private string json_endState;
+    private string json_startState;
     private string json_headData; 
 
     // data parameters
@@ -47,7 +51,6 @@ class LogData : IState
         Debug.Log("LogData::Enter");
 
         sampleRate = DataManager.Instance.CurrentSettings.UserData.updateRate;
-        Debug.Log("************************************" + sampleRate); 
         dataFolder = GameManager.Instance.GeneralSettings.userDataFolder;
         generalFolder = GameManager.Instance.mainFolder;
         userID = DataManager.Instance.CurrentSettings.UserData.UserID.ToString();
@@ -132,12 +135,15 @@ class LogData : IState
     {
         // Filenames
         var currentSet = DataManager.Instance.CurrentSettings;
-        fileName_continuousLogging = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_MovingObject";
-        fileName_endState = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_EndObject";
+        fileName_continuousLogging  = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_MovingObject";
+        fileName_endState           = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_EndObject";
+        fileName_startState         = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_StartObject";
 
         // start Writing
-        json_continuousLogging += DataFile.StartFile();
-        json_endState += DataFile.StartFile();
+        json_continuousLogging  += DataFile.StartFile();
+        json_endState       += DataFile.StartFile();
+        json_startState     += DataFile.StartFile();
+        json_startState     += DataFile.AddLine<ObjectData>(GetObjectsInScene());
     }
 
     void ExecuteObjectData()
@@ -149,16 +155,22 @@ class LogData : IState
 
     void EndObjectData()
     {
-        // End continuus logging
+        // End
         json_continuousLogging += DataFile.EndFile();
+
+        // Save start State
+        json_startState += DataFile.EndFile(); 
 
         // Save last Object Positions in new File
         json_endState += DataFile.AddLine<ObjectData>(GetObjectsInScene());
         json_endState += DataFile.EndFile();
 
         DataFile.Save(json_endState, directoryPath, fileName_endState);
-        DataFile.Save(json_continuousLogging, directoryPath, fileName_continuousLogging); 
+        DataFile.Save(json_continuousLogging, directoryPath, fileName_continuousLogging);
+        DataFile.Save(json_startState, directoryPath, fileName_startState); 
     }
+
+
 
     void PrepareHeadData()
     {
@@ -209,7 +221,6 @@ class LogData : IState
     {
         return DataManager.Instance.CurrentHeadData; 
     }
-
     #endregion get data
 
 }

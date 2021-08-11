@@ -78,7 +78,7 @@ public class ObjectManager : SubManager
                     currentData.ObjData.GetObjectPositions(),
                     currentData.ObjData.GetObjectRotations(), 
                     ConfigType.MovementEnabled);
-                sideTableObjectCollection.UpdateCollection(); 
+                sideTableObjectCollection.UpdateCollection();
 
                 DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects;
                 break;

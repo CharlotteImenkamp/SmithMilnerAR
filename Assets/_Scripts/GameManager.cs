@@ -1,5 +1,6 @@
 using Microsoft.MixedReality.Toolkit.UI;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -223,14 +224,16 @@ public class GameManager : MonoBehaviour
 
          // deactivate user button for some seconds
          UserButton.GetComponent<Interactable>().enabled = false;
-         Invoke("EnableAfterSeconds", ReactivationTimeUserButton);
+        StartCoroutine(EnableAfterSeconds()); 
     }
 
     /// <summary>
     /// Called in user Button Clicked to re enable user button 
     /// </summary>
-    private void EnableAfterSeconds()
+    IEnumerator EnableAfterSeconds()
     {
+        yield return new WaitForSeconds(ReactivationTimeUserButton);
+
         UserButton.GetComponent<Interactable>().enabled = true;
     }
 

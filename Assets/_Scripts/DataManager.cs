@@ -34,6 +34,7 @@ public class DataManager : MonoBehaviour
     // Data to Save
     public List<GameObject> ObjectsInScene { get => objectsInScene; set { objectsInScene = value; } }
     public List<GameObject> MovingObjects { get => movingObjects; set => movingObjects = value; }
+
     public HeadData CurrentHeadData { get => currentHeadData; set => currentHeadData = value; }
 
     // Data from general Settings
@@ -41,6 +42,7 @@ public class DataManager : MonoBehaviour
     public List<Data> IncompleteUserData { get => incompleteUserData; set => incompleteUserData = value; }
     public List<Data> CompleteUserData { get => completeUserData; set => completeUserData = value; }
     public List<Data> NewUserData { get => newUserData; set => newUserData = value; }
+   
 
     public struct Data
     {
@@ -70,9 +72,6 @@ public class DataManager : MonoBehaviour
     private HeadData currentHeadData;
 
     private Data currentSet;
-
-
-
 
     #endregion private parameters
 
