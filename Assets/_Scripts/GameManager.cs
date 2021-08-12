@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
     public GameObject BoundingBox_RotateHandle;
 
     [Header("Button")]
-    public float ReactivationTimeUserButton;
+    public float ReactivationTimeUserButton = 10.0f;
     public GameObject UserButton; 
 
     [Header("Debug")]
@@ -74,6 +74,7 @@ public class GameManager : MonoBehaviour
     // Events
     [NonSerialized]
     public UnityEvent OnUserButtonClicked;
+    private bool buttonEnabled; 
 
     #endregion Event Parameters
 
@@ -126,6 +127,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        buttonEnabled = true; 
+
         // debug
         debugText = debugTextObject.GetComponent<TextMeshPro>();
 
@@ -220,10 +223,16 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void UserButtonClicked()
     {
-         OnUserButtonClicked.Invoke();
-
+        if (buttonEnabled)
+        {
+            OnUserButtonClicked.Invoke();
+        }
+         
          // deactivate user button for some seconds
-         UserButton.GetComponent<Interactable>().enabled = false;
+        UserButton.GetComponent<Interactable>().IsEnabled = false;
+        UserButton.GetComponent<PressableButton>().enabled = false; 
+        buttonEnabled = false; 
+
         StartCoroutine(EnableAfterSeconds()); 
     }
 
@@ -234,7 +243,10 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(ReactivationTimeUserButton);
 
-        UserButton.GetComponent<Interactable>().enabled = true;
+        UserButton.GetComponent<Interactable>().IsEnabled = true;
+        UserButton.GetComponent<PressableButton>().enabled = true;
+
+        buttonEnabled = true; 
     }
 
     /// <summary>
