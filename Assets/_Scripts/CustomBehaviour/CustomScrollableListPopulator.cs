@@ -135,11 +135,6 @@ public class CustomScrollableListPopulator : MonoBehaviour
             gridObjectCollection.Anchor = LayoutAnchor.UpperLeft;
             scrollView.AddContent(collectionGameObject);
         }
-
-        if (loader != null)
-        {
-            loader.SetActive(true);
-        }
     }
 
     public void MakeScrollingList(string listType)
@@ -177,6 +172,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
 
     private IEnumerator UpdateObjectList(GameObject loaderViz)
     {
+        loaderViz.SetActive(true);
             for (int currItemCount = 0; currItemCount < numItems; currItemCount++)
             {
                 // Buttons
@@ -211,7 +207,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
 
     private IEnumerator UpdateUserList(GameObject loaderViz, List<DataManager.Data> chosenSet)
     {
-         
+        loaderViz.SetActive(true);  
         for (int i = 0; i < numItems; i++)
         {
             // Buttons
@@ -295,6 +291,8 @@ public class CustomScrollableListPopulator : MonoBehaviour
 
     public void ClearList()
     {
+
+        
         if (instantatedObjects != null)
         {
             foreach (GameObject item in instantatedObjects)
@@ -315,8 +313,6 @@ public class CustomScrollableListPopulator : MonoBehaviour
             text.SetText(""); 
 
         scrollView.gameObject.SetActive(true);
-        gridObjectCollection.gameObject.SetActive(true);
-        loader.SetActive(true); 
-        
+        gridObjectCollection.gameObject.SetActive(true);      
     }
 }

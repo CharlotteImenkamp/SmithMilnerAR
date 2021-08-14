@@ -145,7 +145,7 @@ public class GameManager : MonoBehaviour
         mainFolder = "DataFiles";
         updateRate = 1.0f; 
 
-        ResetToDefault();
+        
         generalSettings = DataFile.SecureLoad<ApplicationData>(Path.Combine(mainFolder, "generalSettings"));
 
         // Add Managers of Type Monobehaviour
@@ -159,8 +159,8 @@ public class GameManager : MonoBehaviour
         AddSubManager(new UIManager());
         AddSubManager(new ObjectManager());
 
-        
 
+        ResetToDefault();
     }
 
 
@@ -230,8 +230,10 @@ public class GameManager : MonoBehaviour
          
          // deactivate user button for some seconds
         UserButton.GetComponent<Interactable>().IsEnabled = false;
-        UserButton.GetComponent<PressableButton>().enabled = false; 
-        buttonEnabled = false; 
+        UserButton.GetComponent<PressableButton>().enabled = false;
+        UserButton.GetComponent<Interactable>().SetState(InteractableStates.InteractableStateEnum.Pressed, true); 
+        buttonEnabled = false;
+        Debug.Log("Pressed");
 
         StartCoroutine(EnableAfterSeconds()); 
     }
@@ -241,10 +243,12 @@ public class GameManager : MonoBehaviour
     /// </summary>
     IEnumerator EnableAfterSeconds()
     {
+        Debug.Log("******************Disabled");
         yield return new WaitForSeconds(ReactivationTimeUserButton);
 
         UserButton.GetComponent<Interactable>().IsEnabled = true;
         UserButton.GetComponent<PressableButton>().enabled = true;
+        UserButton.GetComponent<Interactable>().SetState(InteractableStates.InteractableStateEnum.Pressed, false);
 
         buttonEnabled = true; 
     }
@@ -257,7 +261,10 @@ public class GameManager : MonoBehaviour
         DataManager.Instance.ResetObjectRotation(); 
     }
 
-
+    public void ResetMenuValues()
+    {
+        ResetToDefault(); 
+    }
     #endregion buttons
 
     #region Script Management
@@ -306,6 +313,10 @@ public class GameManager : MonoBehaviour
     public void NewUser()
     {
         ResetToDefault();
+    }
+
+    private void ResetToDefault()
+    {
 
         //\TODO in foreach
         gameObject.GetComponent<GameStateManager>().ResetToDefault();
@@ -313,12 +324,9 @@ public class GameManager : MonoBehaviour
 
         foreach (SubManager sub in attachedSubManagers)
         {
-            sub.Reset(); 
+            sub.Reset();
         }
-    }
 
-    private void ResetToDefault()
-    {
         OnUserButtonClicked.RemoveAllListeners();
 
         // game
