@@ -25,7 +25,6 @@ public class PriceEstimation : IState
     {
         GameManager.Instance.debugText.text = "PriceEstimation::Exit()";
 
-        Debug.Log("PriceEstimation::Exit()");
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
         {

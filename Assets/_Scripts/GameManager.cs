@@ -179,43 +179,31 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Called in Old Settings menu on radio buttons 
+    /// Called in Old Settings menu on radio buttons
+    /// And on Pause menu at button ContinueWithLocations
+    /// Sets Game Type and Assigns Listeners to UserButton
     /// </summary>
     /// <param name="type"></param>
     public void SetGameType(string type)
     {
         if(type == "Locations")
-        {
-            gameType = GameType.Locations; 
-        }
+            gameType = GameType.Locations;
         else if (type == "Prices")
-        {
             gameType = GameType.Prices; 
-        }
         else
-        {
             throw new ArgumentException("...GameManager SetGameType to " + type + " not possible."); 
-        }
+        
+       
     }
 
     /// <summary>
-    /// On Pause Menu button clicked. 
-    /// Current Settings stay the same
+    /// Called after SetGameType to add Listeners to UserButton
+    /// The split is necessary to prevent wrong behaviour 
     /// </summary>
-    public void ContinueWithLocations(GameObject button)
+    public void StartGame()
     {
-        if(gameType == GameType.Prices)
-        {
-            gameType = GameType.Locations;
-
-            OnUserButtonClicked.RemoveAllListeners();
-            OnUserButtonClicked.AddListener(() => GameStateManager.Instance.StartTestRun(gameType));
-            button.SetActive(false); 
-        }
-        else
-        {
-            button.SetActive(false); // \TODO disable button earlier
-        }
+        OnUserButtonClicked.RemoveAllListeners();
+        OnUserButtonClicked.AddListener(() => GameStateManager.Instance.StartTestRun(GameManager.Instance.gameType));
     }
 
     /// <summary>
@@ -233,7 +221,6 @@ public class GameManager : MonoBehaviour
         UserButton.GetComponent<PressableButton>().enabled = false;
         UserButton.GetComponent<Interactable>().SetState(InteractableStates.InteractableStateEnum.Pressed, true); 
         buttonEnabled = false;
-        Debug.Log("Pressed");
 
         StartCoroutine(EnableAfterSeconds()); 
     }
@@ -243,7 +230,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     IEnumerator EnableAfterSeconds()
     {
-        Debug.Log("******************Disabled");
         yield return new WaitForSeconds(ReactivationTimeUserButton);
 
         UserButton.GetComponent<Interactable>().IsEnabled = true;

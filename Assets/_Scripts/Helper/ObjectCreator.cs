@@ -95,7 +95,7 @@ public class ObjectCreator : ScriptableObject
     }
 
     public void SpawnObjects(GameObject[] gameObjects, GameObject parent, Vector3[] positions, Quaternion[] rotations, ConfigType config)
-    {
+            {
         for (int i = 0; i < gameObjects.Length; i++)
         {
             SpawnObject(gameObjects[i], parent, positions[i], rotations[i], config); 

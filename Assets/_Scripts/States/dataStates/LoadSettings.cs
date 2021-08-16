@@ -34,9 +34,6 @@ class LoadSettings : IState
     public void Exit()
     {
         GameManager.Instance.debugText.text = "LoadSettings Exit"; 
-
-        Debug.Log("LoadSettings Exit");
-
     }
 
     #region Load Data

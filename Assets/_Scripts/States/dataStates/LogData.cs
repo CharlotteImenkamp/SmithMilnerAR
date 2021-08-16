@@ -113,8 +113,6 @@ class LogData : IState
     {
         GameManager.Instance.debugText.text = "LogData Exit"; 
 
-        Debug.Log("LogData::Exit");
-
         if (gameType == GameType.Locations)
         {
             EndHeadData();

@@ -25,7 +25,6 @@ public class LocationTest : IState
     {
         GameManager.Instance.debugText.text = "LocationTest::Exit()";
 
-        Debug.Log("LocationTest::Exit()");
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
         {

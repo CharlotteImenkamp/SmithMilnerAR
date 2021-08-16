@@ -47,19 +47,12 @@ public class GameStateManager: MonoBehaviour
     public void StartTestRun(GameType gameType)
     {
         if (gameType == GameType.Prices)
-        {
             gameStateMachine.ChangeState(new PriceTest()); 
-        }
         else if(gameType == GameType.Locations)
-        {
             gameStateMachine.ChangeState(new LocationTest());
-        }
         else
-        {
-            Debug.LogWarning("GameStateManager::StartTest Run no valid game type"); 
-            // throw new ArgumentException("GameStateManager::StartTestRun no valid GameType {0}", gameType.ToString()); 
-        }
-
+            throw new ArgumentException("GameStateManager::StartTestRun no valid GameType {0}", gameType.ToString()); 
+        
         GameManager.Instance.OnUserButtonClicked.RemoveAllListeners();
         GameManager.Instance.OnUserButtonClicked.AddListener(() => StartGame(GameManager.Instance.gameType)); 
     }
@@ -116,7 +109,6 @@ public class GameStateManager: MonoBehaviour
     {
         // Events
         GameManager.Instance.OnUserButtonClicked.RemoveAllListeners(); 
-        GameManager.Instance.OnUserButtonClicked.AddListener(() => StartTestRun(GameManager.Instance.gameType));
 
         // game states
         gameStateMachine.ChangeState(new Initialization());

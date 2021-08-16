@@ -30,7 +30,6 @@ public class DataFile
             newData = file.entries;
 
             GameManager.Instance.debugText.text = "data loaded from persistent Path.";
-            Debug.Log("data loaded from persistent Path.");
         }
         else
         {

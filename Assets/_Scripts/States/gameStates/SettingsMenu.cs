@@ -25,14 +25,10 @@ public class SettingsMenu : IState
     {
         GameManager.Instance.debugText.text = "OpenSettingsMenu::Exit()";
 
-        Debug.Log("OpenSettingsMenu::Exit()");
-
         var SubManagers = GameManager.Instance.AttachedSubManagers;
+
         foreach (SubManager subManager in SubManagers)
-        {
             subManager.OnGameStateLeft(this.ToString());
-        }
-
-
+        
     }
 }

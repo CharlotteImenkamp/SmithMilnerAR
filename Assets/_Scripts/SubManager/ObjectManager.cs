@@ -169,20 +169,16 @@ public class ObjectManager : SubManager
     private void CheckDefaultParameters()
     {
         if (currentData.UserData == null || currentData.ObjData == null)
-        {
             currentData = DataManager.Instance.CurrentSettings;
-        }
+
         if (interactionObjects == null)
         {
-            if(currentData.ObjData != null)
-            {
+            if (currentData.ObjData != null)
                 interactionObjects = objectCreator.CreateInteractionObjects(currentData.ObjData);
-            }
             else
-            {
-                Debug.LogWarning("Choose Object Data!");
-            }
+                Debug.LogError("Choose Object Data!");
         }
+
         if (testObject == null)
         {
             testObject = objectCreator.CreateInteractionObject(currentData.ObjData);

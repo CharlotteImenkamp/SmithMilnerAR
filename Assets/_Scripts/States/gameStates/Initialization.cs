@@ -29,8 +29,6 @@ public class Initialization : IState
     public void Exit()
     {
         GameManager.Instance.debugText.text = "Initialization::Exit()"; 
-        
-        Debug.Log("Initialization::Exit()");
 
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
