@@ -324,7 +324,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void QuitGame()
     {
-        Application.Quit(); 
+        // Application.Quit(); 
     }
 
     #endregion Game Flow 

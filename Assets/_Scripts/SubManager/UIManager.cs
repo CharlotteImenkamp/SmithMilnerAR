@@ -123,7 +123,7 @@ public class UIManager : SubManager
             obj.SetActive(false);
         }
 
-        menu.SetActive(true); 
+        menu.SetActive(true);
     }
 
     private void CloseAllMenus()
