@@ -98,7 +98,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
     /// </summary>
     private void OnDisable()
     {
-        ClearList();
+        // ClearList();
     }
 
     /// <summary>
@@ -268,10 +268,15 @@ public class CustomScrollableListPopulator : MonoBehaviour
             objectCreator.PrefabFolderName = "Objects";
         }
         else
-            objectCreator.Reset(); 
+        {
+            objectCreator.Reset();
+            objectCreator = null;
+            objectCreator = ScriptableObject.CreateInstance<ObjectCreator>(); 
+
+        }
 
         // Instantiated Button Objects
-        if(instantatedObjects == null)
+        if (instantatedObjects == null)
         {
             instantatedObjects = new List<GameObject>();
         }
