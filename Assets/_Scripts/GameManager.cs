@@ -54,9 +54,11 @@ public class GameManager : MonoBehaviour
         set 
         { 
             generalSettings = value;
-            DataManager.Instance.CompleteUserData = DataFile.LoadUserSets(generalSettings.completeUserData);
+            DataManager.Instance.CompleteUserData   = DataFile.LoadUserSets(generalSettings.completeUserData);
             DataManager.Instance.IncompleteUserData = DataFile.LoadUserSets(generalSettings.incompleteUserData);
-            DataManager.Instance.NewUserData = DataFile.LoadUserSets(generalSettings.newUserData);
+            DataManager.Instance.NewUserData        = DataFile.LoadUserSets(generalSettings.newUserData);
+
+            DataFile.Override<ApplicationData>(generalSettings, mainFolder, "generalSettings");
         }
     }
 

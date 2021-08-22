@@ -108,31 +108,40 @@ public class CustomScrollableListPopulator : MonoBehaviour
     public void MakeScrollingList(string listType)
     {
         ClearList(); 
-        if (listType == "incompleteSet")
+        if(DataManager.Instance != null)
         {
-            numItems = DataManager.Instance.IncompleteUserData.Count;
-            StartCoroutine(UpdateList("Sets", loader, DataManager.Instance.IncompleteUserData));
+            if (listType == "incompleteSet")
+            {
+                numItems = DataManager.Instance.IncompleteUserData.Count;
+                StartCoroutine(UpdateList("Sets", loader, DataManager.Instance.IncompleteUserData));
 
-        }
-        else if (listType == "completeSet")
-        {
-            numItems = DataManager.Instance.CompleteUserData.Count;
-            StartCoroutine(UpdateList("Sets", loader, DataManager.Instance.CompleteUserData));
-        }
-        else if (listType == "newSet")
-        {
-            numItems = DataManager.Instance.NewUserData.Count;
-            StartCoroutine(UpdateList("Sets", loader, DataManager.Instance.NewUserData));
-        }
-        else if(listType == "Objects")
-        {
-            dynamicItems = Resources.LoadAll<GameObject>("Objects/");
-            numItems = dynamicItems.Length;
-            this.gameObject.SetActive(true); 
-            StartCoroutine(UpdateList("Objects", loader));
+            }
+            else if (listType == "completeSet")
+            {
+                numItems = DataManager.Instance.CompleteUserData.Count;
+                StartCoroutine(UpdateList("Sets", loader, DataManager.Instance.CompleteUserData));
+            }
+            else if (listType == "newSet")
+            {
+                numItems = DataManager.Instance.NewUserData.Count;
+                StartCoroutine(UpdateList("Sets", loader, DataManager.Instance.NewUserData));
+            }
+            else if (listType == "Objects")
+            {
+                dynamicItems = Resources.LoadAll<GameObject>("Objects/");
+                numItems = dynamicItems.Length;
+                this.gameObject.SetActive(true);
+                StartCoroutine(UpdateList("Objects", loader));
+            }
+            else
+                throw new System.Exception("CustomToggle List Populator, incorrect input");
         }
         else
-            throw new System.Exception("CustomToggle List Populator, incorrect input");
+        {
+            Debug.LogWarning("CustomScrollable List Populator tried to get Datamananger Instance, which was null."); 
+        }
+        
+       
     }
 
     /// Used in Coroutine to slowly load objects
