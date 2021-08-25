@@ -7,7 +7,9 @@ using UnityEngine;
 
 public class DataFile
 {
-    static string fileending = ".json"; 
+    static string fileending = ".json";
+
+    #region load
 
     /// <summary>
     /// Try from persistent datapath first, then try from resources or generate a default set
@@ -86,14 +88,48 @@ public class DataFile
         }
     }
 
+    /// <summary>
+    /// Helper Function to load User sets into game.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    public static List<DataManager.Data> LoadUserSets(List<string> path)
+    {
+        List<DataManager.Data> newData = new List<DataManager.Data>();
+
+        // get parameters from GameManager
+        int N = path.Count;
+
+        // filepath
+        string mainFolder = GameManager.Instance.mainFolder;
+        string userDataFolder = GameManager.Instance.GeneralSettings.userDataFolder;
+
+        // load each file into own parameter and save in DataManager
+        for (int i = 0; i < N; i++)
+        {
+            var filePath = Path.Combine(mainFolder, userDataFolder, path[i]);
+            var userData = DataFile.SecureLoad<UserSettingsData>(filePath);
+
+            var objPath = Path.Combine(mainFolder, userDataFolder, "User" + userData.UserID.ToString(), "settings" + userData.UserID.ToString());
+            var objData = DataFile.SecureLoad<ObjectData>(objPath);
+
+            newData.Add(new DataManager.Data(objData, userData));
+        }
+        return newData;
+    }
+
+    #endregion load 
+
+    #region save
 
     /// <summary>
     /// Save into persistent data path. generates new name if it exists
+    /// Begin and End of the string are added automatically
     /// </summary>
     /// <param name="data"></param>
     /// <param name="folderAfterPersistentPath"></param>
     /// <param name="name"></param>
-    public static void Save<T>(T data, string folderAfterPersistentPath, string name)
+    public static string Save<T>(T data, string folderAfterPersistentPath, string name)
     {
         string directory = GenerateDirectory(Path.Combine(Application.persistentDataPath, folderAfterPersistentPath));
         string fileName = GenerateUniqueFileName(directory, name);
@@ -102,14 +138,16 @@ public class DataFile
 
         string jsonString = StartFile();
         jsonString += AddLine<T>(data);
-        jsonString += EndFile(); 
+        jsonString += EndFile(false);
 
         // override existing text
-        UnityEngine.Windows.File.WriteAllBytes( filePath + fileending, Encoding.ASCII.GetBytes(jsonString)); // \TODO Löschen!!
+        UnityEngine.Windows.File.WriteAllBytes(filePath + fileending, Encoding.ASCII.GetBytes(jsonString));
 
         // debug
         GameManager.Instance.debugText.text = "Data saved into persistent Path.";
         Debug.Log("Data saved into persistent Path: " + filePath);
+
+        return fileName; 
     }
 
     /// <summary>
@@ -118,15 +156,16 @@ public class DataFile
     /// <param name="data"></param>
     /// <param name="folderAfterPersistentPath"></param>
     /// <param name="name"></param>
-    public static void Override<T>(T data, string folderAfterPersistentPath, string name)
+    public static void Overwrite<T>(T data, string folderAfterPersistentPath, string name)
     {
-
+        // prepare file path 
         string directory = Path.Combine(Application.persistentDataPath, folderAfterPersistentPath);
         string filePath = Path.Combine(directory, name);
 
+        // prepare file content
         string jsonString = StartFile();
         jsonString += AddLine<T>(data);
-        jsonString += EndFile();
+        jsonString += EndFile(false);
 
         // override existing text
         UnityEngine.Windows.File.WriteAllBytes(filePath + fileending, Encoding.ASCII.GetBytes(jsonString));
@@ -137,7 +176,8 @@ public class DataFile
     }
 
     /// <summary>
-    /// Save complete json string. generates new filename if exists and saves
+    /// Save complete json string. Begin and End of the string must be added beforehand
+    /// generates new filename if exists and saves file
     /// </summary>
     /// <param name="jsonString"></param>
     /// <param name="folderName"></param>
@@ -156,9 +196,31 @@ public class DataFile
         GameManager.Instance.debugText.text = "Data saved into persistent Path.";
         Debug.Log("Data saved into " + filePath);
 
-        return filePath; 
+        return fileName; 
     }
 
+    public static void Overwrite(string jsonString, string folderName, string name)
+    {
+        // prepare file path
+        string directory = GenerateDirectory(Path.Combine(Application.persistentDataPath, folderName));
+        string filePath = Path.Combine(directory, name);
+
+        // override existing text
+        UnityEngine.Windows.File.WriteAllBytes(filePath + fileending, Encoding.ASCII.GetBytes(jsonString));
+
+        // debug
+        GameManager.Instance.debugText.text = "Data saved into persistent Path.";
+        Debug.Log("Data overwritten in " + filePath);
+    }
+
+    #endregion save
+
+
+    #region file helper
+    /// <summary>
+    /// Adds equal beginning to every dataFile
+    /// </summary>
+    /// <returns></returns>
     public static string StartFile()
     {
         return "{\n \"start\": \"" + DateTime.Now.ToString("F") + "\"," 
@@ -166,6 +228,12 @@ public class DataFile
             + "\"entries\": ";
     }
 
+    /// <summary>
+    /// Converts data class into json string and adds new line
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="data"></param>
+    /// <returns></returns>
     public static string AddLine<T>(T data)
     {
         string jsonString = JsonUtility.ToJson(data, true);
@@ -174,9 +242,17 @@ public class DataFile
         return jsonString; 
     }
 
-    public static string EndFile()
+    /// <summary>
+    /// Add equal end to every dataFile
+    /// </summary>
+    /// <param name="backup"> if the end is of a backupfile, it is marked in the line</param>
+    /// <returns></returns>
+    public static string EndFile(bool backup)
     {
-        return " \n \"ende\" : \"END\"\n }";
+        if (backup)
+            return " \n \"ende\" : \"BACKUP\"\n }";
+        else
+            return " \n \"ende\" : \"END\"\n }";
     }
 
     /// <summary>
@@ -214,35 +290,8 @@ public class DataFile
         return filename; 
     }
 
-    /// <summary>
-    /// Helper Function to load User sets into game.
-    /// </summary>
-    /// <param name="path"></param>
-    /// <returns></returns>
-    public static List<DataManager.Data> LoadUserSets(List<string> path)
-    {
-        List<DataManager.Data> newData = new List<DataManager.Data>();
+    #endregion file helper 
 
-        // get parameters from GameManager
-        int N = path.Count;
-
-        // filepath
-        string mainFolder = GameManager.Instance.mainFolder;
-        string userDataFolder = GameManager.Instance.GeneralSettings.userDataFolder;
-
-        // load each file into own parameter and save in DataManager
-        for (int i = 0; i < N; i++)
-        {
-            var filePath = Path.Combine(mainFolder, userDataFolder, path[i]);
-            var userData = DataFile.SecureLoad<UserSettingsData>(filePath);
-
-            var objPath = Path.Combine(mainFolder, userDataFolder, "User" + userData.UserID.ToString(), "settings" + userData.UserID.ToString());
-            var objData = DataFile.SecureLoad<ObjectData>(objPath);
-
-            newData.Add(new DataManager.Data(objData, userData));
-        }
-        return newData;
-    }
 }
 
 /// <summary>

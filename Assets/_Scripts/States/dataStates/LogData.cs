@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.IO;
+using UnityEngine;
 
 class LogData : IState
 {
@@ -13,30 +13,31 @@ class LogData : IState
     private string userID; 
 
     // filenames
-    private string fileName_continuousLogging;
-    private string fileName_endState;
-    private string fileName_headData;
-    private string fileName_startState;
+    private string name_contLog;
+    private string name_end;
+    private string name_headData;
+    private string name_start;
 
-
-    // file path
-    private string filePath_continuousLogging;
-    private string filePath_endState;
-    private string filePath_headData;
-    private string filePath_startState;
-
+    // unique filenames
+    private string uqName_contLog;
+    private string uqName_end;
+    private string uqName_headData;
+    private string uqName_start;
 
     // json strings
-    private string json_continuousLogging;
-    private string json_endState;
-    private string json_startState;
-    private string json_headData; 
+    private string data_contLog;
+    private string data_endState;
+    private string data_startState;
+    private string data_headData; 
 
     // data parameters
     private float sampleRate; // in miliseconds
-    private float prevTime, currTime, nextTime; 
-    private GameType gameType;
 
+    // time parameters
+    private float prevTime, currTime, startTime;  // in seconds
+    private bool firstLog, secondLog; 
+
+    private GameType gameType;
 
     #endregion private parameters
 
@@ -56,9 +57,13 @@ class LogData : IState
         userID = DataManager.Instance.CurrentSet.UserData.UserID.ToString();
 
         // default
-        json_continuousLogging = "";
-        json_endState = "";
-        json_headData = ""; 
+        data_contLog = "";
+        data_endState = "";
+        data_headData = "";
+
+        // time
+        firstLog = false;
+        secondLog = false; 
 
         // Directory
         directoryPath = Path.Combine(Application.persistentDataPath, generalFolder, dataFolder , "User" + userID);
@@ -85,14 +90,14 @@ class LogData : IState
 
         // Set Time for updateRate
         // time1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-        prevTime = Time.time;  
+        prevTime = Time.time;
+        startTime = Time.time; 
     }
 
     public void Execute()
     {
-        // time2 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
         currTime = Time.time; 
-        // if (time2 - time1 >= sampleRate)
+
         if(currTime-prevTime >= sampleRate)
         {
             if (gameType == GameType.Locations)
@@ -107,6 +112,47 @@ class LogData : IState
 
             prevTime = currTime; 
         }
+
+        // Backup Save after 2 Minutes
+        if (!secondLog)
+        {
+            if ((Time.time - startTime) > 120) 
+            {
+                Debug.Log("*** 2 Min");
+                secondLog = true;
+
+                // Save Data
+                if (gameType == GameType.Locations)
+                {
+                    BackupObjectData();
+                    BackupHeadData(); 
+                }
+                else if (gameType == GameType.Prices)
+                    BackupHeadData(); 
+                else
+                    throw new ArgumentException("LogData::Execute no valid GameType.");
+            }
+        }
+
+        // Backup Save after 1 Minute
+        if (!firstLog)
+        {
+            if ((Time.time - startTime) > 60) 
+            {
+                firstLog = true;
+
+                // Save Data and get unique filename
+                if (gameType == GameType.Locations)
+                {
+                    BackupObjectData();
+                    BackupHeadData(); 
+                }
+                else if (gameType == GameType.Prices)
+                    BackupHeadData(); 
+                else
+                    throw new ArgumentException("LogData::Execute no valid GameType.");
+            }
+        }
     }
 
     public void Exit()
@@ -117,7 +163,6 @@ class LogData : IState
         {
             EndHeadData();
             EndObjectData();
-            
         }
         else if (gameType == GameType.Prices)
         {
@@ -128,77 +173,132 @@ class LogData : IState
     }
 
 
+    #region backup
+    private void BackupObjectData()
+    {
+        // first backup
+        if(secondLog == false)
+        {
+            // update endstate to current state
+            var tmp_end = data_endState + DataFile.AddLine<ObjectData>(GetObjectsInScene());
+
+            // save copy of data 
+            var tmp_contLog = data_contLog    + DataFile.EndFile(true);
+            var tmp_start   = data_startState + DataFile.EndFile(true);
+            tmp_end += DataFile.EndFile(true);
+
+            // save file and get unique file name to overwride file later
+            uqName_contLog = DataFile.Save(tmp_contLog, directoryPath, name_contLog);
+            uqName_end    = DataFile.Save(tmp_end,      directoryPath, name_end);
+            uqName_start  = DataFile.Save(tmp_start,    directoryPath, name_start); 
+        }
+        // second backup
+        else
+        {
+            // update endstate to current state
+            var tmp_end = data_endState + DataFile.AddLine<ObjectData>(GetObjectsInScene());
+
+            // save copy of data
+            var tmp_contLog = data_contLog  + DataFile.EndFile(true);
+            var tmp_start   = data_startState + DataFile.EndFile(true);
+            tmp_end += DataFile.EndFile(true);
+
+            // override file 
+            DataFile.Overwrite(tmp_contLog, directoryPath, uqName_contLog);
+            DataFile.Overwrite(tmp_end,     directoryPath, uqName_end);
+            DataFile.Overwrite(tmp_start,   directoryPath, uqName_start);
+        }
+    }
+
+    private void BackupHeadData()
+    {
+        // first backup
+        if (secondLog == false)
+        {
+            // save copy of data
+            var tmp_headData = data_headData + DataFile.EndFile(true);
+
+            // save file and get unique file name to overwrite file later
+            uqName_headData = DataFile.Save(tmp_headData, directoryPath, name_headData); 
+        }
+        // second backup
+        else
+        {
+            // save copy of data
+            var tmp_headData = data_headData + DataFile.EndFile(true);
+
+            // save file and get unique file name to overwrite file later
+            DataFile.Overwrite(tmp_headData, directoryPath, uqName_headData);
+        }
+    }
+
+    #endregion 
+
     #region handle dataTypes
     void PrepareObjectData()
     {
         // Filenames
         var currentSet = DataManager.Instance.CurrentSet;
-        fileName_continuousLogging  = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_MovingObject";
-        fileName_endState           = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_EndObject";
-        fileName_startState         = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_StartObject";
+        name_contLog  = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_MovingObject";
+        name_end           = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_EndObject";
+        name_start         = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_StartObject";
 
         // start Writing
-        json_continuousLogging  += DataFile.StartFile();
-        json_endState       += DataFile.StartFile();
-        json_startState     += DataFile.StartFile();
-        json_startState     += DataFile.AddLine<ObjectData>(GetObjectsInScene());
+        data_contLog  += DataFile.StartFile();
+        data_endState       += DataFile.StartFile();
+        data_startState     += DataFile.StartFile();
+        data_startState     += DataFile.AddLine<ObjectData>(GetObjectsInScene());
     }
 
     void ExecuteObjectData()
     {
         var data = GetMovingObject();
         if (data != null && data.gameObjects.Count != 0)
-            json_continuousLogging += DataFile.AddLine<ObjectData>(data); 
+            data_contLog += DataFile.AddLine<ObjectData>(data); 
     }
 
     void EndObjectData()
     {
-        // End
-        json_continuousLogging += DataFile.EndFile();
+        // Last Object Positions
+        data_endState += DataFile.AddLine<ObjectData>(GetObjectsInScene());
 
-        // Save start State
-        json_startState += DataFile.EndFile(); 
+        // Last Line
+        data_endState   += DataFile.EndFile(false);
+        data_contLog    += DataFile.EndFile(false);
+        data_startState += DataFile.EndFile(false);
 
-        // Save last Object Positions in new File
-        json_endState += DataFile.AddLine<ObjectData>(GetObjectsInScene());
-        json_endState += DataFile.EndFile();
-
-        DataFile.Save(json_endState, directoryPath, fileName_endState);
-        DataFile.Save(json_continuousLogging, directoryPath, fileName_continuousLogging);
-        DataFile.Save(json_startState, directoryPath, fileName_startState); 
+        // Overwrite Backup Files
+        DataFile.Overwrite(data_endState,   directoryPath, uqName_end);
+        DataFile.Overwrite(data_contLog,    directoryPath, uqName_contLog);
+        DataFile.Overwrite(data_startState, directoryPath, uqName_start); 
     }
-
-
 
     void PrepareHeadData()
     {
         // Filenames
         var currentSet = DataManager.Instance.CurrentSet;
-        fileName_headData = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_headData";
+        name_headData = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_headData";
 
         directoryPath = DataFile.GenerateDirectory(directoryPath);
-        fileName_headData = DataFile.GenerateUniqueFileName(directoryPath, fileName_headData);
-
-        filePath_headData = Path.Combine(directoryPath, fileName_headData + ".json");
+        name_headData = DataFile.GenerateUniqueFileName(directoryPath, name_headData);
 
         // start Writing
-        json_headData += DataFile.StartFile();
+        data_headData += DataFile.StartFile();
     }
 
     void ExecuteHeadData()
     {
         var data = GetCurrentHeadData();
         if (data != null)
-            json_headData += DataFile.AddLine<HeadData>(data);
+            data_headData += DataFile.AddLine<HeadData>(data);
     }
 
     void EndHeadData()
     {
         // End continuus logging
-        json_headData += DataFile.EndFile();
+        data_headData += DataFile.EndFile(false);
 
-        DataFile.Save(json_headData, directoryPath, fileName_headData);
-        
+        DataFile.Overwrite(data_headData, directoryPath, uqName_headData);       
     }
 
     #endregion 

@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
             DataManager.Instance.IncompleteUserData = DataFile.LoadUserSets(generalSettings.incompleteUserData);
             DataManager.Instance.NewUserData        = DataFile.LoadUserSets(generalSettings.newUserData);
 
-            DataFile.Override<ApplicationData>(generalSettings, mainFolder, "generalSettings");
+            DataFile.Overwrite<ApplicationData>(generalSettings, mainFolder, "generalSettings");
         }
     }
 

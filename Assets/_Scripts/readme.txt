@@ -6,8 +6,4 @@ git config --global user.name "CharlotteImenkamp"
 git config --global user.email "charlotte.imenkamp@gmail.com"
 
 
-Apfel, Auto, Buch, Drehstuhl, Gitarre, Gummiente, Hut, KaffeKanne, 
-Kaktus, Kerze, Käse, Leiter, Stehlampe, Tesafilmhalter, Wecker, Zahnbürste
 
-
-15 Junge, 15 Alte

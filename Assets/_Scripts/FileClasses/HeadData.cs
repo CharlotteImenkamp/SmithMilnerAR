@@ -8,11 +8,14 @@ using UnityEngine;
 [System.Serializable]
 public class HeadData
 {
-    public Vector3 CameraPosition;
-    public Quaternion CameraRotation;
-    public Vector3 GazeOrigin;
-    public Vector3 GazeDirection;
-    public string timeAfterStart;
+
+        public Vector3 CameraPosition;
+        public Quaternion CameraRotation;
+        public Vector3 GazeOrigin;
+        public Vector3 GazeDirection;
+        public string timeAfterStart;
+
+   
 
     public void SetCameraParameters(Transform t)
     {

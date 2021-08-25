@@ -9,7 +9,7 @@ public class Pause : IState
         GameManager.Instance.debugText.text = "Pause::Enter()";
 
         // Save Data
-        DataFile.Override<ApplicationData>(GameManager.Instance.GeneralSettings, GameManager.Instance.mainFolder, "generalSettings");
+        DataFile.Overwrite<ApplicationData>(GameManager.Instance.GeneralSettings, GameManager.Instance.mainFolder, "generalSettings");
 
         Debug.Log("Pause::Enter()");
         var SubManagers = GameManager.Instance.AttachedSubManagers;

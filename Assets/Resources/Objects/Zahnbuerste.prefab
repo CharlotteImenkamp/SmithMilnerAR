@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 9172066719896046553}
   - component: {fileID: -1797675349527154164}
   m_Layer: 0
-  m_Name: "Zahnb\xFCrste"
+  m_Name: Zahnbuerste
   m_TagString: InteractionObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

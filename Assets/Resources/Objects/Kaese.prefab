@@ -52,7 +52,7 @@ GameObject:
   - component: {fileID: -7354400279836719307}
   - component: {fileID: -1062798628886565856}
   m_Layer: 0
-  m_Name: "K\xE4se"
+  m_Name: Kaese
   m_TagString: InteractionObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
