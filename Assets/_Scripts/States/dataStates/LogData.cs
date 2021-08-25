@@ -50,10 +50,10 @@ class LogData : IState
         GameManager.Instance.debugText.text = "LogData Enter"; 
         Debug.Log("LogData::Enter");
 
-        sampleRate = DataManager.Instance.CurrentSettings.UserData.updateRate;
+        sampleRate = DataManager.Instance.CurrentSet.UserData.updateRate;
         dataFolder = GameManager.Instance.GeneralSettings.userDataFolder;
         generalFolder = GameManager.Instance.mainFolder;
-        userID = DataManager.Instance.CurrentSettings.UserData.UserID.ToString();
+        userID = DataManager.Instance.CurrentSet.UserData.UserID.ToString();
 
         // default
         json_continuousLogging = "";
@@ -132,7 +132,7 @@ class LogData : IState
     void PrepareObjectData()
     {
         // Filenames
-        var currentSet = DataManager.Instance.CurrentSettings;
+        var currentSet = DataManager.Instance.CurrentSet;
         fileName_continuousLogging  = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_MovingObject";
         fileName_endState           = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_EndObject";
         fileName_startState         = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_StartObject";
@@ -173,7 +173,7 @@ class LogData : IState
     void PrepareHeadData()
     {
         // Filenames
-        var currentSet = DataManager.Instance.CurrentSettings;
+        var currentSet = DataManager.Instance.CurrentSet;
         fileName_headData = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_headData";
 
         directoryPath = DataFile.GenerateDirectory(directoryPath);

@@ -238,7 +238,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
             text.text = button.GetComponent<ButtonConfigHelper>().MainLabelText;
 
             // Save Settings
-            DataManager.Instance.CurrentSettings = chosenSet;
+            DataManager.Instance.CurrentSet = chosenSet;
         }
         else
             throw new MissingComponentException("Add text Object to Custom Scrollable List"); 

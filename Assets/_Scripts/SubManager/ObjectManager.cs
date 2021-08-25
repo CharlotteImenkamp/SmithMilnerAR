@@ -169,7 +169,7 @@ public class ObjectManager : SubManager
     private void CheckDefaultParameters()
     {
         if (currentData.UserData == null || currentData.ObjData == null)
-            currentData = DataManager.Instance.CurrentSettings;
+            currentData = DataManager.Instance.CurrentSet;
 
         if (interactionObjects == null)
         {

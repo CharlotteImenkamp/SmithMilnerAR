@@ -29,7 +29,7 @@ public class DataManager : MonoBehaviour
     private static StateMachine dataStateMachine = new StateMachine();
 
     #region public parameters
-    public Data CurrentSettings { get => currentSet; set => currentSet = value; }
+    public Data CurrentSet { get => currentSet; set => currentSet = value; }
 
     // Data to Save
     public List<GameObject> ObjectsInScene { get => objectsInScene; set { objectsInScene = value; } }
@@ -163,6 +163,12 @@ public class DataManager : MonoBehaviour
     public void ResetObjectRotation()
     {
         foreach (GameObject obj in ObjectsInScene)
-            obj.transform.rotation = Quaternion.identity; 
+        {
+            var a = currentSet.ObjData.gameObjects; 
+            var b = a.Find(x => x.Objectname.Equals(obj.name));
+            var c = b.globalRotation;
+            obj.transform.rotation = c; 
+            obj.transform.rotation = Quaternion.Euler(obj.transform.rotation.x, 0f, transform.rotation.z); 
+        }
     }
 }

@@ -34,7 +34,7 @@ public class ObjectData
         Quaternion[] rotations = new Quaternion[gameObjects.Count];
         for (int i = 0; i < gameObjects.Count; i++)
         {
-            rotations[i] = gameObjects[i].globalRotations;
+            rotations[i] = gameObjects[i].globalRotation;
         }
         return rotations;
     }
@@ -73,12 +73,12 @@ public class CustomObject
 {
     public string Objectname;
     public Vector3 globalPosition;
-    public Quaternion globalRotations;
+    public Quaternion globalRotation;
 
     public CustomObject(string name, Vector3 position, Quaternion rotation)
     {
         this.Objectname = name;
         this.globalPosition = position;
-        this.globalRotations = rotation;
+        this.globalRotation = rotation;
     }
 }
