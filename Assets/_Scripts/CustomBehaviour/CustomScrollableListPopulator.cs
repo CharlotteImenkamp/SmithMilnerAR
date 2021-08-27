@@ -98,7 +98,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
     /// </summary>
     private void OnDisable()
     {
-        // ClearList();
+        
     }
 
     /// <summary>

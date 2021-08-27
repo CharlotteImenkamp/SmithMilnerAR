@@ -101,7 +101,7 @@ public class DataFile
         int N = path.Count;
 
         // filepath
-        string mainFolder = GameManager.Instance.mainFolder;
+        string mainFolder = GameManager.Instance.MainFolder;
         string userDataFolder = GameManager.Instance.GeneralSettings.userDataFolder;
 
         // load each file into own parameter and save in DataManager
@@ -110,7 +110,7 @@ public class DataFile
             var filePath = Path.Combine(mainFolder, userDataFolder, path[i]);
             var userData = DataFile.SecureLoad<UserSettingsData>(filePath);
 
-            var objPath = Path.Combine(mainFolder, userDataFolder, "User" + userData.UserID.ToString(), "settings" + userData.UserID.ToString());
+            var objPath = Path.Combine(mainFolder, userDataFolder, "User" + userData.UserID.ToString(), GameManager.Instance.StartDataName + userData.UserID.ToString());
             var objData = DataFile.SecureLoad<ObjectData>(objPath);
 
             newData.Add(new DataManager.Data(objData, userData));
@@ -143,7 +143,7 @@ public class DataFile
         // override existing text
         UnityEngine.Windows.File.WriteAllBytes(filePath + fileending, Encoding.ASCII.GetBytes(jsonString));
 
-        // debug
+        // Debug
         GameManager.Instance.debugText.text = "Data saved into persistent Path.";
         Debug.Log("Data saved into persistent Path: " + filePath);
 
@@ -159,8 +159,8 @@ public class DataFile
     public static void Overwrite<T>(T data, string folderAfterPersistentPath, string name)
     {
         // prepare file path 
-        string directory = Path.Combine(Application.persistentDataPath, folderAfterPersistentPath);
-        string filePath = Path.Combine(directory, name);
+        string directory    = Path.Combine(Application.persistentDataPath, folderAfterPersistentPath);
+        string filePath     = Path.Combine(directory, name);
 
         // prepare file content
         string jsonString = StartFile();
@@ -189,10 +189,10 @@ public class DataFile
 
         string filePath = Path.Combine(directory, fileName);
 
-        // override existing text
+        // Override existing text
         UnityEngine.Windows.File.WriteAllBytes(filePath + fileending, Encoding.ASCII.GetBytes(jsonString));
 
-        // debug
+        // Debug
         GameManager.Instance.debugText.text = "Data saved into persistent Path.";
         Debug.Log("Data saved into " + filePath);
 
@@ -201,14 +201,14 @@ public class DataFile
 
     public static void Overwrite(string jsonString, string folderName, string name)
     {
-        // prepare file path
+        // Prepare file path
         string directory = GenerateDirectory(Path.Combine(Application.persistentDataPath, folderName));
         string filePath = Path.Combine(directory, name);
 
-        // override existing text
+        // Override existing text
         UnityEngine.Windows.File.WriteAllBytes(filePath + fileending, Encoding.ASCII.GetBytes(jsonString));
 
-        // debug
+        // Debug
         GameManager.Instance.debugText.text = "Data saved into persistent Path.";
         Debug.Log("Data overwritten in " + filePath);
     }

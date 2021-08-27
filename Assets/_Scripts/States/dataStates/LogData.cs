@@ -53,7 +53,7 @@ class LogData : IState
 
         sampleRate = DataManager.Instance.CurrentSet.UserData.updateRate;
         dataFolder = GameManager.Instance.GeneralSettings.userDataFolder;
-        generalFolder = GameManager.Instance.mainFolder;
+        generalFolder = GameManager.Instance.MainFolder;
         userID = DataManager.Instance.CurrentSet.UserData.UserID.ToString();
 
         // default
@@ -239,9 +239,9 @@ class LogData : IState
     {
         // Filenames
         var currentSet = DataManager.Instance.CurrentSet;
-        name_contLog  = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_MovingObject";
-        name_end           = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_EndObject";
-        name_start         = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_StartObject";
+        name_contLog  = "MovingObject" + GameManager.Instance.gameType.ToString() + currentSet.UserData.UserID.ToString();
+        name_end      = "EndObject"    + GameManager.Instance.gameType.ToString() + currentSet.UserData.UserID.ToString();
+        name_start    = "StartObject"  + GameManager.Instance.gameType.ToString() + currentSet.UserData.UserID.ToString();
 
         // start Writing
         data_contLog  += DataFile.StartFile();
@@ -268,26 +268,38 @@ class LogData : IState
         data_startState += DataFile.EndFile(false);
 
         // Overwrite Backup Files
-        DataFile.Overwrite(data_endState,   directoryPath, uqName_end);
-        DataFile.Overwrite(data_contLog,    directoryPath, uqName_contLog);
-        DataFile.Overwrite(data_startState, directoryPath, uqName_start); 
+        if (uqName_end == "" || uqName_end == null)
+            DataFile.Overwrite(data_endState,   directoryPath, name_end);
+        else
+            DataFile.Overwrite(data_endState, directoryPath, uqName_end);
+
+        if (uqName_contLog == "" || uqName_contLog == null)
+            DataFile.Overwrite(data_contLog,    directoryPath, name_contLog);
+        else
+            DataFile.Overwrite(data_contLog, directoryPath, uqName_contLog);
+
+        if (uqName_start == "" || uqName_start == null)
+            DataFile.Overwrite(data_startState, directoryPath, uqName_start); 
+        else
+            DataFile.Overwrite(data_startState, directoryPath, name_start);
     }
 
     void PrepareHeadData()
     {
         // Filenames
         var currentSet = DataManager.Instance.CurrentSet;
-        name_headData = "User" + currentSet.UserData.UserID.ToString() + "_" + currentSet.UserData.set.ToString() + "_" + GameManager.Instance.gameType.ToString() + "_headData";
+        name_headData = "HeadData" + GameManager.Instance.gameType.ToString() + currentSet.UserData.UserID.ToString(); 
 
         directoryPath = DataFile.GenerateDirectory(directoryPath);
         name_headData = DataFile.GenerateUniqueFileName(directoryPath, name_headData);
 
-        // start Writing
+        // Start Writing
         data_headData += DataFile.StartFile();
     }
 
     void ExecuteHeadData()
     {
+        // Add Data to String
         var data = GetCurrentHeadData();
         if (data != null)
             data_headData += DataFile.AddLine<HeadData>(data);
@@ -298,7 +310,12 @@ class LogData : IState
         // End continuus logging
         data_headData += DataFile.EndFile(false);
 
-        DataFile.Overwrite(data_headData, directoryPath, uqName_headData);       
+        if(uqName_headData == "" || uqName_headData == null )
+            DataFile.Overwrite(data_headData, directoryPath, name_headData);   
+        else
+            DataFile.Overwrite(data_headData, directoryPath, uqName_headData);
+
+
     }
 
     #endregion 

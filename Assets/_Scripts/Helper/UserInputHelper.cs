@@ -40,7 +40,10 @@ public class UserInputHelper : MonoBehaviour
     {
         idText = "User ID:";
         setText = "User Set: ";
-        idObj.text = idText;
+
+
+        if (idObj != null)
+            idObj.text = idText;
 
         userID = "";
         userSet = "";
@@ -55,8 +58,11 @@ public class UserInputHelper : MonoBehaviour
         userID = "";
         userSet = "";
 
-        idObj.text = idText + userID;
-        setObj.text = setText + userSet;
+        if(idObj != null)
+            idObj.text = idText + userID;
+
+        if(idObj != null)
+            setObj.text = setText + userSet;
 
         set = new UserSettingsData.userSet();
         newData = new DataManager.Data();
@@ -120,5 +126,24 @@ public class UserInputHelper : MonoBehaviour
         DataManager.Instance.SetAndSaveNewSettings(new DataManager.Data(objData, userData));
 
         Reset(); 
+    }
+
+    /// <summary>
+    /// reset toggle collection when choosing user set 
+    /// Called on apply button and on return button to reset current index
+    /// </summary>
+    /// <param name="idx"></param>
+    public void ResetToggleList(int idx)
+    {
+        InteractableToggleCollection toggleCollection = GetComponent<InteractableToggleCollection>();
+        if (toggleCollection != null)
+        {
+            if (idx <= toggleCollection.ToggleList.Length)
+                toggleCollection.CurrentIndex = idx;
+            else
+                Debug.LogError("UserInputHelper::ResetToggleList Index exceeds List");
+        }
+        else
+            Debug.LogError("UserInputHelper::ResetToggleList must be attached to an actor with a toggle collection"); 
     }
 }

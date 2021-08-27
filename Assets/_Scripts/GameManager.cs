@@ -58,15 +58,19 @@ public class GameManager : MonoBehaviour
             DataManager.Instance.IncompleteUserData = DataFile.LoadUserSets(generalSettings.incompleteUserData);
             DataManager.Instance.NewUserData        = DataFile.LoadUserSets(generalSettings.newUserData);
 
-            DataFile.Overwrite<ApplicationData>(generalSettings, mainFolder, "generalSettings");
+            DataFile.Overwrite<ApplicationData>(generalSettings, MainFolder, "generalSettings");
         }
     }
 
     [NonSerialized]
     private ApplicationData generalSettings;
-    [NonSerialized]
-    public string mainFolder;
+
+    public string MainFolder { get; internal set; }
+
     private float updateRate;
+
+    public string StartDataName { get; internal set; }
+
     public float UpdateRate { get => updateRate; set => updateRate = value; }
 
 
@@ -107,6 +111,7 @@ public class GameManager : MonoBehaviour
     #region instance and awake
     private static GameManager _instance = null;
     public static GameManager Instance { get => _instance; }
+    
 
 
     /// <summary>
@@ -144,11 +149,12 @@ public class GameManager : MonoBehaviour
         if (OnUserButtonClicked == null)
             OnUserButtonClicked = new UnityEvent();
 
-        mainFolder = "DataFiles";
+        // File Parameters
+        MainFolder = "DataFiles";
+        StartDataName = "StartLocationPrices";  
         updateRate = 1.0f; 
-
         
-        generalSettings = DataFile.SecureLoad<ApplicationData>(Path.Combine(mainFolder, "generalSettings"));
+        generalSettings = DataFile.SecureLoad<ApplicationData>(Path.Combine(MainFolder, "generalSettings"));
 
         // Add Managers of Type Monobehaviour
         attachedManagerScripts = new List<Type>();

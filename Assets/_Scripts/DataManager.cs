@@ -131,7 +131,7 @@ public class DataManager : MonoBehaviour
             // GameManager
             string settingsFolder = GameManager.Instance.GeneralSettings.objectDataFolder;
             string dataFolder = GameManager.Instance.GeneralSettings.userDataFolder + "/User" + data.UserData.UserID.ToString();
-            string mainFolder = GameManager.Instance.mainFolder;
+            string mainFolder = GameManager.Instance.MainFolder;
 
             // FileNames
             string settingsFileName = "settings" + data.UserData.UserID.ToString();

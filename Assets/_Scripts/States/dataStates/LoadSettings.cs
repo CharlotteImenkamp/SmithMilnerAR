@@ -45,7 +45,7 @@ class LoadSettings : IState
         // get parameters from GameManager
         int NumNew = GameManager.Instance.GeneralSettings.newObjectData.Count;
 
-        string mainFolder = GameManager.Instance.mainFolder; 
+        string mainFolder = GameManager.Instance.MainFolder; 
         string objectDataFolder = GameManager.Instance.GeneralSettings.objectDataFolder; 
 
         // load each file into own parameter and save in DataManager
