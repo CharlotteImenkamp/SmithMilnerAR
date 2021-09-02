@@ -1,35 +1,40 @@
 {
- "start": "Sonntag, 22. August 2021 19:40:38",
-"entries": {
+ "start": "Donnerstag, 2. September 2021 14:04:37 ", 
+"entries": 
+[ 
+ {
     "objectDataFolder": "objectData",
     "userDataFolder": "userData",
-  "newObjectData": [
-    "objectData1",
-    "objectData2",
-    "objectData3",
-    "objectData4",
-    "objectData5",
-    "objectData6",
-    "objectData7",
-    "objectData8",
-    "objectData9",
-    "objectData10"
-  ],
-  "newUserData": [
-    "User1/user1",
-    "User2/user2",
-    "User3/user3",
-    "User4/user4",
-    "User5/user5",
-    "User6/user6",
-    "User7/user7",
-    "User8/user8",
-    "User9/user9",
-    "User10/user10"
-  ],
-    "incompleteUserData": [],
-    "completeUserData": []
-},
- 
- "ende" : "END"
+    "newObjectData": [
+        "objectData1",
+        "objectData2",
+        "objectData3",
+        "objectData4",
+        "objectData5",
+        "objectData6",
+        "objectData7",
+        "objectData8",
+        "objectData9",
+        "objectData10"
+    ],
+    "newUserData": [
+        "User6/user6",
+        "User7/user7",
+        "User8/user8",
+        "User9/user9",
+        "User10/user10"
+    ],
+    "incompleteUserData": [
+        "User2/user2",
+        "User3/user3",
+        "User4/user4",
+        "User5/user5"
+    ],
+    "completeUserData": [
+        "User1/user1",
+        "User1/user1"
+    ]
+} 
+], 
+"ende" : "END"
  }

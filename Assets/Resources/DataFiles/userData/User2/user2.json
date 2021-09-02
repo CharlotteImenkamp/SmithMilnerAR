@@ -1,11 +1,13 @@
 {
  "start": "Sonntag, 22. August 2021 12:33:44",
-"entries": {
-    "UserID": "2",
-    "set": 0,
-    "state": 0,
-    "updateRate": 1.0
-},
+  "entries": [
+    {
+      "UserID": "2",
+      "set": 0,
+      "state": 0,
+      "updateRate": 1.0
+    }
+  ],
  
  "ende" : "END"
  }
