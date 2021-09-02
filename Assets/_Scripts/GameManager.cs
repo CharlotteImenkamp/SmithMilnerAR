@@ -39,7 +39,10 @@ public class GameManager : MonoBehaviour
 
     [Header("Button")]
     public float ReactivationTimeUserButton = 10.0f;
-    public GameObject UserButton; 
+    public GameObject UserButton;
+
+    [Header("Data")]
+    public float backupPeriod = 60.0f; 
 
     [Header("Debug")]
     public GameObject debugTextObject;
@@ -58,7 +61,7 @@ public class GameManager : MonoBehaviour
             DataManager.Instance.IncompleteUserData = DataFile.LoadUserSets(generalSettings.incompleteUserData);
             DataManager.Instance.NewUserData        = DataFile.LoadUserSets(generalSettings.newUserData);
 
-            DataFile.Overwrite<ApplicationData>(generalSettings, MainFolder, "generalSettings");
+            DataFile.OverwriteApplicationData<ApplicationData>(generalSettings, MainFolder, "generalSettings");
         }
     }
 

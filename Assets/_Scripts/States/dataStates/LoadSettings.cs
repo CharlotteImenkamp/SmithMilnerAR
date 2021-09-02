@@ -14,8 +14,8 @@ class LoadSettings : IState
         GameManager.Instance.debugText.text = "LoadSettings Enter"; 
         Debug.Log("LoadSettings Enter");
 
-        if(GameManager.Instance.GeneralSettings.newObjectData.Count != 0)
-            DataManager.Instance.NewSets = LoadNewSets();
+        // if(GameManager.Instance.GeneralSettings.newObjectData.Count != 0)
+            // DataManager.Instance.NewSets = LoadNewSets();
         if(GameManager.Instance.GeneralSettings.newUserData.Count != 0)
             DataManager.Instance.NewUserData = DataFile.LoadUserSets(GameManager.Instance.GeneralSettings.newUserData);
         if (GameManager.Instance.GeneralSettings.incompleteUserData.Count != 0)

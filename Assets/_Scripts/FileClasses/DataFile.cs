@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
+// okay
+
 public class DataFile
 {
     static string fileending = ".json";
@@ -29,8 +31,9 @@ public class DataFile
         {
             jsonString = File.ReadAllText(path + fileending);
             JsonFile<T> file = JsonUtility.FromJson<JsonFile<T>>(jsonString);
-            newData = file.entries;
+            newData = file.entries[0];
 
+            Debug.Log("data loaded from persistent Path."); 
             GameManager.Instance.debugText.text = "data loaded from persistent Path.";
         }
         else
@@ -40,7 +43,7 @@ public class DataFile
             if (textFile != null)
             {
                 JsonFile<T> file = JsonUtility.FromJson<JsonFile<T>>(textFile.text);
-                newData = file.entries;
+                newData = file.entries[0];
                 GameManager.Instance.debugText.text = " data loaded from Resources.";
                 Debug.Log(" data from Resources.");
 
@@ -74,7 +77,7 @@ public class DataFile
         {
             jsonString = File.ReadAllText(path + fileending);
             JsonFile<T> file = JsonUtility.FromJson<JsonFile<T>>(jsonString);
-            T newData = file.entries; 
+            T newData = file.entries[0]; 
 
             // debug
             GameManager.Instance.debugText.text = "data loaded from persistent Path.";
@@ -138,6 +141,7 @@ public class DataFile
 
         string jsonString = StartFile();
         jsonString += AddLine<T>(data);
+        jsonString = jsonString.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
         jsonString += EndFile(false);
 
         // override existing text
@@ -156,15 +160,20 @@ public class DataFile
     /// <param name="data"></param>
     /// <param name="folderAfterPersistentPath"></param>
     /// <param name="name"></param>
-    public static void Overwrite<T>(T data, string folderAfterPersistentPath, string name)
+    public static void OverwriteApplicationData<T>(T data, string folderAfterPersistentPath, string name)
     {
         // prepare file path 
         string directory    = Path.Combine(Application.persistentDataPath, folderAfterPersistentPath);
         string filePath     = Path.Combine(directory, name);
 
         // prepare file content
-        string jsonString = StartFile();
+        string jsonString; 
+        if( typeof(T) == typeof(ApplicationData))
+            jsonString = StartSettingsFile();
+        else
+            jsonString = StartFile();
         jsonString += AddLine<T>(data);
+        jsonString = jsonString.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
         jsonString += EndFile(false);
 
         // override existing text
@@ -223,9 +232,17 @@ public class DataFile
     /// <returns></returns>
     public static string StartFile()
     {
-        return "{\n \"start\": \"" + DateTime.Now.ToString("F") + "\"," 
+        return "{\n \"start\": \"" + "User: " +
+            DataManager.Instance.CurrentSet.UserData.UserID.ToString() + " ," + DateTime.Now.ToString("F") + " \", " 
             + Environment.NewLine
-            + "\"entries\": ";
+            + "\"entries\": \n[ \n ";
+    }
+
+    public static string StartSettingsFile()
+    {
+        return "{\n \"start\": \"" + DateTime.Now.ToString("F") + " \", "
+            + Environment.NewLine
+            + "\"entries\": \n[ \n ";
     }
 
     /// <summary>
@@ -250,9 +267,9 @@ public class DataFile
     public static string EndFile(bool backup)
     {
         if (backup)
-            return " \n \"ende\" : \"BACKUP\"\n }";
+            return " \n], \n\"ende\" : \"BACKUP\"\n }";
         else
-            return " \n \"ende\" : \"END\"\n }";
+            return " \n], \n\"ende\" : \"END\"\n }";
     }
 
     /// <summary>
@@ -301,6 +318,6 @@ public class DataFile
 public class JsonFile<T>
 {
     public string start;
-    public T entries;
+    public T[] entries;
     public string ende; 
 }

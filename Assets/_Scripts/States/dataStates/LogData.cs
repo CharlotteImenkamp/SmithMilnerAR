@@ -35,7 +35,8 @@ class LogData : IState
 
     // time parameters
     private float prevTime, currTime, startTime;  // in seconds
-    private bool firstLog, secondLog; 
+    private bool firstLog; 
+    private float backupPeriod;  // in seconds
 
     private GameType gameType;
 
@@ -62,8 +63,8 @@ class LogData : IState
         data_headData = "";
 
         // time
-        firstLog = false;
-        secondLog = false; 
+        firstLog = true;
+        backupPeriod = GameManager.Instance.backupPeriod; 
 
         // Directory
         directoryPath = Path.Combine(Application.persistentDataPath, generalFolder, dataFolder , "User" + userID);
@@ -113,45 +114,22 @@ class LogData : IState
             prevTime = currTime; 
         }
 
-        // Backup Save after 2 Minutes
-        if (!secondLog)
+        // Backup Save
+        if ((Time.time - startTime) % backupPeriod <= (0 + Time.deltaTime))
         {
-            if ((Time.time - startTime) > 120) 
+            // Save Data
+            if (gameType == GameType.Locations)
             {
-                Debug.Log("*** 2 Min");
-                secondLog = true;
-
-                // Save Data
-                if (gameType == GameType.Locations)
-                {
-                    BackupObjectData();
-                    BackupHeadData(); 
-                }
-                else if (gameType == GameType.Prices)
-                    BackupHeadData(); 
-                else
-                    throw new ArgumentException("LogData::Execute no valid GameType.");
+                BackupObjectData(firstLog);
+                BackupHeadData(firstLog);
             }
-        }
+            else if (gameType == GameType.Prices)
+                BackupHeadData(firstLog);
+            else
+                throw new ArgumentException("LogData::Execute no valid GameType.");
 
-        // Backup Save after 1 Minute
-        if (!firstLog)
-        {
-            if ((Time.time - startTime) > 60) 
-            {
-                firstLog = true;
-
-                // Save Data and get unique filename
-                if (gameType == GameType.Locations)
-                {
-                    BackupObjectData();
-                    BackupHeadData(); 
-                }
-                else if (gameType == GameType.Prices)
-                    BackupHeadData(); 
-                else
-                    throw new ArgumentException("LogData::Execute no valid GameType.");
-            }
+            if (firstLog)
+                firstLog = false;
         }
     }
 
@@ -174,35 +152,30 @@ class LogData : IState
 
 
     #region backup
-    private void BackupObjectData()
+    private void BackupObjectData(bool firstSave)
     {
-        // first backup
-        if(secondLog == false)
+        // update endstate to current state
+        var tmp_end = data_endState + DataFile.AddLine<ObjectData>(GetObjectsInScene());
+        tmp_end = tmp_end.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
+        tmp_end += DataFile.EndFile(true);
+
+        // save copy of data 
+        var tmp_contLog = data_contLog.TrimEnd('\n').TrimEnd('\r').TrimEnd(','); 
+        tmp_contLog += DataFile.EndFile(true);
+
+        var tmp_start = data_startState.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
+        tmp_start = tmp_start + DataFile.EndFile(true);
+        
+
+        if (firstSave)
         {
-            // update endstate to current state
-            var tmp_end = data_endState + DataFile.AddLine<ObjectData>(GetObjectsInScene());
-
-            // save copy of data 
-            var tmp_contLog = data_contLog    + DataFile.EndFile(true);
-            var tmp_start   = data_startState + DataFile.EndFile(true);
-            tmp_end += DataFile.EndFile(true);
-
             // save file and get unique file name to overwride file later
             uqName_contLog = DataFile.Save(tmp_contLog, directoryPath, name_contLog);
             uqName_end    = DataFile.Save(tmp_end,      directoryPath, name_end);
             uqName_start  = DataFile.Save(tmp_start,    directoryPath, name_start); 
         }
-        // second backup
         else
         {
-            // update endstate to current state
-            var tmp_end = data_endState + DataFile.AddLine<ObjectData>(GetObjectsInScene());
-
-            // save copy of data
-            var tmp_contLog = data_contLog  + DataFile.EndFile(true);
-            var tmp_start   = data_startState + DataFile.EndFile(true);
-            tmp_end += DataFile.EndFile(true);
-
             // override file 
             DataFile.Overwrite(tmp_contLog, directoryPath, uqName_contLog);
             DataFile.Overwrite(tmp_end,     directoryPath, uqName_end);
@@ -210,26 +183,16 @@ class LogData : IState
         }
     }
 
-    private void BackupHeadData()
+    private void BackupHeadData(bool firstSave)
     {
-        // first backup
-        if (secondLog == false)
-        {
-            // save copy of data
-            var tmp_headData = data_headData + DataFile.EndFile(true);
+        var tmp_headData = data_headData.TrimEnd('\n').TrimEnd('\r').TrimEnd(','); 
+        tmp_headData += DataFile.EndFile(true);
 
-            // save file and get unique file name to overwrite file later
+        // save file and get unique file name to overwrite file later
+        if (firstSave)
             uqName_headData = DataFile.Save(tmp_headData, directoryPath, name_headData); 
-        }
-        // second backup
         else
-        {
-            // save copy of data
-            var tmp_headData = data_headData + DataFile.EndFile(true);
-
-            // save file and get unique file name to overwrite file later
             DataFile.Overwrite(tmp_headData, directoryPath, uqName_headData);
-        }
     }
 
     #endregion 
@@ -243,7 +206,7 @@ class LogData : IState
         name_end      = "EndObject"    + GameManager.Instance.gameType.ToString() + currentSet.UserData.UserID.ToString();
         name_start    = "StartObject"  + GameManager.Instance.gameType.ToString() + currentSet.UserData.UserID.ToString();
 
-        // start Writing
+        // Start Writing
         data_contLog  += DataFile.StartFile();
         data_endState       += DataFile.StartFile();
         data_startState     += DataFile.StartFile();
@@ -263,8 +226,13 @@ class LogData : IState
         data_endState += DataFile.AddLine<ObjectData>(GetObjectsInScene());
 
         // Last Line
+        data_endState = data_endState.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
         data_endState   += DataFile.EndFile(false);
-        data_contLog    += DataFile.EndFile(false);
+
+        data_contLog = data_contLog.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
+        data_contLog += DataFile.EndFile(false);
+
+        data_startState = data_startState.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
         data_startState += DataFile.EndFile(false);
 
         // Overwrite Backup Files
@@ -279,9 +247,9 @@ class LogData : IState
             DataFile.Overwrite(data_contLog, directoryPath, uqName_contLog);
 
         if (uqName_start == "" || uqName_start == null)
-            DataFile.Overwrite(data_startState, directoryPath, uqName_start); 
+            DataFile.Overwrite(data_startState, directoryPath, name_start); 
         else
-            DataFile.Overwrite(data_startState, directoryPath, name_start);
+            DataFile.Overwrite(data_startState, directoryPath, uqName_start);
     }
 
     void PrepareHeadData()
@@ -308,14 +276,13 @@ class LogData : IState
     void EndHeadData()
     {
         // End continuus logging
+        data_headData = data_headData.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
         data_headData += DataFile.EndFile(false);
 
         if(uqName_headData == "" || uqName_headData == null )
             DataFile.Overwrite(data_headData, directoryPath, name_headData);   
         else
             DataFile.Overwrite(data_headData, directoryPath, uqName_headData);
-
-
     }
 
     #endregion 
