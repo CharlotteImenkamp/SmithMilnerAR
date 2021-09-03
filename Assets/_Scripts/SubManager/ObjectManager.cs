@@ -94,7 +94,9 @@ public class ObjectManager : SubManager
                 objectCreator.SpawnObjects(interactionObjects, parentPlayTable,
                     currentData.ObjData.GetObjectPositions(),
                     currentData.ObjData.GetObjectRotations(), 
-                    ConfigType.MovementDisabled);
+                    ConfigType.MovementDisabled,
+                    GetPositionOffset()
+                    );
                 DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects;
                 break; 
 
@@ -108,9 +110,12 @@ public class ObjectManager : SubManager
                 Debug.LogError("ObjectManager::OnGameStateEntered invalid State.");
                 break;
         }
-
     }
 
+    public static Vector3 GetPositionOffset()
+    {
+        return GameManager.Instance.interactionObjectsInitialPosition - GameManager.Instance.InteractionObjects.transform.position; 
+    }
     
     public override void OnGameStateLeft(string oldState)
     {

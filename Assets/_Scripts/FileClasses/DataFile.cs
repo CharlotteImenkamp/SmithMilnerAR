@@ -138,8 +138,13 @@ public class DataFile
         string fileName = GenerateUniqueFileName(directory, name);
 
         string filePath = Path.Combine(directory, fileName);
+        string jsonString;
 
-        string jsonString = StartFile();
+        if (typeof(T) == typeof(ApplicationData))
+            jsonString = StartSettingsFile();
+        else
+            jsonString = StartFile(); 
+
         jsonString += AddLine<T>(data);
         jsonString = jsonString.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
         jsonString += EndFile(false);
@@ -160,7 +165,7 @@ public class DataFile
     /// <param name="data"></param>
     /// <param name="folderAfterPersistentPath"></param>
     /// <param name="name"></param>
-    public static void OverwriteApplicationData<T>(T data, string folderAfterPersistentPath, string name)
+    public static void OverwriteData<T>(T data, string folderAfterPersistentPath, string name)
     {
         // prepare file path 
         string directory    = Path.Combine(Application.persistentDataPath, folderAfterPersistentPath);
@@ -232,8 +237,19 @@ public class DataFile
     /// <returns></returns>
     public static string StartFile()
     {
-        return "{\n \"start\": \"" + "User: " +
-            DataManager.Instance.CurrentSet.UserData.UserID.ToString() + " ," + DateTime.Now.ToString("F") + " \", " 
+        string id;
+        try
+        {
+            id = DataManager.Instance.CurrentSet.UserData.UserID.ToString();
+        }
+        catch
+        {
+            id = "";
+        } 
+        
+
+        return "{\n \"start\": \"" + "User: " + id
+             + " ," + DateTime.Now.ToString("F") + " \", " 
             + Environment.NewLine
             + "\"entries\": \n[ \n ";
     }

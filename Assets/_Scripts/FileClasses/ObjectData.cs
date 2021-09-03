@@ -5,20 +5,51 @@ using UnityEngine;
 public class ObjectData
 {
     public float time;
+    public Vector3 positionOffset; 
 
     public List<CustomObject> gameObjects;
 
-    public ObjectData(GameObject[] movingObj, float time)
+    #region constructors
+    public ObjectData(GameObject[] movingObj, float time, Vector3 positionOffset)
     {
         gameObjects = new List<CustomObject>();
 
         this.time = time;
+        this.positionOffset = positionOffset; 
         foreach (GameObject obj in movingObj)
         {
             var intObj = new CustomObject(obj.name, obj.transform.position, obj.transform.rotation);
             gameObjects.Add(intObj);
         }
     }
+
+    public ObjectData(List<GameObject> movingObj, float time, Vector3 positionOffset)
+    {
+        gameObjects = new List<CustomObject>();
+
+        this.time = time;
+        this.positionOffset = positionOffset;
+        foreach (GameObject obj in movingObj)
+        {
+            // Remove naming Conventions from Instantiating
+            if (obj.name.Contains("(Clone)"))
+            {
+                obj.name = obj.name.Replace("(Clone)", "");
+            }
+            var intObj = new CustomObject(obj.name, obj.transform.position, obj.transform.rotation);
+            gameObjects.Add(intObj);
+        }
+    }
+
+    public ObjectData(List<CustomObject> objList, float time, Vector3 positionOffset)
+    {
+        this.gameObjects = objList;
+        this.time = time;
+    }
+
+    public ObjectData() { }
+    #endregion constructors
+
     public Vector3[] GetObjectPositions()
     {
         Vector3[] positions = new Vector3[gameObjects.Count];
@@ -39,30 +70,7 @@ public class ObjectData
         return rotations;
     }
 
-    public ObjectData() { }
 
-    public ObjectData(List<GameObject> movingObj, float time)
-    {
-        gameObjects = new List<CustomObject>();
-
-        this.time = time;
-        foreach (GameObject obj in movingObj)
-        {
-            // Remove naming Conventions from Instantiating
-            if (obj.name.Contains("(Clone)"))
-            {
-                obj.name = obj.name.Replace("(Clone)", "");
-            }
-            var intObj = new CustomObject(obj.name, obj.transform.position, obj.transform.rotation);
-            gameObjects.Add(intObj);
-        }
-    }
-
-    public ObjectData(List<CustomObject> objList, float time)
-    {
-        this.gameObjects = objList;
-        this.time = time;
-    }
 
 }
 

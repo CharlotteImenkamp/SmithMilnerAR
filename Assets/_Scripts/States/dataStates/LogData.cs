@@ -291,12 +291,12 @@ class LogData : IState
     #region get data
     private ObjectData GetMovingObject()
     {
-        return new ObjectData(DataManager.Instance.MovingObjects, Time.time); 
+        return new ObjectData(DataManager.Instance.MovingObjects, Time.time, ObjectManager.GetPositionOffset()); 
     }
 
     private ObjectData GetObjectsInScene()
     {
-        return new ObjectData(DataManager.Instance.ObjectsInScene, Time.time);
+        return new ObjectData(DataManager.Instance.ObjectsInScene, Time.time, ObjectManager.GetPositionOffset());
     }
 
     private HeadData GetCurrentHeadData()

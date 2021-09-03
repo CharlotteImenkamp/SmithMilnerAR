@@ -250,7 +250,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
     /// <returns></returns>
     public ObjectData GetInstantiatedObjects()
     {
-        ObjectData newData = new ObjectData(objectCreator.InstantiatedObjects, Time.time);
+        ObjectData newData = new ObjectData(objectCreator.InstantiatedObjects, Time.time, ObjectManager.GetPositionOffset());
         objectCreator.RemoveAllObjects();
         return newData; 
     }
@@ -269,7 +269,6 @@ public class CustomScrollableListPopulator : MonoBehaviour
     /// </summary>
     public void ClearList()
     {
-
         // Object Creator
         if (objectCreator == null)
         {
@@ -281,20 +280,15 @@ public class CustomScrollableListPopulator : MonoBehaviour
             objectCreator.Reset();
             objectCreator = null;
             objectCreator = ScriptableObject.CreateInstance<ObjectCreator>(); 
-
         }
 
         // Instantiated Button Objects
         if (instantatedObjects == null)
-        {
             instantatedObjects = new List<GameObject>();
-        }
         else
         {
             foreach (GameObject item in instantatedObjects)
-            {
                 Destroy(item);
-            }
         }
 
         // Update GridObjectCollection
@@ -360,9 +354,4 @@ public class CustomScrollableListPopulator : MonoBehaviour
         // Parameters
         numItems = 0; 
     }
-
-
-
-
-
 }

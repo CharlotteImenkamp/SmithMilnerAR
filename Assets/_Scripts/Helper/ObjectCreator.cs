@@ -87,20 +87,29 @@ public class ObjectCreator : ScriptableObject
         generatedObject.SetActive(true);
 
         generatedObject.name = generatedObject.name.Replace("(Clone)", ""); 
-        generatedObject.transform.parent = parent.transform;
         generatedObject.transform.position = position;
         generatedObject.transform.rotation = rotation;
+        generatedObject.transform.parent = parent.transform;
 
         instantiatedObjects.Add(generatedObject);
     }
 
     public void SpawnObjects(GameObject[] gameObjects, GameObject parent, Vector3[] positions, Quaternion[] rotations, ConfigType config)
-            {
+    {
         for (int i = 0; i < gameObjects.Length; i++)
         {
             SpawnObject(gameObjects[i], parent, positions[i], rotations[i], config); 
         }
     }
+
+    public void SpawnObjects(GameObject[] gameObjects, GameObject parent, Vector3[] positions, Quaternion[] rotations, ConfigType config, Vector3 offset)
+    {
+        for (int i = 0; i < gameObjects.Length; i++)
+        {
+            SpawnObject(gameObjects[i], parent, positions[i] - offset, rotations[i], config);
+        }
+    }
+
     public void SpawnObjects(GameObject[] gameObjects, GameObject parent, Vector3 position, Quaternion rotation, ConfigType config)
     {
         for (int i = 0; i < gameObjects.Length; i++)

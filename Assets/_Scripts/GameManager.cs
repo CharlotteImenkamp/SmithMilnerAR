@@ -25,6 +25,9 @@ public class GameManager : MonoBehaviour
     [Header("InteractionObjects")]
     public GameObject parentPlayTable;
     public GameObject parentSideTable;
+    public GameObject InteractionObjects;
+    [NonSerialized]
+    public Vector3 interactionObjectsInitialPosition; 
 
     [Header("Spawn Points")]
     public Transform spawnPointGame;
@@ -61,7 +64,7 @@ public class GameManager : MonoBehaviour
             DataManager.Instance.IncompleteUserData = DataFile.LoadUserSets(generalSettings.incompleteUserData);
             DataManager.Instance.NewUserData        = DataFile.LoadUserSets(generalSettings.newUserData);
 
-            DataFile.OverwriteApplicationData<ApplicationData>(generalSettings, MainFolder, "generalSettings");
+            DataFile.OverwriteData<ApplicationData>(generalSettings, MainFolder, "generalSettings");
         }
     }
 
@@ -152,6 +155,9 @@ public class GameManager : MonoBehaviour
         if (OnUserButtonClicked == null)
             OnUserButtonClicked = new UnityEvent();
 
+        // InteractionObjects
+        interactionObjectsInitialPosition = InteractionObjects.transform.position; 
+
         // File Parameters
         MainFolder = "DataFiles";
         StartDataName = "StartLocationPrices";  
@@ -173,7 +179,6 @@ public class GameManager : MonoBehaviour
 
         ResetToDefault();
     }
-
 
     #region buttons
 
