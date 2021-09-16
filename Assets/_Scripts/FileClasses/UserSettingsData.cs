@@ -1,44 +1,59 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
+﻿/// todo: -
+////////////////////////////////////////////////////////
 
+
+/// <summary>
+/// Data class to hold user specific data
+/// </summary>
 [System.Serializable]
 public class UserSettingsData
 {
-    #region constructors
-    public UserSettingsData(float updateRate, string userId, userSet set, gameState state)
-    {
-        this.updateRate = updateRate;
-        this.UserID = userId;
-        this.set = set;
-        this.state = state;
-    }
+    #region Constructors
 
     public UserSettingsData() { }
 
-    public UserSettingsData(string userID, userSet set, float updateRate)
+    public UserSettingsData(string userID, UserSet set, float updateRate)
     {
         UserID = userID;
-        this.set = set;
-        this.updateRate = updateRate; 
+        this.Set = set;
+        this.UpdateRate = updateRate; 
     }
 
-    #endregion  constructors
+    #endregion  Constructors
 
-    #region parameters
+    #region Public Fields
 
     // User
     public string UserID;
-    public userSet set;
-    public gameState state;
-    public enum userSet { JG, AG, AK };
-    public enum gameState { locationsCompleted, pricesCompleted, None } // \TODO ändern in GameType
+    public UserSet Set;
 
+    // Save
+    public float UpdateRate;
 
-    // Saving
-    public float updateRate;
-    #endregion 
+    #endregion
 
+    #region Validation
+
+    public bool IsValid()
+    {
+        if (UserID != "")
+            return true;
+        else
+            return false;
+    }
+
+    #endregion
+
+    #region Public Functions
+
+    public void Clear()
+    {
+        UserID = "";
+        Set = UserSet.None;
+        UpdateRate = 0.0f; 
+    }
+
+    #endregion Public Functions
 }
 
 

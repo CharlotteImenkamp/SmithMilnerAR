@@ -1,38 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+/// todo: -
+////////////////////////////////////////////////////////
 
+/// <summary>
+/// End game after price estimation.
+/// </summary>
 public class End : IState
 {
+    #region IState Functions
+
     public void Enter()
     {
-        // Save Data
+        // Save data
         DataFile.OverwriteData<ApplicationData>(GameManager.Instance.GeneralSettings, GameManager.Instance.MainFolder, "generalSettings");
 
-
-        // Call Submanagers
-        GameManager.Instance.debugText.text = "End::Enter()";
-
+        GameManager.Instance.DebugText.text = "End::Enter()";
         Debug.Log("End::Enter()");
+
+        // Call submanagers
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
-        {
             subManager.OnGameStateEntered(this.ToString());
-        }
-
-        // debug
-        GameManager.Instance.debugText.text = "General Settings saved.";
+        
+        // Debug
+        GameManager.Instance.DebugText.text = "General Settings saved.";
         Debug.Log("General Settings saved.");
     }
 
+    // No repeated task, hence execute is empty
+    public void Execute() { }
 
-    public void Execute()
-    {
-        throw new System.NotImplementedException();
-    }
+    public void Exit() { }
 
+    #endregion IState Functions
 
-    public void Exit()
-    {
-    }
 }

@@ -1,34 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+/// todo: -
+////////////////////////////////////////////////////////
 
+/// <summary>
+/// State where Prices are estimated. 
+/// </summary>
 public class PriceEstimation : IState
 {
+    #region IState Functions
+
     public void Enter()
     {
         Debug.Log("PriceEstimation::Enter()");
-        GameManager.Instance.debugText.text = "PriceEstimation::Enter()";
+        GameManager.Instance.DebugText.text = "PriceEstimation::Enter()";
 
+        // Call submanagers
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
-        {
             subManager.OnGameStateEntered(this.ToString());
-        }
     }
 
-    public void Execute()
-    {
-        throw new System.NotImplementedException();
-    }
+    // No repeated task, hence execute is empty
+    public void Execute() { }
 
     public void Exit()
     {
-        GameManager.Instance.debugText.text = "PriceEstimation::Exit()";
+        GameManager.Instance.DebugText.text = "PriceEstimation::Exit()";
 
+        // Call submanagers
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
-        {
             subManager.OnGameStateLeft(this.ToString());
-        }
     }
+    #endregion IState Functions
+
 }

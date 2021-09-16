@@ -1,17 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using UnityEngine;
 
-// okay
+/// todo: -
+////////////////////////////////////////////////////////
 
+/// <summary>
+/// Class holds methods to use for several data types.
+/// </summary>
 public class DataFile
 {
-    static string fileending = ".json";
+    #region Private Fields
 
-    #region load
+    private static string fileending = ".json";
+
+    #endregion
+
+    #region Load
 
     /// <summary>
     /// Try from persistent datapath first, then try from resources or generate a default set
@@ -24,7 +31,7 @@ public class DataFile
 
         T newData = new T(); 
 
-        // Load from persistent Datapath
+        // Load from persistent datapath
         string path = Path.Combine(Application.persistentDataPath, filepath);
 
         if (File.Exists(path + fileending))
@@ -34,43 +41,42 @@ public class DataFile
             newData = file.entries[0];
 
             Debug.Log("data loaded from persistent Path."); 
-            GameManager.Instance.debugText.text = "data loaded from persistent Path.";
+            GameManager.Instance.DebugText.text = "data loaded from persistent Path.";
         }
         else
         {
-            // else load from Resources
+            // else load from resources
             var textFile = Resources.Load<TextAsset>(filepath);
             if (textFile != null)
             {
                 JsonFile<T> file = JsonUtility.FromJson<JsonFile<T>>(textFile.text);
                 newData = file.entries[0];
-                GameManager.Instance.debugText.text = " data loaded from Resources.";
+                GameManager.Instance.DebugText.text = " data loaded from Resources.";
                 Debug.Log(" data from Resources.");
 
-                // Save in persistent Datapath for next time
+                // Save in persistent datapath for next time
                 Save(newData, Path.GetDirectoryName(filepath), Path.GetFileName(filepath));
             }
             else
             {
-                GameManager.Instance.debugText.text = "data not found at path " + filepath;
-                Debug.LogWarning("data not found at path " + filepath);
-
+                GameManager.Instance.DebugText.text = "data not found at path " + filepath;
+                Debug.LogError("data not found at path " + filepath);
             }
         }
         return newData;
     }
 
     /// <summary>
-    /// Loads file from persistent Datapath
+    /// Loads file from persistent datapath
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="completePath">local path without ending</param>
+    /// <param name="completePath">Local path without ending</param>
     /// <returns></returns>
     public static T Load<T>(string completePath) where T : new()
     {
         string jsonString;
         
-        // Load from persistent Datapath
+        // Load from persistent datapath
         string path = Path.Combine(Application.persistentDataPath, completePath);
 
         if (File.Exists(path + fileending))
@@ -80,7 +86,7 @@ public class DataFile
             T newData = file.entries[0]; 
 
             // debug
-            GameManager.Instance.debugText.text = "data loaded from persistent Path.";
+            GameManager.Instance.DebugText.text = "data loaded from persistent Path.";
             Debug.Log("data loaded from persistent Path.");
 
             return newData;
@@ -92,7 +98,7 @@ public class DataFile
     }
 
     /// <summary>
-    /// Helper Function to load User sets into game.
+    /// Helper Function to load user sets into game.
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
@@ -100,14 +106,14 @@ public class DataFile
     {
         List<DataManager.Data> newData = new List<DataManager.Data>();
 
-        // get parameters from GameManager
+        // Get parameters from ´game manager
         int N = path.Count;
 
-        // filepath
+        // Filepath
         string mainFolder = GameManager.Instance.MainFolder;
-        string userDataFolder = GameManager.Instance.GeneralSettings.userDataFolder;
+        string userDataFolder = GameManager.Instance.GeneralSettings.UserDataFolder;
 
-        // load each file into own parameter and save in DataManager
+        // Load each file into own parameter and save in data manager
         for (int i = 0; i < N; i++)
         {
             var filePath = Path.Combine(mainFolder, userDataFolder, path[i]);
@@ -121,19 +127,27 @@ public class DataFile
         return newData;
     }
 
-    #endregion load 
+    #endregion Load 
 
-    #region save
+    #region Save
 
     /// <summary>
-    /// Save into persistent data path. generates new name if it exists
-    /// Begin and End of the string are added automatically
+    /// Save into persistent data path. Generates new name if it exists.
+    /// Begin and end of the string are added automatically.
     /// </summary>
     /// <param name="data"></param>
     /// <param name="folderAfterPersistentPath"></param>
     /// <param name="name"></param>
     public static string Save<T>(T data, string folderAfterPersistentPath, string name)
     {
+        // Check arguments
+        if (string.IsNullOrEmpty(folderAfterPersistentPath))
+            throw new ArgumentException(" Argument kann nicht NULL oder leer sein.", nameof(folderAfterPersistentPath));
+
+        if (string.IsNullOrEmpty(name))
+            throw new ArgumentException("Argument kann nicht NULL oder leer sein.", nameof(name));
+
+        // Make complete directory
         string directory = GenerateDirectory(Path.Combine(Application.persistentDataPath, folderAfterPersistentPath));
         string fileName = GenerateUniqueFileName(directory, name);
 
@@ -149,29 +163,29 @@ public class DataFile
         jsonString = jsonString.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
         jsonString += EndFile(false);
 
-        // override existing text
+        // Overwrite existing text
         UnityEngine.Windows.File.WriteAllBytes(filePath + fileending, Encoding.ASCII.GetBytes(jsonString));
 
         // Debug
-        GameManager.Instance.debugText.text = "Data saved into persistent Path.";
+        GameManager.Instance.DebugText.text = "Data saved into persistent Path.";
         Debug.Log("Data saved into persistent Path: " + filePath);
 
         return fileName; 
     }
 
     /// <summary>
-    /// Save into persistent data path. generates new name if it exists
+    /// Save into persistent data path. Generates new name if it exists
     /// </summary>
     /// <param name="data"></param>
     /// <param name="folderAfterPersistentPath"></param>
     /// <param name="name"></param>
     public static void OverwriteData<T>(T data, string folderAfterPersistentPath, string name)
     {
-        // prepare file path 
+        // Prepare file path 
         string directory    = Path.Combine(Application.persistentDataPath, folderAfterPersistentPath);
         string filePath     = Path.Combine(directory, name);
 
-        // prepare file content
+        // Prepare file content
         string jsonString; 
         if( typeof(T) == typeof(ApplicationData))
             jsonString = StartSettingsFile();
@@ -181,17 +195,17 @@ public class DataFile
         jsonString = jsonString.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
         jsonString += EndFile(false);
 
-        // override existing text
+        // Overwrite existing text
         UnityEngine.Windows.File.WriteAllBytes(filePath + fileending, Encoding.ASCII.GetBytes(jsonString));
 
-        // debug
-        GameManager.Instance.debugText.text = "Data overritten in " + filePath;
+        // Debug
+        GameManager.Instance.DebugText.text = "Data overritten in " + filePath;
         Debug.Log("Data overritten in " + filePath);
     }
 
     /// <summary>
-    /// Save complete json string. Begin and End of the string must be added beforehand
-    /// generates new filename if exists and saves file
+    /// Save complete json string. Begin and end of the string must be added beforehand.
+    /// Generates new filename if exists and saves file.
     /// </summary>
     /// <param name="jsonString"></param>
     /// <param name="folderName"></param>
@@ -207,12 +221,18 @@ public class DataFile
         UnityEngine.Windows.File.WriteAllBytes(filePath + fileending, Encoding.ASCII.GetBytes(jsonString));
 
         // Debug
-        GameManager.Instance.debugText.text = "Data saved into persistent Path.";
+        GameManager.Instance.DebugText.text = "Data saved into persistent Path.";
         Debug.Log("Data saved into " + filePath);
 
         return fileName; 
     }
 
+    /// <summary>
+    ///  Save into persistent data path.
+    /// </summary>
+    /// <param name="jsonString"></param>
+    /// <param name="folderName"></param>
+    /// <param name="name"></param>
     public static void Overwrite(string jsonString, string folderName, string name)
     {
         // Prepare file path
@@ -223,16 +243,16 @@ public class DataFile
         UnityEngine.Windows.File.WriteAllBytes(filePath + fileending, Encoding.ASCII.GetBytes(jsonString));
 
         // Debug
-        GameManager.Instance.debugText.text = "Data saved into persistent Path.";
+        GameManager.Instance.DebugText.text = "Data saved into persistent Path.";
         Debug.Log("Data overwritten in " + filePath);
     }
 
-    #endregion save
+    #endregion Save
 
+    #region Helper Functions
 
-    #region file helper
     /// <summary>
-    /// Adds equal beginning to every dataFile
+    /// Add equal beginning to every data file
     /// </summary>
     /// <returns></returns>
     public static string StartFile()
@@ -247,13 +267,16 @@ public class DataFile
             id = "";
         } 
         
-
         return "{\n \"start\": \"" + "User: " + id
              + " ," + DateTime.Now.ToString("F") + " \", " 
             + Environment.NewLine
             + "\"entries\": \n[ \n ";
     }
 
+    /// <summary>
+    /// Add beginning to settings file
+    /// </summary>
+    /// <returns></returns>
     public static string StartSettingsFile()
     {
         return "{\n \"start\": \"" + DateTime.Now.ToString("F") + " \", "
@@ -262,7 +285,7 @@ public class DataFile
     }
 
     /// <summary>
-    /// Converts data class into json string and adds new line
+    /// Convert data class into json string and add new line
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="data"></param>
@@ -276,9 +299,9 @@ public class DataFile
     }
 
     /// <summary>
-    /// Add equal end to every dataFile
+    /// Add equal end to every data file.
     /// </summary>
-    /// <param name="backup"> if the end is of a backupfile, it is marked in the line</param>
+    /// <param name="backup"> If the end is of a backupfile, it is marked in the line.</param>
     /// <returns></returns>
     public static string EndFile(bool backup)
     {
@@ -289,7 +312,7 @@ public class DataFile
     }
 
     /// <summary>
-    /// returns directorypath
+    /// Returns directorypath
     /// </summary>
     /// <param name="directroyPath"></param>
     /// <returns></returns>
@@ -303,7 +326,7 @@ public class DataFile
     }
 
     /// <summary>
-    /// returns new filename
+    /// Return new filename
     /// </summary>
     /// <param name="directoryPath"></param>
     /// <param name="filename"></param>
@@ -315,7 +338,7 @@ public class DataFile
         // File
         if (File.Exists(filePath))
         {
-            // unique name
+            // Unique name
             filename = filename + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString();
             filePath = Path.Combine(directoryPath, filename);
         }
@@ -323,12 +346,11 @@ public class DataFile
         return filename; 
     }
 
-    #endregion file helper 
-
+    #endregion Helper Functions 
 }
 
 /// <summary>
-/// Helper Class used in DataFile, to maintain a file structure 
+/// Helper class used in DataFile, to maintain a file structure 
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public class JsonFile<T>

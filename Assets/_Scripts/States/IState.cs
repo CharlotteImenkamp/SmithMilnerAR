@@ -1,5 +1,9 @@
-﻿/// <summary>
-/// Interface to define state methods
+﻿/// todo: -
+////////////////////////////////////////////////////////
+
+/// <summary>
+/// Interface to define state methods.
+/// Operates in combination with the StateMachine.
 /// </summary>
 public interface IState
 {

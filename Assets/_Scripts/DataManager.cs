@@ -1,48 +1,30 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit; 
-using UnityEngine.Events;
 using System;
 using System.IO;
 
+/// checked spelling in parameters and comments
+/// checked comments
+/// todo: - 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/// <summary>
+/// Singelton class, which is instantiated in the editor by the GameManager script 
+/// Holds data functions and parameters.
+/// </summary>
 public class DataManager : MonoBehaviour
 {
-    #region create instance
-    private static DataManager _instance = null;
+    #region Instance
 
-    public static DataManager Instance { get => _instance; }
+    private static DataManager instance = null;
 
-    private void Awake()
-    {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-            Debug.LogError("Instance of DataManager destroyed.");
-        }
-        else
-        {
-            _instance = this;
-        }
-    }
-    #endregion
+    public static DataManager Instance { get => instance; }
 
-    private static StateMachine dataStateMachine = new StateMachine();
+    #endregion Instance and awake
 
-    #region public parameters
-    public Data CurrentSet { get => currentSet; set => currentSet = value; }
-
-    // Data to Save
-    public List<GameObject> ObjectsInScene { get => objectsInScene; set { objectsInScene = value; } }
-    public List<GameObject> MovingObjects { get => movingObjects; set => movingObjects = value; }
-
-    public HeadData CurrentHeadData { get => currentHeadData; set => currentHeadData = value; }
-
-    // Data from general Settings
-    public List<ObjectData> NewSets { get => newSettings; set => newSettings = value; }
-    public List<Data> IncompleteUserData { get => incompleteUserData; set => incompleteUserData = value; }
-    public List<Data> CompleteUserData { get => completeUserData; set => completeUserData = value; }
-    public List<Data> NewUserData { get => newUserData; set => newUserData = value; }
-   
+    #region Public Fields
 
     public struct Data
     {
@@ -51,36 +33,96 @@ public class DataManager : MonoBehaviour
 
         public Data(ObjectData objData, UserSettingsData userData)
         {
+            if (!objData.IsValid() || !userData.IsValid())
+                throw new InvalidDataException();
+
             this.objData = objData ?? throw new ArgumentNullException(nameof(objData));
             this.userData = userData ?? throw new ArgumentNullException(nameof(userData));
         }
 
-        public UserSettingsData UserData { get => userData; set => userData = value; }
-        public ObjectData ObjData { get => objData; set => objData = value; }
-    }
-    #endregion public parameters
+        public bool IsValid()
+        {
+            if (objData.IsValid() && userData.IsValid())
+                return true;
+            else
+                return false;
+        }
 
-    #region private paramters
+        public void Clear()
+        {
+            objData?.Clear();
+            userData?.Clear(); 
+        }
+
+        public UserSettingsData UserData { get => userData; set => userData = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null"); }
+        public ObjectData ObjData { get => objData; set => objData = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null"); }
+    }
+
+    // Objectdata
+    public List<GameObject> ObjectsInScene { get => objectsInScene; set => objectsInScene = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null");  }
+    public List<GameObject> MovingObjects { get => movingObjects; set => movingObjects = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null"); }
+
+    // Headdata
+    public HeadData CurrentHeadData { get => currentHeadData; set => currentHeadData = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null"); }
+
+    // Userdata
+    public List<ObjectData> NewSets { get => newSettings; set => newSettings = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null"); }
+    public List<Data> IncompleteUserData { get => incompleteUserData; set => incompleteUserData = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null"); }
+    public List<Data> CompleteUserData { get => completeUserData; set => completeUserData = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null"); }
+    public List<Data> NewUserData { get => newUserData; set => newUserData = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null"); }
+    public Data CurrentSet { get => currentSet; set => currentSet = value; }
+
+
+    #endregion Public Fields
+
+    #region Private Fields
+
+    // Statemachine
+    private static StateMachine dataStateMachine = new StateMachine();
+
+    // Userdata
     private List<Data> newUserData; 
     private List<Data> incompleteUserData;
-    private List<Data> completeUserData; 
-
-    private List<ObjectData> newSettings;
-
-    private List<GameObject> objectsInScene;
-    private List<GameObject> movingObjects;
-    private HeadData currentHeadData;
-
+    private List<Data> completeUserData;
     private Data currentSet;
 
-    #endregion private parameters
+    // Settings
+    private List<ObjectData> newSettings;
 
+    // Objectdata
+    private List<GameObject> objectsInScene;
+    private List<GameObject> movingObjects;
 
+    // Headdata
+    private HeadData currentHeadData;
+
+    #endregion Private Fields
+
+    #region MonoBehaviour Functions
+
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(this.gameObject);
+            Debug.LogError("Instance of DataManager destroyed.");
+        }
+        else
+            instance = this;
+    }
+
+    /// <summary>
+    /// Initialize Parameters at start
+    /// </summary>
     void Start()
     {
         ResetToDefault();  
     }
 
+    /// <summary>
+    /// Called every frame.
+    /// Execute update of statemachine and update data.
+    /// </summary>
     private void Update()
     {
         currentHeadData.SetCameraParameters(Camera.main.transform);
@@ -89,27 +131,71 @@ public class DataManager : MonoBehaviour
         dataStateMachine.ExecuteStateUpdate(); 
     }
 
-    #region dataLogging
+    #endregion MonoBehaviour Functions
 
+    #region Public Functions
+
+    #region Save
 
     /// <summary>
-    /// start, if GameState changed to Location Estimation or PriceEstimation
+    /// Updates settings in GameManager and saves the data.
     /// </summary>
-    public void StartDataLogging()
+    /// <param name="data">Data to save</param>
+    public void SetAndSaveNewSettings(Data data)
     {
-        dataStateMachine.ChangeState(new LogData(GameManager.Instance.gameType)); 
+        if (data.IsValid() && data.ObjData.GameObjects.Count != 0)
+        {
+            // GameManager
+            string dataFolder = GameManager.Instance.GeneralSettings.UserDataFolder + "/User" + data.UserData.UserID.ToString();
+            string mainFolder = GameManager.Instance.MainFolder;
+
+            // FileNames
+            string settingsFileName = "settings" + data.UserData.UserID.ToString();
+            string objectFileName = "objectData" + data.UserData.UserID.ToString();
+            string userFileName = "user" + data.UserData.UserID.ToString();
+
+            // Save into user folder and into settings folder
+            DataFile.Save<ObjectData>(data.ObjData, Path.Combine(mainFolder, dataFolder), settingsFileName);            
+            DataFile.Save<UserSettingsData>(data.UserData, Path.Combine(mainFolder, dataFolder), userFileName);
+
+            // Add to general settings
+            GameManager.Instance.GeneralSettings.NewUserData.Add("User" + data.UserData.UserID.ToString() + "/" + userFileName);
+
+            var dat = GameManager.Instance.GeneralSettings;
+            GameManager.Instance.GeneralSettings = dat;             
+        }
+        else
+        {
+            GameManager.Instance.DebugText.text = "DataManager::SetCurrentSettings no valid data.";
+            throw new ArgumentNullException("No valid data"); 
+        }
     }
 
-    public void StopDataLogging()
+    #endregion Save
+
+    #region Reset
+
+    /// <summary>
+    /// Resets rotation of all objects in the scene. This is useful, if the user cannot reset the rotation by the manipulation handles. 
+    /// </summary>
+    public void ResetObjectRotation()
     {
-        dataStateMachine.SwitchToIdle(); 
+        foreach (GameObject obj in ObjectsInScene)
+        {
+            var a = currentSet.ObjData.GameObjects; 
+            var b = a.Find(x => x.Objectname.Equals(obj.name));
+            var c = b.GlobalRotation;
+            obj.transform.rotation = c; 
+            obj.transform.rotation = Quaternion.Euler(obj.transform.rotation.x, 0f, transform.rotation.z); 
+        }
     }
 
-    #endregion dataLogging
-
+    /// <summary>
+    /// Instantiates parameters and changes state to start state.
+    /// </summary>
     public void ResetToDefault()
     {
-        // parameters
+        // Parameters
         newSettings = new List<ObjectData>();
 
         completeUserData = new List<Data>();
@@ -120,55 +206,28 @@ public class DataManager : MonoBehaviour
         objectsInScene = new List<GameObject>();
         currentHeadData = new HeadData();
 
-        // start loading
+        // Start loading data
         dataStateMachine.ChangeState(new LoadSettings());
     }
 
-    public void SetAndSaveNewSettings(Data data)
-    {
-        if (data.UserData != null && data.ObjData.gameObjects.Count != 0)
-        {
-            // GameManager
-            string settingsFolder = GameManager.Instance.GeneralSettings.objectDataFolder;
-            string dataFolder = GameManager.Instance.GeneralSettings.userDataFolder + "/User" + data.UserData.UserID.ToString();
-            string mainFolder = GameManager.Instance.MainFolder;
+    #endregion Reset
 
-            // FileNames
-            string settingsFileName = "settings" + data.UserData.UserID.ToString();
-            string objectFileName = "objectData" + data.UserData.UserID.ToString();
-            string userFileName = "user" + data.UserData.UserID.ToString(); 
-
-            // Save into user folder and into settings folder
-            DataFile.Save<ObjectData>(data.ObjData, Path.Combine(mainFolder, dataFolder), settingsFileName);
-            DataFile.Save<ObjectData>(data.ObjData, Path.Combine(mainFolder, settingsFolder), objectFileName );
-            DataFile.Save<UserSettingsData>(data.UserData, Path.Combine(mainFolder, dataFolder), userFileName);
-
-            // Add to general settings
-            GameManager.Instance.GeneralSettings.newObjectData.Add(objectFileName);
-            GameManager.Instance.GeneralSettings.newUserData.Add("User" + data.UserData.UserID.ToString() + "/" + userFileName);
-
-            var dat = GameManager.Instance.GeneralSettings;
-            GameManager.Instance.GeneralSettings = dat;             
-        }
-        else
-        {
-            GameManager.Instance.debugText.text = "DataManager::SetCurrentSettings no valid data.";
-            Debug.LogWarning("DataManager::SetCurrentSettings no valid data.");
-        }
-    }
+    #region Log 
 
     /// <summary>
-    /// TODO not working !!
+    /// start, if GameState changed to Location Estimation or PriceEstimation
     /// </summary>
-    public void ResetObjectRotation()
+    public void StartDataLogging()
     {
-        foreach (GameObject obj in ObjectsInScene)
-        {
-            var a = currentSet.ObjData.gameObjects; 
-            var b = a.Find(x => x.Objectname.Equals(obj.name));
-            var c = b.globalRotation;
-            obj.transform.rotation = c; 
-            obj.transform.rotation = Quaternion.Euler(obj.transform.rotation.x, 0f, transform.rotation.z); 
-        }
+        dataStateMachine.ChangeState(new LogData(GameManager.Instance.GameType));
     }
+
+    public void StopDataLogging()
+    {
+        dataStateMachine.SwitchToIdle();
+    }
+
+    #endregion Log
+
+    #endregion Public Functions
 }

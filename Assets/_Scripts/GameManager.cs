@@ -3,17 +3,26 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// checked spelling in parameters and comments
+/// checked comments
+/// todo: - 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// singelton 
-// tasks: 
+/// <summary>
+/// First and only MonoBehaviour script, which needs to be in the scene. 
+/// All references to scene components are stored here and other scripts can reach to the instance and read the parameters.
+/// Provides access to other scripts via public functions, which are called in the editor.
+/// </summary>
 public class GameManager : MonoBehaviour
 {
-    #region Serialized Parameters
+    #region Fields
+
+    #region Editor
+
     [Header("Menu Objects")]
     [Tooltip("Add Menu Objects for UIManager")]
     public GameObject GeneralSettingsMenu;
@@ -23,15 +32,13 @@ public class GameManager : MonoBehaviour
     public GameObject ContinueWithLocationsButton;
 
     [Header("InteractionObjects")]
-    public GameObject parentPlayTable;
-    public GameObject parentSideTable;
+    public GameObject ParentPlayTable;
+    public GameObject ParentSideTable;
     public GameObject InteractionObjects;
-    [NonSerialized]
-    public Vector3 interactionObjectsInitialPosition; 
 
     [Header("Spawn Points")]
-    public Transform spawnPointGame;
-    public Transform spawnPointSide;
+    public Transform SpawnPointGame;
+    public Transform SpawnPointSide;
 
     [Header("BoundingBox")]
     public Material BoundingBox;
@@ -45,26 +52,36 @@ public class GameManager : MonoBehaviour
     public GameObject UserButton;
 
     [Header("Data")]
-    public float backupPeriod = 60.0f; 
+    public float BackupPeriod = 60.0f; 
 
     [Header("Debug")]
-    public GameObject debugTextObject;
+    public GameObject DebugTextObject;
     [NonSerialized]
-    public TextMeshPro debugText;
+    public TextMeshPro DebugText;
 
-    #endregion Serialized in Editor
+    #endregion Editor
 
-    #region FileParameters
+    #region Object Manangement
+
+    [NonSerialized]
+    public Vector3 InteractionObjectsInitialPosition;
+
+    #endregion Object Management
+
+    #region File Management
     public ApplicationData GeneralSettings { 
         get => generalSettings;
         set 
-        { 
-            generalSettings = value;
-            DataManager.Instance.CompleteUserData   = DataFile.LoadUserSets(generalSettings.completeUserData);
-            DataManager.Instance.IncompleteUserData = DataFile.LoadUserSets(generalSettings.incompleteUserData);
-            DataManager.Instance.NewUserData        = DataFile.LoadUserSets(generalSettings.newUserData);
+        {
+            generalSettings = value ?? throw new ArgumentNullException(nameof(value), "Value cannot be null");
+            DataManager.Instance.CompleteUserData   = DataFile.LoadUserSets(generalSettings.CompleteUserData);
+            DataManager.Instance.IncompleteUserData = DataFile.LoadUserSets(generalSettings.IncompleteUserData);
+            DataManager.Instance.NewUserData        = DataFile.LoadUserSets(generalSettings.NewUserData);
 
-            DataFile.OverwriteData<ApplicationData>(generalSettings, MainFolder, "generalSettings");
+            if (generalSettings.IsValid())
+                DataFile.OverwriteData<ApplicationData>(generalSettings, MainFolder, "generalSettings");
+            else
+                throw new ArgumentException(nameof(generalSettings), "is invalid");
         }
     }
 
@@ -79,55 +96,57 @@ public class GameManager : MonoBehaviour
 
     public float UpdateRate { get => updateRate; set => updateRate = value; }
 
+    #endregion File
 
-    #endregion FileParameters
+    #region Event
 
-    #region Event Parameters
-    // Events
+    // public event paramters 
     [NonSerialized]
     public UnityEvent OnUserButtonClicked;
-    private bool buttonEnabled; 
 
-    #endregion Event Parameters
+    // private event parameters
+    private bool buttonEnabled;
 
-    #region Game Flow Parameters
-    // game 
+    #endregion Event
+
+    #region Game Flow 
+
     [NonSerialized]
-    public GameType gameType; 
-    #endregion Game Flow Parameters
+    public GameType GameType;
 
-    #region Parameters Script Managerment
-    // script management
-    public List<Type> AttachedManagerScripts { get => attachedManagerScripts; set => attachedManagerScripts = value; }
-    public List<SubManager> AttachedSubManagers { get => attachedSubManagers; set => attachedSubManagers = value; }
-    #endregion Parameters ScriptManagement
+    #endregion Game Flow 
 
-    #region private Parameters
-    // Managers
-    private List <Type> attachedManagerScripts;
+    #region Script Management
+
+    // public
+    public List<Type> AttachedManagerScripts { get => attachedManagerScripts; set => attachedManagerScripts = value ?? throw new ArgumentNullException(nameof(value), "Value cannot be null"); }
+    public List<SubManager> AttachedSubManagers { get => attachedSubManagers; set => attachedSubManagers = value ?? throw new ArgumentNullException(nameof(value), "Value cannot be null"); }
+
+    // private
+    private List<Type> attachedManagerScripts;
     private List<SubManager> attachedSubManagers;
 
-    // General Settings
-    private string applicationFolder;
-    private string settingsFolder;
-    private ApplicationData settings;
+    #endregion Script Management
 
-    #endregion private Parameters
+    #region Instance
 
-    #region instance and awake
-    private static GameManager _instance = null;
-    public static GameManager Instance { get => _instance; }
-    
+    private static GameManager instance = null;
+    public static GameManager Instance { get => instance; }
 
+    #endregion
+
+    #endregion Fields
+
+    #region MonoBehaviour Functions
 
     /// <summary>
     /// Manage Instance and Add depending Scripts
     /// </summary>
     private void Awake()
     {
-        if (_instance == null)
+        if (instance == null)
         {
-            _instance = this;
+            instance = this;
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -136,113 +155,113 @@ public class GameManager : MonoBehaviour
             Debug.LogError("Instance of GameManager destroyed.");
         }
     }
-    #endregion 
-
+ 
+    /// <summary>
+    /// Instantiate and set default parameters
+    /// </summary>
     void Start()
     {
         buttonEnabled = true; 
 
-        // debug
-        debugText = debugTextObject.GetComponent<TextMeshPro>();
+        // Debug
+        DebugText = DebugTextObject.GetComponent<TextMeshPro>();
 
-        // Check Input parameters
+        // Check input parameters
         if (GeneralSettingsMenu == null || NewSettingsMenu == null || OldSettingsMenu == null || PauseMenu == null)
         {
-            debugText.text = "Not all Menu Parameters are Set in GameManager."; 
-            Debug.LogError("Not all Menu Parameters are Set in GameManager.");
+            DebugText.text = "Not all Menu Parameters are Set in GameManager."; 
+            throw new ArgumentNullException("Not all Menu Parameters are Set in GameManager.");
         }
+
         // Events
         if (OnUserButtonClicked == null)
             OnUserButtonClicked = new UnityEvent();
 
         // InteractionObjects
-        interactionObjectsInitialPosition = InteractionObjects.transform.position; 
+        InteractionObjectsInitialPosition = InteractionObjects.transform.position; 
 
-        // File Parameters
+        // File parameters
         MainFolder = "DataFiles";
         StartDataName = "StartLocationPrices";  
         updateRate = 1.0f; 
         
         generalSettings = DataFile.SecureLoad<ApplicationData>(Path.Combine(MainFolder, "generalSettings"));
 
-        // Add Managers of Type Monobehaviour
+        // Add managers of type monobehaviour
         attachedManagerScripts = new List<Type>();
         AddManagerToScene(typeof(GameStateManager));
         AddManagerToScene(typeof(DataManager));
 
-        //Add SubManager of Type SubManager
+        //Add submanager
         attachedSubManagers = new List<SubManager>();
-        AddSubManager(new AudioManager());
         AddSubManager(new UIManager());
         AddSubManager(new ObjectManager());
-
 
         ResetToDefault();
     }
 
-    #region buttons
+    #endregion MonoBehaviour Functions
+
+    #region Button Functions
 
     /// <summary>
-    /// Add to Toggle Buttons, to get their input
+    /// Add to toggle buttons in editor, to get their input
     /// </summary>
     public void ToggleGameType()
     {
-        // toggle game type
-        if (gameType == GameType.Locations)
-            gameType = GameType.Prices;
-        else if (gameType == GameType.Prices)
-            gameType = GameType.Locations;
+        if (GameType == GameType.Locations)
+            GameType = GameType.Prices;
+        else if (GameType == GameType.Prices)
+            GameType = GameType.Locations;
     }
 
     /// <summary>
-    /// Called in Old Settings menu on radio buttons
-    /// And on Pause menu at button ContinueWithLocations
-    /// Sets Game Type and Assigns Listeners to UserButton
+    /// Called in old settings menu on radio buttons and on pause menu at button "ContinueWithLocations".
+    /// Sets game type and assigns listeners to user button.
     /// </summary>
-    /// <param name="type"></param>
+    /// <param name="type">Either "Locations" or "Prices"</param>
     public void SetGameType(string type)
     {
         if(type == "Locations")
-            gameType = GameType.Locations;
+            GameType = GameType.Locations;
         else if (type == "Prices")
-            gameType = GameType.Prices; 
+            GameType = GameType.Prices; 
         else
-            throw new ArgumentException("...GameManager SetGameType to " + type + " not possible."); 
-        
-       
+            throw new ArgumentException("...GameManager SetGameType to " + type + " not possible.");  
     }
 
     /// <summary>
-    /// Called after SetGameType to add Listeners to UserButton
-    /// The split is necessary to prevent wrong behaviour 
+    /// Called after function "SetGameType" to add listeners to "UserButton".
+    /// The split is necessary to prevent wrong behaviour. 
     /// </summary>
     public void StartGame()
     {
         OnUserButtonClicked.RemoveAllListeners();
-        OnUserButtonClicked.AddListener(() => GameStateManager.Instance.StartTestRun(GameManager.Instance.gameType));
+        OnUserButtonClicked.AddListener(() => GameStateManager.Instance.StartTestRun(GameManager.Instance.GameType));
     }
 
     /// <summary>
-    /// Helper function for the interaction with UserButton
+    /// Added to "UserButton" in Editor. 
+    /// Invokes OnUserButtonClicked event and disables button for a time period
     /// </summary>
     public void UserButtonClicked()
     {
+        // invoke event
         if (buttonEnabled)
-        {
             OnUserButtonClicked.Invoke();
-        }
          
-         // deactivate user button for some seconds
+         // deactivate user button
         UserButton.GetComponent<Interactable>().IsEnabled = false;
         UserButton.GetComponent<PressableButton>().enabled = false;
         UserButton.GetComponent<Interactable>().SetState(InteractableStates.InteractableStateEnum.Pressed, true); 
         buttonEnabled = false;
 
+        // reactivate user button
         StartCoroutine(EnableAfterSeconds()); 
     }
 
     /// <summary>
-    /// Called in user Button Clicked to re enable user button 
+    /// Called in function "UserButtonClicked" to reenable user button. 
     /// </summary>
     IEnumerator EnableAfterSeconds()
     {
@@ -256,23 +275,27 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Called in Hand Menu to set rotation to zero
+    /// Called in "HandMenu" in editor to set rotation to zero.
     /// </summary>
     public void ResetObjectRotation()
     {
         DataManager.Instance.ResetObjectRotation(); 
     }
 
+    /// <summary>
+    /// Called in menu in editor when return buttons are pressed.
+    /// </summary>
     public void ResetMenuValues()
     {
         ResetToDefault(); 
     }
-    #endregion buttons
 
-    #region Script Management
+    #endregion Button Functions
+
+    #region Scene Functions
 
     /// <summary>
-    /// Managers of are added to the gameObject and collected in the list
+    /// Managers are added to the gameObject and collected in the list
     /// </summary>
     /// <param name="classType">Inherited type of Monobehaviour is required. Use with typeof().</param>
     private void AddManagerToScene(Type classType)
@@ -284,86 +307,98 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            debugText.text = "GameManager::AddManagerToScene Manager already exists!";
+            DebugText.text = "GameManager::AddManagerToScene Manager already exists!";
             Debug.LogWarning("GameManager::AddManagerToScene Manager already exists!"); 
         }
     }
+
     /// <summary>
-    /// Managers of type SubManager are created and collected in the list
+    /// Managers of type "SubManager" are created and collected in the list
     /// </summary>
     /// <param name="newSubManager"></param>
     private void AddSubManager(SubManager newSubManager)
     { 
         if(newSubManager != null)
-        {
             attachedSubManagers.Add(newSubManager);
-        }
         else
         {
-            debugText.text = "GameManager::AddSubManager Failed to load SubManager"; 
+            DebugText.text = "GameManager::AddSubManager Failed to load SubManager"; 
             Debug.LogError("GameManager::AddSubManager Failed to load SubManager"); 
         }
     }
 
-    #endregion Script Management
+    #endregion Scene Functions
 
-    #region Game Flow
+    #region Gameflow Functions
 
     /// <summary>
-    /// Called in Pause UI. Reset attached scripts
+    /// Called in "PauseMenu" in editor. Resets attached scripts.
     /// </summary>
     public void NewUser()
     {
         ResetToDefault();
     }
 
+    /// <summary>
+    /// Calls reset function of all attached managers and submanagers and removes event listeners.
+    /// </summary>
     private void ResetToDefault()
     {
-
-        //\TODO in foreach
+        // Reset managers
         gameObject.GetComponent<GameStateManager>().ResetToDefault();
         gameObject.GetComponent<DataManager>().ResetToDefault();
 
+        // Reset submanagers
         foreach (SubManager sub in attachedSubManagers)
-        {
             sub.Reset();
-        }
 
+        // Reset event
         OnUserButtonClicked.RemoveAllListeners();
 
-        // game
-        gameType = GameType.Prices;
+        GameType = GameType.Prices;
     }
 
     /// <summary>
-    /// Called in General Menu on Quit Game Button 
+    /// Called in "GeneralMenu" in editor on "QuitGame" button 
+    /// Functions does not work with hololens
     /// </summary>
     public void QuitGame()
     {
         // Application.Quit(); 
     }
 
-    #endregion Game Flow 
+    #endregion Gameflow Functions 
 
-    #region filemanagement
+    #region File Functions
+
+    /// <summary>
+    /// Moves user set to next list in "generalSettings" parameter
+    /// </summary>
+    /// <param name="userID"> Current user ID </param>
+    /// <param name="completedType">Game type, which is completed</param>
     public void UpdateGeneralSettings(string userID, GameType completedType)
     {
-        if (completedType == GameType.Locations)
+        if (generalSettings.IsValid())
         {
-            generalSettings.incompleteUserData.Remove("User" + userID + "/" + "user" + userID);
-            generalSettings.completeUserData.Add("User" + userID + "/" + "user" + userID); 
-        }
-        else if(completedType == GameType.Prices)
-        {
-            generalSettings.newUserData.Remove("User" + userID + "/" + "user" + userID); 
-            generalSettings.incompleteUserData.Add("User" + userID + "/" + "user" + userID); 
+            if (completedType == GameType.Locations)
+            {
+                generalSettings.IncompleteUserData.Remove("User" + userID + "/" + "user" + userID);
+                generalSettings.CompleteUserData.Add("User" + userID + "/" + "user" + userID);
+            }
+            else if (completedType == GameType.Prices)
+            {
+                generalSettings.NewUserData.Remove("User" + userID + "/" + "user" + userID);
+                generalSettings.IncompleteUserData.Add("User" + userID + "/" + "user" + userID);
+            }
+            else
+                throw new ArgumentException();
         }
         else
-        {
-            throw new ArgumentException(); 
-        }
+            throw new InvalidDataException("Invalid data");
+
     }
-    #endregion filemanagement
+
+    #endregion File Functions
 }
 
 

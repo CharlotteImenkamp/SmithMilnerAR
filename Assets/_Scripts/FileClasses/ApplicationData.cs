@@ -1,37 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using UnityEngine;
+﻿using System.Collections.Generic;
+
+/// todo: -
+////////////////////////////////////////////////////////
 
 [System.Serializable]
 public class ApplicationData
 {
+    #region Constructor
+    /// <summary>
+    /// Helper method to generate default file for debugging
+    /// </summary>
+    /// <returns></returns>
     public static ApplicationData DefaultGeneralSettingsFile()
     {
         ApplicationData defaultData = new ApplicationData();
 
-        defaultData.objectDataFolder = "settings";
-        defaultData.userDataFolder = "data";
-
-        defaultData.newObjectData = new List<string> { };
-
-        defaultData.newUserData = new List<string> { }; 
-        defaultData.incompleteUserData = new List<string> { };
-        defaultData.completeUserData = new List<string> { }; 
+        defaultData.UserDataFolder = "data";
+        defaultData.NewUserData = new List<string> { }; 
+        defaultData.IncompleteUserData = new List<string> { };
+        defaultData.CompleteUserData = new List<string> { }; 
         
         return defaultData;
     }
 
+    #endregion constructor
+
+    #region Validation
+    public bool IsValid()
+    {
+        if (UserDataFolder == "")
+            return false;
+        else if (NewUserData == null || IncompleteUserData == null || CompleteUserData == null)
+            return false;
+        else
+            return true; 
+    }
+
+    #endregion
+
+    #region Public Fields
+
     // Folders 
-    public string objectDataFolder;
-    public string userDataFolder;
+    public string UserDataFolder;
 
     // Sets
-    public List<string> newObjectData;
+    public List<string> NewUserData; 
+    public List<string> IncompleteUserData;
+    public List<string> CompleteUserData;
 
-    public List<string> newUserData; 
-    public List<string> incompleteUserData;
-    public List<string> completeUserData;
+    #endregion Public Fields
 }
 

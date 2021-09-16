@@ -1,38 +1,51 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities;
+/// checked spelling in parameters and comments
+/// checked comments
+/// todo: - 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+/// <summary>
+/// Submanager, which manages the spawning and removing of objects in scene. Highly 
+/// connected with ObjectCreator class
+/// </summary>
 public class ObjectManager : SubManager
 {
+    #region Private Fields
+
     private GameObject[] interactionObjects;
 
-    // Game Objects
+    // Game objects
     private GameObject parentPlayTable;
     private GameObject parentSideTable;
 
-    // Grid Object Collections
+    // Grid object collections
     private GridObjectCollection playTableObjectCollection;
     private GridObjectCollection sideTableObjectCollection;
 
+    // Test scenarien
     private GameObject testObject; 
     private Vector3 testPositionPrices;
     private Vector3 testPositionLocations;
 
     private DataManager.Data currentData; 
-    private ObjectCreator objectCreator; 
+    private ObjectCreator objectCreator;
 
+    #endregion Private Fields
+
+    #region SubManager Functions
+    /// <summary>
+    /// Initialization of parameters
+    /// </summary>
     public void Initialize()
     {
         objectCreator = ScriptableObject.CreateInstance<ObjectCreator>();
 
-        // Game Objects
-        parentPlayTable = GameManager.Instance.parentPlayTable;
-        parentSideTable = GameManager.Instance.parentSideTable;
+        // Game objects
+        parentPlayTable = GameManager.Instance.ParentPlayTable;
+        parentSideTable = GameManager.Instance.ParentSideTable;
 
-        // Object Collections
+        // Object collections play table
         playTableObjectCollection = parentPlayTable.GetComponent<GridObjectCollection>();
         if(playTableObjectCollection == null)
         {
@@ -41,6 +54,7 @@ public class ObjectManager : SubManager
             playTableObjectCollection.CellWidth = 0.25f; 
         }
 
+        // Object collection side table
         sideTableObjectCollection = parentSideTable.GetComponent<GridObjectCollection>();
         if (sideTableObjectCollection == null)
         {
@@ -49,11 +63,30 @@ public class ObjectManager : SubManager
             sideTableObjectCollection.CellWidth = 0.19f;
         }
 
+        // folder 
         objectCreator.PrefabFolderName = "Objects";
     }
 
-    #region gameStates
+    /// <summary>
+    /// Reset parameters
+    /// </summary>
+    public override void Reset()
+    {
+        GameManager.Instance.DebugText.text = "ObjectManager::Reset";
+        Debug.Log("ObjectManager::Reset");
 
+        interactionObjects = null;
+        testObject = null;
+        currentData.Clear(); 
+        objectCreator.Reset();
+    }
+
+    #region Gamestates
+
+    /// <summary>
+    /// Check, if any task needs to be done at new game state
+    /// </summary>
+    /// <param name="newState">State which is entered.</param>
     public override void OnGameStateEntered(string newState)
     {
         switch (newState)
@@ -66,31 +99,32 @@ public class ObjectManager : SubManager
                 break;
 
             case "LocationTest":
+                // Spawn test object at side table
                 CheckDefaultParameters();
                 objectCreator.SpawnObject(testObject,parentSideTable,testPositionLocations,testObject.transform.rotation, ConfigType.MovementEnabled);
-
                 DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects; 
                 break;
 
             case "LocationEstimation":
+                // spawn objects at side table
                 objectCreator.SpawnObjects(interactionObjects,
                     parentSideTable,
                     currentData.ObjData.GetObjectPositions(),
                     currentData.ObjData.GetObjectRotations(), 
                     ConfigType.MovementEnabled);
                 sideTableObjectCollection.UpdateCollection();
-
                 DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects;
                 break;
 
             case "PriceTest":
+                // Spawn test object at main table
                 CheckDefaultParameters();
                 objectCreator.SpawnObject(testObject, parentPlayTable, testPositionPrices, testObject.transform.rotation, ConfigType.MovementDisabled);
-
                 DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects;
                 break;
 
             case "PriceEstimation":
+                // Spawn objects at main table
                 objectCreator.SpawnObjects(interactionObjects, parentPlayTable,
                     currentData.ObjData.GetObjectPositions(),
                     currentData.ObjData.GetObjectRotations(), 
@@ -112,65 +146,34 @@ public class ObjectManager : SubManager
         }
     }
 
-    public static Vector3 GetPositionOffset()
-    {
-        return GameManager.Instance.interactionObjectsInitialPosition - GameManager.Instance.InteractionObjects.transform.position; 
-    }
-    
+    /// <summary>
+    /// Check, if any task needs to be done before next game state
+    /// </summary>
+    /// <param name="oldState">State which is left.</param>
     public override void OnGameStateLeft(string oldState)
     {
-        switch (oldState)
-        {
-            case "Initialization":
-                break; 
-
-            case "SettingsMenu":
-                break;
-
-            case "LocationTest":
+        if (oldState == "LocationTest" || oldState == "LocationEstimation" || oldState == "PriceTest" || oldState == "PriceEstimation" || oldState == "Pause" || oldState == "End")
                 objectCreator.RemoveAllObjects();
-                break;
-
-            case "LocationEstimation":
-                objectCreator.RemoveAllObjects();
-                break;
-
-            case "PriceTest":
-                objectCreator.RemoveAllObjects();
-                break;
-
-            case "PriceEstimation":
-                objectCreator.RemoveAllObjects();
-                break;
-
-            case "Pause":
-                objectCreator.RemoveAllObjects();
-                break;
-            case "End":
-                objectCreator.RemoveAllObjects();
-                break; 
-
-            default:
-                Debug.LogError("ObjectManager::OnGameStateLeft invalid State."); 
-                break;
-        } 
     }
 
     #endregion gameStates
 
-    public override void Reset()
-    {
-        GameManager.Instance.debugText.text = "ObjectManager::Reset"; 
-        Debug.Log("ObjectManager::Reset"); 
+    #endregion SubManager Functions
 
-        interactionObjects = null; 
-        testObject = null;
-        currentData.ObjData = null;
-        currentData.UserData = null;
-        objectCreator.Reset();
+    #region Helper Functions
+
+    /// <summary>
+    /// Get offset of table, if it is moved 
+    /// </summary>
+    /// <returns></returns>
+    public static Vector3 GetPositionOffset()
+    {
+        return GameManager.Instance.InteractionObjectsInitialPosition - GameManager.Instance.InteractionObjects.transform.position;
     }
 
-
+    /// <summary>
+    /// Instantiate parameters if necessary
+    /// </summary>
     private void CheckDefaultParameters()
     {
         if (currentData.UserData == null || currentData.ObjData == null)
@@ -187,12 +190,12 @@ public class ObjectManager : SubManager
         if (testObject == null)
         {
             testObject = objectCreator.CreateInteractionObject(currentData.ObjData);
-            testPositionPrices = GameManager.Instance.spawnPointGame.position;                                    
-            testPositionLocations = GameManager.Instance.spawnPointSide.position; 
+            testPositionPrices = GameManager.Instance.SpawnPointGame.position;                                    
+            testPositionLocations = GameManager.Instance.SpawnPointSide.position; 
         }
     }
 
-
+    #endregion Helper Funcions
 }
 
 

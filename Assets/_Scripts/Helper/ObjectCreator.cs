@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -9,37 +8,53 @@ using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using Microsoft.MixedReality.Toolkit.UI.BoundsControl;
 using Microsoft.MixedReality.Toolkit;
-
+/// todo: -
+////////////////////////////////////////////////////////
 
 /// <summary>
-///  Helper class to use Functions from MonoBehaviour in ObjectManager
+///  Helper class to use functions from MonoBehaviour in ObjectManager
 /// </summary>
 public class ObjectCreator : ScriptableObject
 {
-    public string PrefabFolderName { get => prefabFolderName; set => prefabFolderName = value; }
-    public string BoundingBoxFolderName { get => boundingBoxFolderName; set => boundingBoxFolderName = value; }
-    public List<GameObject> InstantiatedObjects { get => instantiatedObjects; set => instantiatedObjects = value; }
-    
+    #region Public Fields
+
+    public string PrefabFolderName { get => prefabFolderName; set => prefabFolderName = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null"); }
+    public string BoundingBoxFolderName { get => boundingBoxFolderName; set => boundingBoxFolderName = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null"); }
+    public List<GameObject> InstantiatedObjects { get => instantiatedObjects; set => instantiatedObjects = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null"); }
+
+    #endregion Public Fields
+
+    #region Private Fields
+
+    // Folder name
     private string boundingBoxFolderName;
     private string soundFolderName; 
     private string prefabFolderName;
+
+    // Game objects
     private List<GameObject> instantiatedObjects;
+
+    // Audioclip
     private AudioClip rotateStart;
     private AudioClip rotateStop;
     private AudioClip manStart;
-    private AudioClip manStop; 
+    private AudioClip manStop;
 
-    #region public methods
+    #endregion Private Fields
 
+    #region MonoBehaviour Functions
+    /// <summary>
+    /// Load parameters from resources
+    /// </summary>
     public void OnEnable()
     {
-        // parameters
+        // Parameters
         instantiatedObjects = new List<GameObject>();
         prefabFolderName = "Objects";
         boundingBoxFolderName = "BoundingBox";
         soundFolderName = "Sound";
 
-        // Audio Rotation
+        // Audio rotation
         var rotfileName = "/MRTK_Rotate_Start";
         rotateStart = Resources.Load<AudioClip>(soundFolderName + rotfileName);
         if (rotateStart == null)
@@ -50,7 +65,7 @@ public class ObjectCreator : ScriptableObject
         if (rotateStop == null)
             throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file {0} found", fileName);
 
-        // Audio Manipulation
+        // Audio manipulation
         var fileNameManipulation = "/MRTK_Manipulation_End";
         manStop = Resources.Load<AudioClip>(soundFolderName + fileNameManipulation);
         if (manStop == null)
@@ -61,11 +76,22 @@ public class ObjectCreator : ScriptableObject
         if (manStart == null)
             throw new FileNotFoundException("... ObjectManager::ApplyRelevantComponents no file {0} found", fileNameManStart);
     }
+    #endregion MonoBehaviour Functions
 
+    #region Public Functions
 
+    #region Create Objects
+
+    /// <summary>
+    /// Spawn one object in scene
+    /// </summary>
+    /// <param name="obj">Object to spawn</param>
+    /// <param name="parent">Parent game object</param>
+    /// <param name="position"></param>
+    /// <param name="rotation"></param>
+    /// <param name="config">Movement enabled or disabled</param>
     public void SpawnObject(GameObject obj, GameObject parent, Vector3 position, Quaternion rotation, ConfigType config)
     {
-
         ApplyRelevantComponents(obj);
         ApplyConfiguration(obj, config);
 
@@ -94,90 +120,108 @@ public class ObjectCreator : ScriptableObject
         instantiatedObjects.Add(generatedObject);
     }
 
+    /// <summary>
+    /// Spawn object without offset
+    /// </summary>
+    /// <param name="gameObjects">Objects to spawn</param>
+    /// <param name="parent">Parent game object</param>
+    /// <param name="positions">Positions to spawn</param>
+    /// <param name="rotations">Rotations to spawn</param>
+    /// <param name="config">Movement enabled or disabled</param>
     public void SpawnObjects(GameObject[] gameObjects, GameObject parent, Vector3[] positions, Quaternion[] rotations, ConfigType config)
     {
         for (int i = 0; i < gameObjects.Length; i++)
-        {
             SpawnObject(gameObjects[i], parent, positions[i], rotations[i], config); 
-        }
     }
 
+    /// <summary>
+    /// Spawn objects with offset
+    /// </summary>
+    /// <param name="gameObjects">Objects to spawn</param>
+    /// <param name="parent">Parent game object</param>
+    /// <param name="positions">Positions to spawn</param>
+    /// <param name="rotations">Rotations</param>
+    /// <param name="config">Movement enabled or disabled</param>
+    /// <param name="offset">Offset of parent position</param>
     public void SpawnObjects(GameObject[] gameObjects, GameObject parent, Vector3[] positions, Quaternion[] rotations, ConfigType config, Vector3 offset)
     {
         for (int i = 0; i < gameObjects.Length; i++)
-        {
             SpawnObject(gameObjects[i], parent, positions[i] - offset, rotations[i], config);
-        }
     }
 
-    public void SpawnObjects(GameObject[] gameObjects, GameObject parent, Vector3 position, Quaternion rotation, ConfigType config)
-    {
-        for (int i = 0; i < gameObjects.Length; i++)
-        {
-            SpawnObject(gameObjects[i], parent, position, rotation, config);
-        }
-    }
-
+    /// <summary>
+    /// Return first object of current Data to test object
+    /// </summary>
+    /// <param name="currentData"></param>
+    /// <returns></returns>
     public GameObject CreateInteractionObject(ObjectData currentData)
     {
-        // set first object in list to test Object
-        GameObject loadedObj = Resources.Load<GameObject>(prefabFolderName + "/" + currentData.gameObjects[0].Objectname.ToString());
+        // Set first object in list to test object
+        GameObject loadedObj = Resources.Load<GameObject>(prefabFolderName + "/" + currentData.GameObjects[0].Objectname.ToString());
 
         if (loadedObj == null)
-        {
             throw new FileNotFoundException("... ObjectManager::CreateInteractionObject no file found");
-        }
 
         return loadedObj;
     }
 
+    /// <summary>
+    /// Load objects from resources
+    /// </summary>
+    /// <param name="currentData"></param>
+    /// <returns></returns>
     public GameObject[] CreateInteractionObjects(ObjectData currentData)
     {
-            int length = currentData.gameObjects.Count;
-            GameObject[] objs = new GameObject[length];
+        int length = currentData.GameObjects.Count;
+        GameObject[] objs = new GameObject[length];
 
-            for (int i = 0; i < length; i++)
-            {
-                var loadedObj = Resources.Load<GameObject>(prefabFolderName + "/" + currentData.gameObjects[i].Objectname.ToString());
-                if (loadedObj == null)
-                {
-                    // throw new FileNotFoundException("... ObjectManager::CreateInteractionObjects Object " + currentData.gameObjects[i].Objectname.ToString() + " not found");
-                }
-                else
-                {
-                    objs[i] = loadedObj;
-                }
-            }
+        // Load objects from resources
+        for (int i = 0; i < length; i++)
+        {
+            var loadedObj = Resources.Load<GameObject>(prefabFolderName + "/" + currentData.GameObjects[i].Objectname.ToString());
+            if (loadedObj == null)
+                throw new FileNotFoundException("... ObjectManager::CreateInteractionObjects Object " + currentData.GameObjects[i].Objectname.ToString() + " not found");
+            else
+                objs[i] = loadedObj;
+        }
 
-            return objs;
-        
-
+        return objs;
     }
+    #endregion Create Objects
 
+    #region Remove Objects
     public void RemoveAllObjects()
     {
         foreach (GameObject obj in instantiatedObjects)
         {
             Destroy(obj);
         }
-
         instantiatedObjects.Clear();
     }
 
+    /// <summary>
+    /// Remove objects
+    /// </summary>
     public void Reset()
     {
         if (instantiatedObjects != null)
             RemoveAllObjects(); 
-
     }
 
-    #endregion public methods
+    #endregion Remove Objects
 
-    #region private methods
+    #endregion Public Functions
 
+    #region Private Funcions
+
+    #region Components
+    /// <summary>
+    /// Enable or disable movement of object
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="config"></param>
     private void ApplyConfiguration(GameObject obj, ConfigType config)
     {
-
         if (config == ConfigType.MovementDisabled)
         {
             try
@@ -190,10 +234,9 @@ public class ObjectCreator : ScriptableObject
                     iG.enabled = false;
                 if (obj.TryGetComponent(out Rigidbody rb))
                 {
-                    // Allow Gravity to let the object fall on the table and adjust position
+                    // Allow gravity to let the object fall on the table and adjust position
                     rb.useGravity = true;
                     rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ |RigidbodyConstraints.FreezeRotation;
-
                 }
             }
             catch (InvalidCastException e)
@@ -205,7 +248,6 @@ public class ObjectCreator : ScriptableObject
         {
             try
             {
-
                 var comp = (BoundsControl)obj.GetComponent(typeof(BoundsControl));
                 comp.enabled = true;
                 comp.BoundsControlActivation = Microsoft.MixedReality.Toolkit.UI.BoundsControlTypes.BoundsControlActivationType.ActivateByProximity;
@@ -235,6 +277,10 @@ public class ObjectCreator : ScriptableObject
         }
     }
 
+    /// <summary>
+    /// Add components to object.
+    /// </summary>
+    /// <param name="loadedObj"></param>
     private void ApplyRelevantComponents(GameObject loadedObj)
     {
         loadedObj.tag = "InteractionObject"; 
@@ -268,14 +314,14 @@ public class ObjectCreator : ScriptableObject
 
         // RotationAxisConstraint
         var rotConst = loadedObj.EnsureComponent<RotationAxisConstraint>();
-        rotConst.HandType = ManipulationHandFlags.OneHanded;
+        rotConst.HandType = ManipulationHandFlags.OneHanded | ManipulationHandFlags.TwoHanded; ;
         rotConst.ConstraintOnRotation = AxisFlags.XAxis | AxisFlags.ZAxis;
         rotConst.UseLocalSpaceForConstraint = true;
         constMan.AddConstraintToManualSelection(rotConst);
 
         // Min Max Scale Constraint
         var scaleConst = loadedObj.EnsureComponent<MinMaxScaleConstraint>();
-            scaleConst.HandType = ManipulationHandFlags.TwoHanded;
+            scaleConst.HandType = ManipulationHandFlags.TwoHanded | ManipulationHandFlags.OneHanded; ;
             scaleConst.ProximityType = ManipulationProximityFlags.Far| ManipulationProximityFlags.Near;
             scaleConst.ScaleMaximum = 1;
             scaleConst.ScaleMinimum = 1;
@@ -284,9 +330,8 @@ public class ObjectCreator : ScriptableObject
             constMan.AddConstraintToManualSelection(scaleConst);
 
         // Custom Movement Constraint
-        //\ TODO Only working from editor. Fix
         var moveConst = loadedObj.EnsureComponent<CustomMovementConstraint>();
-            moveConst.HandType = ManipulationHandFlags.TwoHanded;
+            moveConst.HandType = ManipulationHandFlags.OneHanded | ManipulationHandFlags.TwoHanded;
             moveConst.ConstraintOnMovement = AxisFlags.YAxis;
         constMan.AddConstraintToManualSelection(moveConst);
 
@@ -295,8 +340,6 @@ public class ObjectCreator : ScriptableObject
             objMan.AllowFarManipulation = false;
             objMan.EnableConstraints = true;
             objMan.ConstraintsManager = constMan;
-
-
 
         // BoundsControl
         var boundsControl = loadedObj.EnsureComponent<BoundsControl>();
@@ -343,20 +386,37 @@ public class ObjectCreator : ScriptableObject
         boundsControl.ConstraintsManager = constMan;
     }
 
+    #endregion Components
+
+    #region Manipulation And Rotation
+
+    /// <summary>
+    /// Add rotated object to list and removes rigidbody for performance purpose.
+    /// </summary>
+    /// <param name="eventData"></param>
     private void HandleOnManipulationStarted(ManipulationEventData eventData)
     {
         Debug.Log("Manipulation Started"); 
 
+        // Play audio
         eventData.ManipulationSource.GetComponent<AudioSource>().PlayOneShot(manStart);
+
+        // Destroy rigidbody
         Destroy(eventData.ManipulationSource.GetComponent<Rigidbody>()); 
 
+        // Remove object from list
         DataManager.Instance.MovingObjects.Add(eventData.ManipulationSource);
     }
 
+    /// <summary>
+    /// Remove object from list and add rigidbody
+    /// </summary>
+    /// <param name="eventData"></param>
     private void HandleOnManipulationStopped(ManipulationEventData eventData)
     {
         Debug.Log("Manipulation Stopped");
 
+        // Add rigidbody 
         Rigidbody rb = eventData.ManipulationSource.AddComponent<Rigidbody>();
         rb.mass = 1;
         rb.drag = 0;
@@ -365,27 +425,43 @@ public class ObjectCreator : ScriptableObject
         rb.isKinematic = false;
         rb.freezeRotation = true;
 
+        // Play audio
         eventData.ManipulationSource.GetComponent<AudioSource>().PlayOneShot(manStop);
         
-
+        // Remove object from list
         DataManager.Instance.MovingObjects.Remove(eventData.ManipulationSource);
     }
 
+    /// <summary>
+    /// Add rotated object to list and removes rigidbody for performance purpose
+    /// </summary>
+    /// <param name="generatedObject">Manipulated object</param>
     private void HandleOnRotationStarted(GameObject generatedObject)
     {
         Debug.Log("Rotation Started");
 
+        // Play audio
         generatedObject.GetComponent<BoundsControl>().GetComponent<AudioSource>().PlayOneShot(rotateStart);
+
+        // Destroy rigidbody
         Destroy(generatedObject.GetComponent<Rigidbody>()); 
 
+        // Add object to list
         DataManager.Instance.MovingObjects.Add(generatedObject);
     }
 
+    /// <summary>
+    /// Removes object from list and reenables rigidbody.
+    /// </summary>
+    /// <param name="generatedObject">Manipulated object</param>
     private void HandleOnRotationStopped(GameObject generatedObject)
     {
         Debug.Log("Rotation Stopped");
 
+        // Play audio
         generatedObject.GetComponent<BoundsControl>().GetComponent<AudioSource>().PlayOneShot(rotateStop);
+
+        // Add rigidbody
         Rigidbody rb = generatedObject.AddComponent<Rigidbody>();
         rb.mass = 1;
         rb.drag = 0;
@@ -394,13 +470,12 @@ public class ObjectCreator : ScriptableObject
         rb.isKinematic = false;
         rb.freezeRotation = true;
 
+        // Remove object
         DataManager.Instance.MovingObjects.Remove(generatedObject);
     }
 
+    #endregion Manipulation And Rotation
 
-
-
-
-    #endregion private methods
+    #endregion Private Functions
 
 }

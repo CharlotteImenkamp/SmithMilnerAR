@@ -2,35 +2,39 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using Microsoft.MixedReality.Toolkit;
+/// todo: -
+////////////////////////////////////////////////////////
 
+/// <summary>
+/// Movement Constraint to add to constraint manager of game objects.
+/// Prevents movement through table.
+/// </summary>
 public class CustomMovementConstraint : TransformConstraint
 {
-    #region Properties
+    #region Private Fields
 
-    /// <summary>
-    /// Enable Y-Axis Movement Constraint 
-    /// </summary>
+    #region Serialized Fields
 
     [SerializeField]
-    [Tooltip("Apply Constraint or not. Use for Debugging")]
+    [Tooltip("Apply constraint or not.")]
     private bool useConstraint = true;
 
-    /// <summary>
-    ///  Referenced Object is used for Movement Boundaries
-    /// </summary>
-    public Transform ReferenceTransform { get => referenceTransform; }
-
-    [Tooltip("Use Objects Transformation to calculate MovementBoundaries ")]
+    [SerializeField]
+    [Tooltip("Use Objects Transformation to calculate movement Boundaries ")]
     private Transform referenceTransform;
 
-    /// <summary>
-    /// Constrain movement along an axis
-    /// </summary>
-    /// 
     [SerializeField]
     [EnumFlags]
     [Tooltip("Constrain movement along an axis")]
     private AxisFlags constraintOnMovement = 0;
+
+    #endregion Serialized Fields
+
+    private float minYAxis;
+
+    #endregion Private Fields
+
+    #region Public Fields
 
     public AxisFlags ConstraintOnMovement
     {
@@ -39,47 +43,58 @@ public class CustomMovementConstraint : TransformConstraint
     }
 
     public override TransformFlags ConstraintType => TransformFlags.Move;
-    private float minYAxis;
 
-    #endregion Properties
+    // Use objects transformation to calculate movement boundaries
+    public Transform ReferenceTransform { get => referenceTransform; set => referenceTransform = value; }
 
+    #endregion Public Fields
 
-    #region Public Methods
+    #region Public Functions
 
+    /// <summary>
+    /// Initialize with world position.
+    /// </summary>
+    /// <param name="worldPose"></param>
     public override void Initialize(MixedRealityTransform worldPose)
     {
         base.Initialize(worldPose);
         GetLowerBorder();
     }
 
+    /// <summary>
+    /// Apply Constraint to game object
+    /// </summary>
+    /// <param name="transform"></param>
     public override void ApplyConstraint(ref MixedRealityTransform transform)
     {
         if (useConstraint)
         {
             Vector3 position = transform.Position;
 
-            // Apply constraints on y-Axis if neccessary
+            // Apply constraints on y-axis if neccessary
             if (constraintOnMovement.HasFlag(AxisFlags.YAxis))
             {
                 if (transform.Position.y <= minYAxis)
-                {
                     position.y = worldPoseOnManipulationStart.Position.y;
-                    Debug.Log("Position Constraint");
-                }
             }
             transform.Position = position;
         }
     }
-    #endregion Public Methods
 
-    #region Private Methods
+    #endregion Public Functions
+
+    #region Helper Functions
+
+    /// <summary>
+    /// Find constraint plane 
+    /// </summary>
     private void GetLowerBorder()
     {
         if (referenceTransform == null)
-        {
             referenceTransform = GameObject.FindGameObjectWithTag("MovementConstraint").transform;
-        }
+        
         minYAxis = referenceTransform.position.y; 
     }
-    #endregion Private Methods
+
+    #endregion Helper Functions
 }

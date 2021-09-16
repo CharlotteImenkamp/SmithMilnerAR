@@ -1,79 +1,97 @@
 ﻿using System;
 using System.IO;
 using UnityEngine;
+/// todo: -
+////////////////////////////////////////////////////////
 
+/// <summary>
+/// Prepare data, get periodic updates and save data. 
+/// Logs data during price estimation and location estimation. 
+/// </summary>
 class LogData : IState
 {
-    #region private parameters
+    #region Private Fields
 
+    // Save 
     private string dataFolder;
     private string generalFolder; 
     private string directoryPath;
-    private string persistentPath;
     private string userID; 
 
-    // filenames
+    // Filenames
     private string name_contLog;
     private string name_end;
     private string name_headData;
     private string name_start;
 
-    // unique filenames
+    // Unique filenames
     private string uqName_contLog;
     private string uqName_end;
     private string uqName_headData;
     private string uqName_start;
 
-    // json strings
+    // Json strings
     private string data_contLog;
     private string data_endState;
     private string data_startState;
     private string data_headData; 
 
-    // data parameters
+    // Data
     private float sampleRate; // in miliseconds
 
-    // time parameters
+    // Time 
     private float prevTime, currTime, startTime;  // in seconds
     private bool firstLog; 
     private float backupPeriod;  // in seconds
 
+    // Game
     private GameType gameType;
 
-    #endregion private parameters
+    #endregion Private Fields
 
-    public LogData(GameType gameType)
-    {
-        this.gameType = gameType;
-    }
+    #region Constructor
 
+    /// <summary>
+    /// Instantiates the State with the current game type. This decides whether the object data is logged or not.
+    /// </summary>
+    /// <param name="gameType"></param>
+    public LogData(GameType gameType) => this.gameType = gameType;
+
+    #endregion Constructor
+
+    #region IState Functions
+
+    /// <summary>
+    /// Instantiate parameters, set default values and start data files
+    /// </summary>
     public void Enter()
     {
-        GameManager.Instance.debugText.text = "LogData Enter"; 
+        GameManager.Instance.DebugText.text = "LogData Enter"; 
         Debug.Log("LogData::Enter");
 
-        sampleRate = DataManager.Instance.CurrentSet.UserData.updateRate;
-        dataFolder = GameManager.Instance.GeneralSettings.userDataFolder;
-        generalFolder = GameManager.Instance.MainFolder;
-        userID = DataManager.Instance.CurrentSet.UserData.UserID.ToString();
+        // Get parameters from managers
+        sampleRate = DataManager.Instance.CurrentSet.UserData.UpdateRate;
+        userID      = DataManager.Instance.CurrentSet.UserData.UserID.ToString();
 
-        // default
-        data_contLog = "";
+        // Default
+        data_contLog  = "";
         data_endState = "";
         data_headData = "";
 
-        // time
+        // Time
         firstLog = true;
-        backupPeriod = GameManager.Instance.backupPeriod; 
+        backupPeriod = GameManager.Instance.BackupPeriod;
 
-        // Directory
+        // Save
+        dataFolder = GameManager.Instance.GeneralSettings.UserDataFolder;
+        generalFolder = GameManager.Instance.MainFolder;
         directoryPath = Path.Combine(Application.persistentDataPath, generalFolder, dataFolder , "User" + userID);
 
-        // Generate Directory
+        // Directory
         if (!Directory.Exists(directoryPath))
             Directory.CreateDirectory(directoryPath);       
         
-        // Prepare Files
+        // Prepare files
         if(gameType == GameType.Locations)
         {
             PrepareHeadData(); 
@@ -88,19 +106,22 @@ class LogData : IState
         else
             throw new ArgumentException("LogData::Enter no valid GameType.");
 
-
-        // Set Time for updateRate
-        // time1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        // Set time for update rate
         prevTime = Time.time;
         startTime = Time.time; 
     }
 
+    /// <summary>
+    /// Periodically add data and save backup data in case of unexpected events.
+    /// </summary>
     public void Execute()
     {
         currTime = Time.time; 
 
+        // Log frequency
         if(currTime-prevTime >= sampleRate)
         {
+            // Add line to data
             if (gameType == GameType.Locations)
             {
                 ExecuteHeadData();
@@ -114,10 +135,10 @@ class LogData : IState
             prevTime = currTime; 
         }
 
-        // Backup Save
+        // Backup frequency
         if ((Time.time - startTime) % backupPeriod <= (0 + Time.deltaTime))
         {
-            // Save Data
+            // Save data
             if (gameType == GameType.Locations)
             {
                 BackupObjectData(firstLog);
@@ -133,10 +154,11 @@ class LogData : IState
         }
     }
 
+    /// <summary>
+    /// End log files and save 
+    /// </summary>
     public void Exit()
     {
-        GameManager.Instance.debugText.text = "LogData Exit"; 
-
         if (gameType == GameType.Locations)
         {
             EndHeadData();
@@ -148,47 +170,65 @@ class LogData : IState
         }  
         else
             throw new ArgumentException("LogData::Exit no valid GameType.");
+
+        GameManager.Instance.DebugText.text = "LogData Exit";
     }
 
+    #endregion IState Functions
 
-    #region backup
+    #region Backup Functions
+
+    /// <summary>
+    /// Overwrite or saves copy of data to prevent data loss
+    /// </summary>
+    /// <param name="firstSave">If this is true, a new unique file is generated. If not, the previous file is overwritten.</param>
     private void BackupObjectData(bool firstSave)
     {
-        // update endstate to current state
+    // Last object positions
+        // Copy data
         var tmp_end = data_endState + DataFile.AddLine<ObjectData>(GetObjectsInScene());
+
+        // Keep json format
         tmp_end = tmp_end.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
+
         tmp_end += DataFile.EndFile(true);
 
-        // save copy of data 
+        // Save copy
         var tmp_contLog = data_contLog.TrimEnd('\n').TrimEnd('\r').TrimEnd(','); 
         tmp_contLog += DataFile.EndFile(true);
 
+    // First object positions
+        // Copy data and keep json format
         var tmp_start = data_startState.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
         tmp_start = tmp_start + DataFile.EndFile(true);
         
-
         if (firstSave)
         {
-            // save file and get unique file name to overwride file later
+            // Save file and get unique file name to overwrite file later
             uqName_contLog = DataFile.Save(tmp_contLog, directoryPath, name_contLog);
             uqName_end    = DataFile.Save(tmp_end,      directoryPath, name_end);
             uqName_start  = DataFile.Save(tmp_start,    directoryPath, name_start); 
         }
         else
         {
-            // override file 
+            // Overwrite file 
             DataFile.Overwrite(tmp_contLog, directoryPath, uqName_contLog);
             DataFile.Overwrite(tmp_end,     directoryPath, uqName_end);
             DataFile.Overwrite(tmp_start,   directoryPath, uqName_start);
         }
     }
 
+    /// <summary>
+    /// Overwrite or saves copy of data to prevent data loss
+    /// </summary>
+    /// <param name="firstSave">If this is true, a new unique file is generated. If not, the previous file is overwritten.</param>
     private void BackupHeadData(bool firstSave)
     {
+        // Copy data and keep json format
         var tmp_headData = data_headData.TrimEnd('\n').TrimEnd('\r').TrimEnd(','); 
         tmp_headData += DataFile.EndFile(true);
 
-        // save file and get unique file name to overwrite file later
+        // Save file and get unique file name to overwrite file later
         if (firstSave)
             uqName_headData = DataFile.Save(tmp_headData, directoryPath, name_headData); 
         else
@@ -197,35 +237,46 @@ class LogData : IState
 
     #endregion 
 
-    #region handle dataTypes
+    #region Data Functions
+
+    /// <summary>
+    /// Handles moving objects, start positions and end positions. 
+    /// Generates filenames and writes first lines of files.
+    /// </summary>
     void PrepareObjectData()
     {
         // Filenames
         var currentSet = DataManager.Instance.CurrentSet;
-        name_contLog  = "MovingObject" + GameManager.Instance.gameType.ToString() + currentSet.UserData.UserID.ToString();
-        name_end      = "EndObject"    + GameManager.Instance.gameType.ToString() + currentSet.UserData.UserID.ToString();
-        name_start    = "StartObject"  + GameManager.Instance.gameType.ToString() + currentSet.UserData.UserID.ToString();
+        name_contLog  = "MovingObject" + GameManager.Instance.GameType.ToString() + currentSet.UserData.UserID.ToString();
+        name_end      = "EndObject"    + GameManager.Instance.GameType.ToString() + currentSet.UserData.UserID.ToString();
+        name_start    = "StartObject"  + GameManager.Instance.GameType.ToString() + currentSet.UserData.UserID.ToString();
 
-        // Start Writing
-        data_contLog  += DataFile.StartFile();
-        data_endState       += DataFile.StartFile();
-        data_startState     += DataFile.StartFile();
-        data_startState     += DataFile.AddLine<ObjectData>(GetObjectsInScene());
+        // Start writing
+        data_contLog    += DataFile.StartFile();
+        data_endState   += DataFile.StartFile();
+        data_startState += DataFile.StartFile();
+        data_startState += DataFile.AddLine<ObjectData>(GetObjectsInScene());
     }
 
+    /// <summary>
+    /// Add new data, if an object is manipulated
+    /// </summary>
     void ExecuteObjectData()
     {
         var data = GetMovingObject();
-        if (data != null && data.gameObjects.Count != 0)
+        if (data != null && data.GameObjects.Count != 0)
             data_contLog += DataFile.AddLine<ObjectData>(data); 
     }
 
+    /// <summary>
+    /// Add last lines to data files and overwrite backup files.
+    /// </summary>
     void EndObjectData()
     {
-        // Last Object Positions
+        // Last object positions
         data_endState += DataFile.AddLine<ObjectData>(GetObjectsInScene());
 
-        // Last Line
+        // Last line
         data_endState = data_endState.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
         data_endState   += DataFile.EndFile(false);
 
@@ -235,7 +286,7 @@ class LogData : IState
         data_startState = data_startState.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
         data_startState += DataFile.EndFile(false);
 
-        // Overwrite Backup Files
+        // Overwrite backup files
         if (uqName_end == "" || uqName_end == null)
             DataFile.Overwrite(data_endState,   directoryPath, name_end);
         else
@@ -252,58 +303,87 @@ class LogData : IState
             DataFile.Overwrite(data_startState, directoryPath, uqName_start);
     }
 
+    /// <summary>
+    /// Generate filenames and write first line of file
+    /// </summary>
     void PrepareHeadData()
     {
         // Filenames
         var currentSet = DataManager.Instance.CurrentSet;
-        name_headData = "HeadData" + GameManager.Instance.gameType.ToString() + currentSet.UserData.UserID.ToString(); 
+        name_headData = "HeadData" + GameManager.Instance.GameType.ToString() + currentSet.UserData.UserID.ToString(); 
 
         directoryPath = DataFile.GenerateDirectory(directoryPath);
         name_headData = DataFile.GenerateUniqueFileName(directoryPath, name_headData);
 
-        // Start Writing
+        // Start writing
         data_headData += DataFile.StartFile();
     }
 
+    /// <summary>
+    /// Add new data to data string
+    /// </summary>
     void ExecuteHeadData()
     {
-        // Add Data to String
+        // Add data to string
         var data = GetCurrentHeadData();
-        if (data != null)
+        if (data != null && data.IsValid())
             data_headData += DataFile.AddLine<HeadData>(data);
     }
 
+    /// <summary>
+    /// Add last lines to data file and overwrite backup file.
+    /// </summary>
     void EndHeadData()
     {
-        // End continuus logging
+        // End logging
         data_headData = data_headData.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
         data_headData += DataFile.EndFile(false);
 
+        // Overwrite backup files
         if(uqName_headData == "" || uqName_headData == null )
             DataFile.Overwrite(data_headData, directoryPath, name_headData);   
         else
             DataFile.Overwrite(data_headData, directoryPath, uqName_headData);
     }
 
-    #endregion 
+    #endregion  Data Functions
 
+    #region Get Data Functions
 
-    #region get data
+    /// <summary>
+    /// Get object data from data manager
+    /// </summary>
+    /// <returns></returns>
     private ObjectData GetMovingObject()
     {
         return new ObjectData(DataManager.Instance.MovingObjects, Time.time, ObjectManager.GetPositionOffset()); 
     }
 
+    /// <summary>
+    /// Get object data from data manager
+    /// </summary>
+    /// <returns></returns>
     private ObjectData GetObjectsInScene()
     {
-        return new ObjectData(DataManager.Instance.ObjectsInScene, Time.time, ObjectManager.GetPositionOffset());
+        if(DataManager.Instance.ObjectsInScene != null)
+            return new ObjectData(DataManager.Instance.ObjectsInScene, Time.time, ObjectManager.GetPositionOffset());
+        else
+            return new ObjectData(new System.Collections.Generic.List<GameObject>(), Time.time, ObjectManager.GetPositionOffset());
     }
 
+    /// <summary>
+    /// Get head data from data manager
+    /// </summary>
+    /// <returns></returns>
     private HeadData GetCurrentHeadData()
     {
-        return DataManager.Instance.CurrentHeadData; 
+        if (DataManager.Instance.CurrentHeadData.IsValid())
+            return DataManager.Instance.CurrentHeadData;
+        else
+            throw new InvalidDataException(); 
     }
-    #endregion get data
+
+    #endregion Get Data Functions
 
 }
 

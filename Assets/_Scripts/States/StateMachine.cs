@@ -1,21 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+/// todo: -
+////////////////////////////////////////////////////////
 
 /// <summary>
-/// Die StateMachine dient der Strukturierung des Programms in Teilaufgaben.
-/// Sie sollte höchtens einmal pro Manager initialisiert werden.
+/// The statemachine structures the program in subtasks.
+/// It should be initialized not more than once per manager.
 /// </summary>
 public class StateMachine
 {
+    #region Private Fields
+
     private IState currentState;
     private IState previousState;
 
+    #endregion Private Fields
+
+    #region Public Functions
+
     /// <summary>
-    /// Change StateMachine to the new State. Calls the "Exit" function of the previous state. 
+    /// Change StateMachine to the new state. Calls the "Exit" function of the previous state. 
     /// and the "Enter" function of the new State.
     /// </summary>
-    /// <param name="newState"> New State, which inherits from IState. </param>
+    /// <param name="newState"> New state, which inherits from IState. </param>
     public void ChangeState(IState newState)
     {
         if (this.currentState != null)
@@ -31,15 +36,13 @@ public class StateMachine
     }
 
     /// <summary>
-    /// Called by the Monobehaviour Update Method
+    /// Called by the monobehaviour update method
     /// </summary>
     public void ExecuteStateUpdate()
     {
         var runningState = this.currentState;
         if (runningState != null)
-        {
-            runningState.Execute();
-        }
+           runningState.Execute();
     }
 
     /// <summary>
@@ -64,4 +67,6 @@ public class StateMachine
             this.currentState = null;
         }
     }
+
+    #endregion Public Functions
 }

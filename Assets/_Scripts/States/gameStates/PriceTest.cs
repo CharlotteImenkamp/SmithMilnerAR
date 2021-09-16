@@ -1,34 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+/// todo: -
+////////////////////////////////////////////////////////
 
+
+/// <summary>
+/// State where price task is trained with one object.
+/// </summary>
 public class PriceTest : IState
 {
+    #region IState Functions
+
     public void Enter()
     {
-        GameManager.Instance.debugText.text = "PriceTest::Enter()";
-
+        GameManager.Instance.DebugText.text = "PriceTest::Enter()";
         Debug.Log("PriceTest::Enter()");
+
+        // Call submanagers
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
-        {
             subManager.OnGameStateEntered(this.ToString());
-        }
     }
 
-    public void Execute()
-    {
-        throw new System.NotImplementedException();
-    }
+    // No repeated task, hence execute is empty
+    public void Execute() { }
 
     public void Exit()
     {
-        GameManager.Instance.debugText.text = "PriceTest::Exit()";
+        GameManager.Instance.DebugText.text = "PriceTest::Exit()";
 
+        // Call submanagers
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
-        {
             subManager.OnGameStateLeft(this.ToString());
-        }
     }
+
+    #endregion IState Functions
+
 }

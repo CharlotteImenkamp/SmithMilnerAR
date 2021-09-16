@@ -1,37 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+/// todo: -
+////////////////////////////////////////////////////////
 
+/// <summary>
+/// State which is called after price task. Can either be followed by location test or price test of new user.
+/// </summary>
 public class Pause : IState
 {
+    #region IState Functions
     public void Enter()
     {
-        GameManager.Instance.debugText.text = "Pause::Enter()";
+        GameManager.Instance.DebugText.text = "Pause::Enter()";
+        Debug.Log("Pause::Enter()");
 
         // Save Data
         DataFile.OverwriteData<ApplicationData>(GameManager.Instance.GeneralSettings, GameManager.Instance.MainFolder, "generalSettings");
 
-        Debug.Log("Pause::Enter()");
+        // Call submanagers
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
-        {
             subManager.OnGameStateEntered(this.ToString());
-        }
     }
 
-    public void Execute()
-    {
-        throw new System.NotImplementedException();
-    }
+    // No repeated task, hence execute is empty
+    public void Execute() { }
 
     public void Exit()
     {
-        GameManager.Instance.debugText.text = "Pause::Exit()";
+        GameManager.Instance.DebugText.text = "Pause::Exit()";
 
+        // Call submanagers
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
-        {
             subManager.OnGameStateLeft(this.ToString());
-        }
     }
+
+    #endregion IState Functions
 }

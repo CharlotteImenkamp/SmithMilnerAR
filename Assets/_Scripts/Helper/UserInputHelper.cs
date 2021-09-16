@@ -1,46 +1,64 @@
 using Microsoft.MixedReality.Toolkit.UI;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using TMPro;
 using UnityEngine;
+/// todo: -
+////////////////////////////////////////////////////////
 
+/// <summary>
+/// Used in "UserSettingsUI" and "ToggleCollection_Set" in Editor.
+/// Helper class to get input of editor buttons and display results if neccessary.
+/// </summary>
 public class UserInputHelper : MonoBehaviour
 {
-    #region serialized
+    #region Serialized Fields
+
     [SerializeField]
+    [Tooltip("Write ID here. Can be null.")]
     private TextMeshPro idObj;
+
     [SerializeField]
+    [Tooltip("Write chosen set here. Can be null.")]
     private TextMeshPro setObj;
+
     [SerializeField]
+    [Tooltip("Input list. Can be null.")]
     private CustomScrollableListPopulator newObjectList;
 
-    #endregion serialized
+    #endregion Serialized Fields
 
-    #region private params
+    #region Private Fields
+
+    // Dynamic text depending on user choice
     private string userID;
     private string userSet;
 
+    // Static text
     private string idText;
     private string setText;
-    private UserSettingsData.userSet set;
-    private DataManager.Data newData;
 
-    #endregion private params
+    private UserSet set;
 
-    #region public params
-    public string UserID { get => userID; set => userID = value; }
-    public UserSettingsData.userSet Set { get => set; set => set = value; }
-    public DataManager.Data NewData { get => newData; set => newData = value; }
+    #endregion Private Fields
 
-    #endregion public params
+    #region Public Fields
 
+    // ID from user input
+    public string UserID { get => userID; set => userID = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null"); }
 
-    // Start is called before the first frame update
+    // Set from user input
+    public UserSet Set { get => set; set => set = value; }
+
+    #endregion Public Fields
+
+    #region MonoBehaviour Functions
+
+    // Called before the first frame update
+    // Set default values
     void Start()
     {
-        idText = "User ID:";
+        idText  = "User ID:";
         setText = "User Set: ";
-
 
         if (idObj != null)
             idObj.text = idText;
@@ -48,32 +66,39 @@ public class UserInputHelper : MonoBehaviour
         userID = "";
         userSet = "";
 
-        set = new UserSettingsData.userSet();
-        newData = new DataManager.Data(); 
-
+        set = new UserSet();
     }
 
+    /// <summary>
+    /// Reset parameters
+    /// </summary>
     private void Reset()
     {
-        userID = "";
+        userID  = "";
         userSet = "";
 
         if(idObj != null)
             idObj.text = idText + userID;
 
-        if(idObj != null)
+        if(setObj != null)
             setObj.text = setText + userSet;
 
-        set = new UserSettingsData.userSet();
-        newData = new DataManager.Data();
+        set = new UserSet();
     }
+    #endregion MonoBehaviour Functions
 
+    #region Button Functions
 
+    /// <summary>
+    /// Attached in editor buttons at onClick event
+    /// </summary>
+    /// <param name="obj">GameObject, which MainLabelText is checked for Input.</param>
     public void GetKeyInput(GameObject obj)
     {
         string text = obj.GetComponent<ButtonConfigHelper>().MainLabelText;
 
-        if (text == "1") //\TODO besser?
+        // Switch text
+        if (text == "1")
             userID += "1";
         else if (text == "2")
             userID += "2";
@@ -98,39 +123,43 @@ public class UserInputHelper : MonoBehaviour
         else if (text == "AG")
         {
             userSet = "AG";
-            set = UserSettingsData.userSet.AG;
+            set = UserSet.AG;
         }
         else if (text == "JG")
         {
             userSet = "JG";
-            set = UserSettingsData.userSet.JG;
+            set = UserSet.JG;
         }
         else if (text == "AE")
         {
             userSet = "AE";
-            set = UserSettingsData.userSet.AK;
+            set = UserSet.AK;
         }
 
+        // Set text
         idObj.text = idText + userID;
         setObj.text = setText + userSet; 
     }
 
     /// <summary>
-    /// called on apply button
+    /// Called on apply button in UserSettingsUI in editor
     /// </summary>
     public void GenerateNewData()
     {
+        // Prepare settings
         UserSettingsData userData = new UserSettingsData(UserID, Set, GameManager.Instance.UpdateRate);
         ObjectData objData = newObjectList.GetInstantiatedObjects(); 
 
-        DataManager.Instance.SetAndSaveNewSettings(new DataManager.Data(objData, userData));
+        // Save settings
+        if(objData.IsValid() && userData.IsValid())
+            DataManager.Instance.SetAndSaveNewSettings(new DataManager.Data(objData, userData));
 
         Reset(); 
     }
 
     /// <summary>
-    /// reset toggle collection when choosing user set 
-    /// Called on apply button and on return button to reset current index
+    /// Reset toggle collection when choosing user set. 
+    /// Called on apply button and on return button to reset current index.
     /// </summary>
     /// <param name="idx"></param>
     public void ResetToggleList(int idx)
@@ -146,4 +175,6 @@ public class UserInputHelper : MonoBehaviour
         else
             Debug.LogError("UserInputHelper::ResetToggleList must be attached to an actor with a toggle collection"); 
     }
+
+    #endregion Button Functions
 }

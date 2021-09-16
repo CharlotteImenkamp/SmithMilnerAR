@@ -3,34 +3,21 @@
 "entries": 
 [ 
  {
-    "objectDataFolder": "objectData",
-    "userDataFolder": "userData",
-    "newObjectData": [
-        "objectData1",
-        "objectData2",
-        "objectData3",
-        "objectData4",
-        "objectData5",
-        "objectData6",
-        "objectData7",
-        "objectData8",
-        "objectData9",
-        "objectData10"
-    ],
-    "newUserData": [
+    "UserDataFolder": "userData",
+    "NewUserData": [
         "User6/user6",
         "User7/user7",
         "User8/user8",
         "User9/user9",
         "User10/user10"
     ],
-    "incompleteUserData": [
+    "IncompleteUserData": [
         "User2/user2",
         "User3/user3",
         "User4/user4",
         "User5/user5"
     ],
-    "completeUserData": [
+    "CompleteUserData": [
         "User1/user1",
         "User1/user1"
     ]

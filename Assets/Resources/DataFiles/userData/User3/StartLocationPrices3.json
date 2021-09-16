@@ -2,16 +2,16 @@
  "start": "Freitag, 27. August 2021 11:03:48",
   "entries": [
     {
-      "time": 913.5477905273438,
-      "gameObjects": [
+      "Time": 913.5477905273438,
+      "GameObjects": [
         {
           "Objectname": "Hut",
-          "globalPosition": {
+          "GlobalPosition": {
             "x": -0.4126715064048767,
             "y": -0.32655370235443118,
             "z": 1.4186543226242066
           },
-          "globalRotation": {
+          "GlobalRotation": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0,
@@ -20,12 +20,12 @@
         },
         {
           "Objectname": "KaffeKanne",
-          "globalPosition": {
+          "GlobalPosition": {
             "x": -0.23530100286006928,
             "y": -0.32589221000671389,
             "z": 1.4140444993972779
           },
-          "globalRotation": {
+          "GlobalRotation": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0,
@@ -34,12 +34,12 @@
         },
         {
           "Objectname": "Kaktus",
-          "globalPosition": {
+          "GlobalPosition": {
             "x": 0.1932523250579834,
             "y": -0.32686847448349,
             "z": 1.3011164665222169
           },
-          "globalRotation": {
+          "GlobalRotation": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0,
@@ -48,12 +48,12 @@
         },
         {
           "Objectname": "Kerze",
-          "globalPosition": {
+          "GlobalPosition": {
             "x": -0.06578268855810166,
             "y": -0.3266131281852722,
             "z": 1.3474876880645753
           },
-          "globalRotation": {
+          "GlobalRotation": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0,
@@ -62,12 +62,12 @@
         },
         {
           "Objectname": "Kaese",
-          "globalPosition": {
+          "GlobalPosition": {
             "x": -0.36880242824554446,
             "y": -0.29971036314964297,
             "z": 1.282273530960083
           },
-          "globalRotation": {
+          "GlobalRotation": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0,
@@ -76,12 +76,12 @@
         },
         {
           "Objectname": "Schere",
-          "globalPosition": {
+          "GlobalPosition": {
             "x": -0.1895115226507187,
             "y": -0.32477378845214846,
             "z": 1.2661688327789307
           },
-          "globalRotation": {
+          "GlobalRotation": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0,
@@ -90,12 +90,12 @@
         },
         {
           "Objectname": "Gummiente",
-          "globalPosition": {
+          "GlobalPosition": {
             "x": 0.08698859810829163,
             "y": -0.324290931224823,
             "z": 1.431361198425293
           },
-          "globalRotation": {
+          "GlobalRotation": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0,
@@ -104,12 +104,12 @@
         },
         {
           "Objectname": "Gitarre",
-          "globalPosition": {
+          "GlobalPosition": {
             "x": -0.3790259063243866,
             "y": -0.31155258417129519,
             "z": 1.1328446865081788
           },
-          "globalRotation": {
+          "GlobalRotation": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0,
@@ -118,12 +118,12 @@
         },
         {
           "Objectname": "Drehstuhl",
-          "globalPosition": {
+          "GlobalPosition": {
             "x": -0.242235004901886,
             "y": -0.32269811630249026,
             "z": 1.1642343997955323
           },
-          "globalRotation": {
+          "GlobalRotation": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0,
@@ -132,12 +132,12 @@
         },
         {
           "Objectname": "Brezel",
-          "globalPosition": {
+          "GlobalPosition": {
             "x": -0.07831375300884247,
             "y": -0.3214249610900879,
             "z": 1.196950078010559
           },
-          "globalRotation": {
+          "GlobalRotation": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0,
@@ -146,12 +146,12 @@
         },
         {
           "Objectname": "Banane",
-          "globalPosition": {
+          "GlobalPosition": {
             "x": 0.07272134721279144,
             "y": -0.3267172574996948,
             "z": 1.2106225490570069
           },
-          "globalRotation": {
+          "GlobalRotation": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0,
@@ -160,12 +160,12 @@
         },
         {
           "Objectname": "Auto",
-          "globalPosition": {
+          "GlobalPosition": {
             "x": -0.31541284918785097,
             "y": -0.3071860671043396,
             "z": 0.9840372800827026
           },
-          "globalRotation": {
+          "GlobalRotation": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0,
@@ -174,12 +174,12 @@
         },
         {
           "Objectname": "TesafilmHalter",
-          "globalPosition": {
+          "GlobalPosition": {
             "x": -0.15150186419487,
             "y": -0.32052719593048098,
             "z": 1.0690336227416993
           },
-          "globalRotation": {
+          "GlobalRotation": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0,
@@ -188,12 +188,12 @@
         },
         {
           "Objectname": "Wecker",
-          "globalPosition": {
+          "GlobalPosition": {
             "x": 0.04252205789089203,
             "y": -0.32513052225112917,
             "z": 1.1116514205932618
           },
-          "globalRotation": {
+          "GlobalRotation": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0,
@@ -202,12 +202,12 @@
         },
         {
           "Objectname": "Zahnbuerste",
-          "globalPosition": {
+          "GlobalPosition": {
             "x": 0.19907456636428834,
             "y": -0.316516637802124,
             "z": 1.145303726196289
           },
-          "globalRotation": {
+          "GlobalRotation": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0,
@@ -216,12 +216,12 @@
         },
         {
           "Objectname": "Stehlampe",
-          "globalPosition": {
+          "GlobalPosition": {
             "x": -0.05566197633743286,
             "y": -0.32521337270736697,
             "z": 0.9503670334815979
           },
-          "globalRotation": {
+          "GlobalRotation": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0,

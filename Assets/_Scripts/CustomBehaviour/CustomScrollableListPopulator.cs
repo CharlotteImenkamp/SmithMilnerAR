@@ -4,42 +4,43 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System;
-using System.Linq;
 using TMPro;
 
+/// todo: -
+////////////////////////////////////////////////////////
+
+/// <summary>
+/// Populate scrollable list
+/// </summary>
 public class CustomScrollableListPopulator : MonoBehaviour
 {
-    #region serialized properties
-    [SerializeField]
-    [Tooltip("The ScrollingObjectCollection to populate, if left empty. the populator will create on your behalf.")]
-    private ScrollingObjectCollection scrollView;
+    #region Private Fields
 
-    [NonSerialized]
-    [Tooltip("Objects to duplicate in ScrollCollection")]
+    // Objects to duplicate in scroll collection
     private GameObject[] dynamicItems;
+    private int numItems;
+    private ObjectCreator objectCreator;
+    private GridObjectCollection gridObjectCollection;
+    private ClippingBox clippingBox;
+    private List<GameObject> instantatedObjects;
+
+    #region Serialized Fields
+
+    [SerializeField]
+    [Tooltip("The ScrollingObjectCollection to populate, if left empty, the populator will create one")]
+    private ScrollingObjectCollection scrollView;
 
     [SerializeField]
     [Tooltip("Parent Object")]
     private GameObject buttonObject;
 
-    [NonSerialized]
-    private int numItems;
-
     [SerializeField]
+    [Tooltip("Text object to display user choice. If left empty, no text is displayed.")]
     private TextMeshPro text; 
 
     [SerializeField]
     [Tooltip("Demonstrate lazy loading")]
     private bool lazyLoad;
-
-    /// <summary>
-    /// Demonstrate lazy loading 
-    /// </summary>
-    public bool LazyLoad
-    {
-        get { return lazyLoad; }
-        set { lazyLoad = value; }
-    }
 
     [SerializeField]
     [Tooltip("Indeterminate loader to hide / show for LazyLoad")]
@@ -61,50 +62,30 @@ public class CustomScrollableListPopulator : MonoBehaviour
     private int tiersPerPage = 5;
 
     [SerializeField]
+    [Tooltip("Parent gameObject to set position of scrolling object collection. ")]
     private Transform scrollPositionRef = null;
 
-    #endregion serialized properties 
+    #endregion Serialized Fields 
 
-    private ObjectCreator objectCreator; 
-    private GridObjectCollection gridObjectCollection;
+    #endregion Private Fields
 
-
-    /// <summary>
-    /// Indeterminate loader to hide / show for <see cref="LazyLoad"/> 
-    /// </summary>
-    public GameObject Loader
-    {
-        get { return loader; }
-        set { loader = value; }
-    }
-
-    public ScrollingObjectCollection ScrollView { get => scrollView; set => scrollView = value; }
-    private ClippingBox clippingBox;
-    private List<GameObject> instantatedObjects; 
+    #region MonoBehaviour Functions
 
     private void OnEnable()
     {
         // Make sure we find a collection
         if (scrollView == null)
-        {
             scrollView = GetComponentInChildren<ScrollingObjectCollection>();
-        }
     }
 
+    #endregion MonoBehaviour Functions
+
+    #region Public Functions
 
     /// <summary>
-    /// Called, if GameObject is disabled
-    /// Removes Instantiated Objects etc
+    /// Called in editor to generate a scrolling list
     /// </summary>
-    private void OnDisable()
-    {
-        
-    }
-
-    /// <summary>
-    /// Called in Editor 
-    /// </summary>
-    /// <param name="listType"></param>
+    /// <param name="listType">Determine type of list. Choose between "incompleteSet", "completeSet", "newSet" and "Objects".</param>
     public void MakeScrollingList(string listType)
     {
         ClearList(); 
@@ -114,7 +95,6 @@ public class CustomScrollableListPopulator : MonoBehaviour
             {
                 numItems = DataManager.Instance.IncompleteUserData.Count;
                 StartCoroutine(UpdateList("Sets", loader, DataManager.Instance.IncompleteUserData));
-
             }
             else if (listType == "completeSet")
             {
@@ -134,114 +114,10 @@ public class CustomScrollableListPopulator : MonoBehaviour
                 StartCoroutine(UpdateList("Objects", loader));
             }
             else
-                throw new System.Exception("CustomToggle List Populator, incorrect input");
+                throw new System.Exception("CustomToggleListPopulator: incorrect input");
         }
         else
-        {
-            Debug.LogWarning("CustomScrollable List Populator tried to get Datamananger Instance, which was null."); 
-        }
-        
-       
-    }
-
-    /// Used in Coroutine to slowly load objects
-    private IEnumerator UpdateList(string listType, GameObject loaderViz, List<DataManager.Data> chosenSet = null)
-    {
-        if (listType == "Sets" && chosenSet == null)
-            throw new System.ArgumentException(" When chosing a Set List, the chosen Set cannot be null."); 
-
-        // Show Loader
-        loaderViz.SetActive(true);
-
-        // Populate List
-        for (int currItemCount = 0; currItemCount < numItems; currItemCount++)
-        {
-            // Instantiate Buttons
-            var button = Instantiate<GameObject>(buttonObject, gridObjectCollection.transform);
-            
-            button.SetActive(true);
-
-            if (listType == "Objects")
-            {
-                // Set Label
-                var obj = dynamicItems[currItemCount]; 
-                button.GetComponent<ButtonConfigHelper>().MainLabelText = obj.name;
-
-                // Add Listener
-                button.GetComponent<ButtonConfigHelper>().OnClick.AddListener(() => InstantiateObject(obj, button));
-            }
-            else if (listType == "Sets")
-            {
-                // Set Label
-                button.GetComponent<ButtonConfigHelper>().MainLabelText = "UserID " + chosenSet[currItemCount].UserData.UserID.ToString() + " SetType " + chosenSet[currItemCount].UserData.set.ToString();
-                var Set = chosenSet[currItemCount];
-
-                // Add Listener
-                button.GetComponent<ButtonConfigHelper>().OnClick.AddListener(() => SaveSettings(button, Set));
-            }
-            else
-                throw new System.ArgumentException("ListType has to be either \"Objects\" or \"Sets\". "); 
-
-            instantatedObjects.Add(button);
-
-            // Update Renderers for clippingBox
-            var renderer = button.GetComponentsInChildren<MeshRenderer>();
-            foreach (var r in renderer)
-                clippingBox.AddRenderer(r);
-                
-            yield return null;
-        }
-
-        // Now that the list is populated, hide the loader and show the list
-        loaderViz.SetActive(false);
-        scrollView.gameObject.SetActive(true);
-
-        // Set up collection and Scroll View
-        gridObjectCollection.UpdateCollection();
-        scrollView.UpdateContent();
-    }
-
-    /// <summary>
-    /// Instantiate Objects when chosen in new settings menu
-    /// </summary>
-    /// <param name="obj"> Game Object to instantiate</param>
-    /// <param name="button"> reference to button object to disable it after use </param>
-    private void InstantiateObject(GameObject obj, GameObject button)
-    {
-        // Spawn Object
-        objectCreator.SpawnObject(obj, GameManager.Instance.parentPlayTable, Vector3.zero, Quaternion.identity, ConfigType.MovementEnabled);
-
-        // Disable Button to prevent several objects of the same type in scene  //\ TODO bessere lösung?
-        button.SetActive(false);
-        
-        // Update Button and Object Collection
-        gridObjectCollection.UpdateCollection();
-        GameManager.Instance.parentPlayTable.GetComponent<GridObjectCollection>().UpdateCollection(); 
-
-        // Update Renderers in Clipping Box
-        var renderer = button.GetComponentsInChildren<MeshRenderer>();
-        foreach (var r in renderer)
-            clippingBox.RemoveRenderer(r);
-    }
-
-    /// <summary>
-    /// Write Chosen Text, When List ist Set List
-    /// Saves chosen Set to DataManater
-    /// </summary>
-    /// <param name="button"></param>
-    /// <param name="chosenSet"></param>
-    private void SaveSettings(GameObject button, DataManager.Data chosenSet)
-    {
-        if (text != null)
-        {
-            // Update Text
-            text.text = button.GetComponent<ButtonConfigHelper>().MainLabelText;
-
-            // Save Settings
-            DataManager.Instance.CurrentSet = chosenSet;
-        }
-        else
-            throw new MissingComponentException("Add text Object to Custom Scrollable List"); 
+            Debug.LogWarning("CustomScrollableListPopulator tried to get Datamananger instance, which was null."); 
     }
 
     /// <summary>
@@ -252,12 +128,16 @@ public class CustomScrollableListPopulator : MonoBehaviour
     {
         ObjectData newData = new ObjectData(objectCreator.InstantiatedObjects, Time.time, ObjectManager.GetPositionOffset());
         objectCreator.RemoveAllObjects();
-        return newData; 
+
+        if (newData.IsValid())
+            return newData;
+        else
+            throw new ArgumentNullException(); 
     }
 
     /// <summary>
     /// Smoothly moves the scroll container a relative number of tiers of cells.
-    /// Attached to Buttons next to Scroll View
+    /// Attached to buttons next to scroll view
     /// </summary>
     public void ScrollByTier(int amount)
     {
@@ -265,7 +145,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
     }
 
     /// <summary>
-    /// Clears List Properties to Start with a new List each time, the List is activated again
+    /// Clears List Properties to start with a new list each time, the list is reactivated
     /// </summary>
     public void ClearList()
     {
@@ -336,7 +216,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
 
         }
         
-        // Reset Text
+        // Reset text
         if(text != null)
             text.SetText("");
 
@@ -346,7 +226,6 @@ public class CustomScrollableListPopulator : MonoBehaviour
         else
             throw new ArgumentNullException("Assign a Scrolling ObjectCollection as Child of CustomScrollableListPopulator.");
 
-
         // Clipping Box
         if(clippingBox == null)
             clippingBox = scrollView.GetComponentInChildren<ClippingBox>();
@@ -354,4 +233,114 @@ public class CustomScrollableListPopulator : MonoBehaviour
         // Parameters
         numItems = 0; 
     }
+
+    #endregion Public Functions
+
+    #region Private Functions
+
+    /// <summary>
+    /// Used in coroutine to slowly load objects.
+    /// </summary>
+    /// <param name="listType">If list type is "Objects", chosenSet can be null.</param>
+    /// <param name="loaderViz"></param>
+    /// <param name="chosenSet"></param>
+    /// <returns></returns>
+    private IEnumerator UpdateList(string listType, GameObject loaderViz, List<DataManager.Data> chosenSet = null)
+    {
+        if (listType == "Sets" && chosenSet == null)
+            throw new System.ArgumentException(" When chosing a Set List, the chosen Set cannot be null.");
+
+        // Show loader
+        loaderViz.SetActive(true);
+
+        // Populate list
+        for (int currItemCount = 0; currItemCount < numItems; currItemCount++)
+        {
+            // Instantiate list buttons
+            var button = Instantiate<GameObject>(buttonObject, gridObjectCollection.transform);
+            button.SetActive(true);
+
+            if (listType == "Objects")
+            {
+                // Set label
+                var obj = dynamicItems[currItemCount];
+                button.GetComponent<ButtonConfigHelper>().MainLabelText = obj.name;
+
+                // Add listener
+                button.GetComponent<ButtonConfigHelper>().OnClick.AddListener(() => InstantiateObject(obj, button));
+            }
+            else if (listType == "Sets")
+            {
+                // Set label
+                button.GetComponent<ButtonConfigHelper>().MainLabelText = "UserID " + chosenSet[currItemCount].UserData.UserID.ToString() + " SetType " + chosenSet[currItemCount].UserData.Set.ToString();
+                var Set = chosenSet[currItemCount];
+
+                // Add listener
+                button.GetComponent<ButtonConfigHelper>().OnClick.AddListener(() => SaveSettings(button, Set));
+            }
+            else
+                throw new System.ArgumentException("ListType has to be either \"Objects\" or \"Sets\". ");
+
+            instantatedObjects.Add(button);
+
+            // Update renderers for clippingBox
+            var renderer = button.GetComponentsInChildren<MeshRenderer>();
+            foreach (var r in renderer)
+                clippingBox.AddRenderer(r);
+
+            yield return null;
+        }
+
+        // List ist populated, hence hide loader and show list
+        loaderViz.SetActive(false);
+        scrollView.gameObject.SetActive(true);
+
+        // Set up collection and scroll view
+        gridObjectCollection.UpdateCollection();
+        scrollView.UpdateContent();
+    }
+
+    /// <summary>
+    /// Instantiate objects when chosen in new settings menu
+    /// </summary>
+    /// <param name="obj"> Game object to instantiate</param>
+    /// <param name="button"> Reference to button object to disable it after use. </param>
+    private void InstantiateObject(GameObject obj, GameObject button)
+    {
+        // Spawn object
+        objectCreator.SpawnObject(obj, GameManager.Instance.ParentPlayTable, Vector3.zero, Quaternion.identity, ConfigType.MovementEnabled);
+
+        // Disable button to prevent several objects of the same type in scene
+        button.SetActive(false);
+
+        // Update button and object collection
+        gridObjectCollection.UpdateCollection();
+        GameManager.Instance.ParentPlayTable.GetComponent<GridObjectCollection>().UpdateCollection();
+
+        // Update renderers in clipping box
+        var renderer = button.GetComponentsInChildren<MeshRenderer>();
+        foreach (var r in renderer)
+            clippingBox.RemoveRenderer(r);
+    }
+
+    /// <summary>
+    /// Write chosen text, when list ist set list
+    /// Save chosen set to DataManater
+    /// </summary>
+    /// <param name="button"></param>
+    /// <param name="chosenSet"></param>
+    private void SaveSettings(GameObject button, DataManager.Data chosenSet)
+    {
+        // Update text
+        if (text != null)
+            text.text = button.GetComponent<ButtonConfigHelper>().MainLabelText;
+        else
+            throw new MissingComponentException("Add text Object to Custom Scrollable List");
+
+        // Save settings
+        if (chosenSet.IsValid())
+            DataManager.Instance.CurrentSet = chosenSet;
+    }
+
+    #endregion Private Functions
 }

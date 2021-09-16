@@ -5,6 +5,8 @@ using System.IO;
 using System;
 using System.Runtime.Serialization.Formatters.Binary;
 
+// TODO delete if not needed
+
 public class DataGenerationHelper : MonoBehaviour
 {
     [SerializeField]

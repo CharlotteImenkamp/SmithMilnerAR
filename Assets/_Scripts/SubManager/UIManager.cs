@@ -1,17 +1,31 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Microsoft.MixedReality.Toolkit.UI;
+﻿using UnityEngine;
 
+/// checked spelling in parameters and comments
+/// checked comments
+/// todo: - 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/// <summary>
+/// Submanager class to open and close menus, if necessary
+/// </summary>
 public class UIManager : SubManager
 {
+    #region Private Fields
+
     private GameObject generalSettingsMenu;
     private GameObject newSettingsMenu;
     private GameObject oldSettingsMenu;
     private GameObject pauseMenu; 
     private GameObject[] allMenus;
 
+    #endregion Private Fields
+
+    #region SubManager Functions
+    /// <summary>
+    /// Initialization of parameters.
+    /// Closes all menus.
+    /// </summary>
     public void Initialize()
     {
         // Menus from GameManager
@@ -25,13 +39,22 @@ public class UIManager : SubManager
         CloseAllMenus(); 
     }
 
+    /// <summary>
+    /// Reset menu states
+    /// </summary>
     public override void Reset()
     {
-        GameManager.Instance.debugText.text = "UIManager::Reset"; 
+        CloseAllMenus(); 
+        GameManager.Instance.DebugText.text = "UIManager::Reset"; 
         Debug.Log("UIManager::Reset"); 
     }
 
-    #region gameStates
+    #region Gamestates
+
+    /// <summary>
+    /// Check, if any task needs to be done at new game state
+    /// </summary>
+    /// <param name="newState"></param>
     public override void OnGameStateEntered(string newState)
     {
         switch (newState)
@@ -65,8 +88,7 @@ public class UIManager : SubManager
             case "End":
                 CloseAllMenus(); 
                 OpenMenu(pauseMenu);
-                GameManager.Instance.ContinueWithLocationsButton.SetActive(false); 
-                
+                GameManager.Instance.ContinueWithLocationsButton.SetActive(false);             
                 break;
 
             default:
@@ -74,48 +96,26 @@ public class UIManager : SubManager
         }
     }
 
+    /// <summary>
+    /// Check, if any task needs to be done before next game state
+    /// </summary>
+    /// <param name="oldState">State which is left</param>
     public override void OnGameStateLeft(string oldState)
     {
-        switch (oldState)
-        {
-            case "Initialization":
-                break;
-
-            case "SettingsMenu":
-                CloseAllMenus();
-                break;
-
-            case "LocationTest":
-                break;
-
-            case "LocationEstimation":
-                break;
-
-            case "PriceTest":
-                break;
-
-            case "PriceEstimation":
-                break;
-
-            case "Pause":
-                CloseAllMenus();
-                break;
-
-            case "End":
-                break;
-
-            default:
-                Debug.LogError("UIManager::OnGameStateLeft no valid state."); 
-                break;
-        }
+        if (oldState == "SettingsMenu" || oldState == "Pause")
+            CloseAllMenus(); 
     }
 
-    #endregion gameStates
+    #endregion Gamestates
 
+    #endregion SubManager Functions
 
+    #region Helper Functions
 
-    #region menu
-
+    /// <summary>
+    /// Open specific menu and close others
+    /// </summary>
+    /// <param name="menu"></param>
     private void OpenMenu(GameObject menu)
     {
         foreach (GameObject obj in allMenus)
@@ -126,6 +126,9 @@ public class UIManager : SubManager
         menu.SetActive(true);
     }
 
+    /// <summary>
+    /// Close all menues
+    /// </summary>
     private void CloseAllMenus()
     {
         foreach (GameObject obj in allMenus)
@@ -134,6 +137,6 @@ public class UIManager : SubManager
         }
     }
 
-    #endregion menu
+    #endregion Helper Functions
 
 }
