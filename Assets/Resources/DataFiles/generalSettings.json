@@ -1,27 +1,37 @@
 {
  "start": "Donnerstag, 2. September 2021 14:04:37 ", 
 "entries": 
-[ 
- {
+[
+  {
+    
     "UserDataFolder": "userData",
     "NewUserData": [
-        "User6/user6",
-        "User7/user7",
-        "User8/user8",
-        "User9/user9",
-        "User10/user10"
+      "User1/user1",
+      "User2/user2",
+      "User3/user3",
+      "User4/user4",
+      "User5/user5",
+      "User6/user6",
+      "User7/user7",
+      "User8/user8",
+      "User9/user9",
+      "User10/user10",
+      "User11/user11",
+      "User12/user12",
+      "User13/user13",
+      "User14/user14",
+      "User15/user15",
+      "User16/user16",
+      "User17/user17",
+      "User18/user18",
+      "User19/user19",
+      "User20/user20"
     ],
     "IncompleteUserData": [
-        "User2/user2",
-        "User3/user3",
-        "User4/user4",
-        "User5/user5"
     ],
     "CompleteUserData": [
-        "User1/user1",
-        "User1/user1"
     ]
-} 
+  } 
 ], 
 "ende" : "END"
  }
