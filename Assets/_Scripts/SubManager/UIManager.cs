@@ -29,9 +29,9 @@ public class UIManager : SubManager
     public void Initialize()
     {
         // Menus from GameManager
-        generalSettingsMenu = GameManager.Instance.GeneralSettingsMenu;
-        newSettingsMenu = GameManager.Instance.NewSettingsMenu;
-        oldSettingsMenu = GameManager.Instance.OldSettingsMenu;
+        generalSettingsMenu = GameManager.Instance.MainMenu;
+        newSettingsMenu = GameManager.Instance.StartMenu;
+        oldSettingsMenu = GameManager.Instance.NewLayout;
         pauseMenu = GameManager.Instance.PauseMenu; 
 
         allMenus = new GameObject[] { generalSettingsMenu, newSettingsMenu, oldSettingsMenu, pauseMenu };
@@ -44,7 +44,8 @@ public class UIManager : SubManager
     /// </summary>
     public override void Reset()
     {
-        CloseAllMenus(); 
+        CloseAllMenus();
+        OpenMenu(generalSettingsMenu);
         GameManager.Instance.DebugText.text = "UIManager::Reset"; 
         Debug.Log("UIManager::Reset"); 
     }

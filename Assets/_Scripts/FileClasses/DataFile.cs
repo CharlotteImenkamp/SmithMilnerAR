@@ -4,9 +4,6 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 
-/// todo: -
-////////////////////////////////////////////////////////
-
 /// <summary>
 /// Class holds methods to use for several data types.
 /// </summary>
@@ -39,20 +36,15 @@ public class DataFile
             jsonString = File.ReadAllText(path + fileending);
             JsonFile<T> file = JsonUtility.FromJson<JsonFile<T>>(jsonString);
             newData = file.entries[0];
-
-            Debug.Log("data loaded from persistent Path."); 
-            GameManager.Instance.DebugText.text = "data loaded from persistent Path.";
         }
         else
         {
-            // else load from resources
+            // Else load from resources
             var textFile = Resources.Load<TextAsset>(filepath);
             if (textFile != null)
             {
                 JsonFile<T> file = JsonUtility.FromJson<JsonFile<T>>(textFile.text);
                 newData = file.entries[0];
-                GameManager.Instance.DebugText.text = " data loaded from Resources.";
-                Debug.Log(" data from Resources.");
 
                 // Save in persistent datapath for next time
                 Save(newData, Path.GetDirectoryName(filepath), Path.GetFileName(filepath));

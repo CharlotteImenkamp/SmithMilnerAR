@@ -10,7 +10,7 @@ public enum ConfigType { MovementEnabled, MovementDisabled }
 /// <summary>
 /// Enum to describe specific type of game
 /// </summary>
-public enum GameType { Prices, Locations }
+public enum GameType { Prices, Locations, None }
 
 /// <summary>
 /// User set to devide groups

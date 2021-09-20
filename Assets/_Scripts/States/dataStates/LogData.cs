@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
 using UnityEngine;
-/// todo: -
-////////////////////////////////////////////////////////
 
 /// <summary>
 /// Prepare data, get periodic updates and save data. 

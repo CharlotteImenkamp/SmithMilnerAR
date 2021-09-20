@@ -5,10 +5,6 @@ using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System;
 using TMPro;
-
-/// todo: -
-////////////////////////////////////////////////////////
-
 /// <summary>
 /// Populate scrollable list
 /// </summary>

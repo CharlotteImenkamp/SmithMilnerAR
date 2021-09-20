@@ -27,8 +27,6 @@ public class Pause : IState
 
     public void Exit()
     {
-        GameManager.Instance.DebugText.text = "Pause::Exit()";
-
         // Call submanagers
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)

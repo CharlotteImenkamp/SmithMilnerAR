@@ -4,7 +4,8 @@ Windows Device Portal:
 Username: FHKiel 
 PW: Labor2.62 
 https://192.168.100.233/ 
-http://127.0.0.1:10080/#Home
+http://127.0.0.1:10080/
+https://169.254.31.163/
 
 persistent path: LocalAppData/YourApp/LocalState  
 

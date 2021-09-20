@@ -21,10 +21,6 @@ public class End : IState
         var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
             subManager.OnGameStateEntered(this.ToString());
-        
-        // Debug
-        GameManager.Instance.DebugText.text = "General Settings saved.";
-        Debug.Log("General Settings saved.");
     }
 
     // No repeated task, hence execute is empty

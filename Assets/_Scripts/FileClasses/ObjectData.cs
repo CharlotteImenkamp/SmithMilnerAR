@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-/// todo: -
-////////////////////////////////////////////////////////
 
 /// <summary>
 /// Data class to hold object specific data

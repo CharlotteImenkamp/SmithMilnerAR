@@ -1,9 +1,5 @@
 ﻿using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities;
-/// checked spelling in parameters and comments
-/// checked comments
-/// todo: - 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// <summary>
 /// Submanager, which manages the spawning and removing of objects in scene. Highly 
@@ -176,8 +172,7 @@ public class ObjectManager : SubManager
     /// </summary>
     private void CheckDefaultParameters()
     {
-        if (currentData.UserData == null || currentData.ObjData == null)
-            currentData = DataManager.Instance.CurrentSet;
+        currentData = DataManager.Instance.CurrentSet;
 
         if (interactionObjects == null)
         {

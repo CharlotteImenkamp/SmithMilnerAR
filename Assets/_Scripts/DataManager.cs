@@ -3,6 +3,7 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit; 
 using System;
 using System.IO;
+using Microsoft.MixedReality.Toolkit.Utilities;
 
 /// checked spelling in parameters and comments
 /// checked comments
@@ -150,12 +151,11 @@ public class DataManager : MonoBehaviour
             string mainFolder = GameManager.Instance.MainFolder;
 
             // FileNames
-            string settingsFileName = "settings" + data.UserData.UserID.ToString();
-            string objectFileName = "objectData" + data.UserData.UserID.ToString();
+            string startDataName = GameManager.Instance.StartDataName + data.UserData.UserID.ToString();
             string userFileName = "user" + data.UserData.UserID.ToString();
 
             // Save into user folder and into settings folder
-            DataFile.Save<ObjectData>(data.ObjData, Path.Combine(mainFolder, dataFolder), settingsFileName);            
+            DataFile.Save<ObjectData>(data.ObjData, Path.Combine(mainFolder, dataFolder), startDataName);
             DataFile.Save<UserSettingsData>(data.UserData, Path.Combine(mainFolder, dataFolder), userFileName);
 
             // Add to general settings
@@ -191,20 +191,54 @@ public class DataManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Resets position of all objcts in the scene.
+    /// Last option, if anything does not work as expected.
+    /// </summary>
+    public void ResetObjectPosition()
+    {
+        if(GameManager.Instance.GameType == GameType.Prices)
+        {
+            foreach (GameObject obj in ObjectsInScene)
+            {
+                var a = currentSet.ObjData.GameObjects;
+                var b = a.Find(x => x.Objectname.Equals(obj.name));
+                var c = b.GlobalPosition;
+                obj.transform.position = c;
+            }
+        }
+
+        if(GameManager.Instance.GameType == GameType.Locations)
+        {
+            GameManager.Instance.ParentSideTable.GetComponent<GridObjectCollection>().UpdateCollection(); 
+        }
+    }
+
+    /// <summary>
     /// Instantiates parameters and changes state to start state.
     /// </summary>
     public void ResetToDefault()
     {
         // Parameters
-        newSettings = new List<ObjectData>();
+        if(newSettings == null)
+            newSettings = new List<ObjectData>();
 
-        completeUserData = new List<Data>();
-        incompleteUserData = new List<Data>();
-        newUserData = new List<Data>();
+        if(completeUserData == null)
+            completeUserData = new List<Data>();
 
-        movingObjects = new List<GameObject>();
-        objectsInScene = new List<GameObject>();
-        currentHeadData = new HeadData();
+        if(incompleteUserData == null)
+            incompleteUserData = new List<Data>();
+
+        if(newUserData == null)
+            newUserData = new List<Data>();
+
+        if(movingObjects == null)
+            movingObjects = new List<GameObject>();
+
+        if(objectsInScene == null)
+            objectsInScene = new List<GameObject>();
+
+        if(currentHeadData == null)
+            currentHeadData = new HeadData();
 
         // Start loading data
         dataStateMachine.ChangeState(new LoadSettings());

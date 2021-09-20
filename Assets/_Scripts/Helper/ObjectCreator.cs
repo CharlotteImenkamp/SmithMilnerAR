@@ -8,8 +8,6 @@ using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using Microsoft.MixedReality.Toolkit.UI.BoundsControl;
 using Microsoft.MixedReality.Toolkit;
-/// todo: -
-////////////////////////////////////////////////////////
 
 /// <summary>
 ///  Helper class to use functions from MonoBehaviour in ObjectManager

@@ -1,11 +1,6 @@
 ﻿using System;
 using UnityEngine;
 
-/// checked spelling in parameters and comments
-/// checked comments
-/// todo: - 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 /// <summary>
 /// Singelton class

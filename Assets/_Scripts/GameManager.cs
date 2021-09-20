@@ -7,10 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
-/// checked spelling in parameters and comments
-/// checked comments
-/// todo: - 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Medieningenieure 5. semester
 
 /// <summary>
 /// First and only MonoBehaviour script, which needs to be in the scene. 
@@ -25,9 +22,9 @@ public class GameManager : MonoBehaviour
 
     [Header("Menu Objects")]
     [Tooltip("Add Menu Objects for UIManager")]
-    public GameObject GeneralSettingsMenu;
-    public GameObject NewSettingsMenu;
-    public GameObject OldSettingsMenu;
+    public GameObject MainMenu;
+    public GameObject StartMenu;
+    public GameObject NewLayout;
     public GameObject PauseMenu;
     public GameObject ContinueWithLocationsButton;
 
@@ -167,7 +164,7 @@ public class GameManager : MonoBehaviour
         DebugText = DebugTextObject.GetComponent<TextMeshPro>();
 
         // Check input parameters
-        if (GeneralSettingsMenu == null || NewSettingsMenu == null || OldSettingsMenu == null || PauseMenu == null)
+        if (MainMenu == null || StartMenu == null || NewLayout == null || PauseMenu == null)
         {
             DebugText.text = "Not all Menu Parameters are Set in GameManager."; 
             throw new ArgumentNullException("Not all Menu Parameters are Set in GameManager.");
@@ -207,12 +204,15 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Add to toggle buttons in editor, to get their input
     /// </summary>
-    public void ToggleGameType()
+    public void GetToggleState(GameObject obj)
     {
-        if (GameType == GameType.Locations)
-            GameType = GameType.Prices;
-        else if (GameType == GameType.Prices)
-            GameType = GameType.Locations;
+        if (obj.activeInHierarchy && obj.activeSelf)
+        {
+            if (obj.GetComponent<Interactable>().IsToggled)
+                GameType = GameType.Prices;
+            else
+                GameType = GameType.Locations;
+        }
     }
 
     /// <summary>
@@ -280,6 +280,11 @@ public class GameManager : MonoBehaviour
     public void ResetObjectRotation()
     {
         DataManager.Instance.ResetObjectRotation(); 
+    }
+
+    public void ResetObjectPosition()
+    {
+        DataManager.Instance.ResetObjectPosition(); 
     }
 
     /// <summary>
@@ -355,12 +360,12 @@ public class GameManager : MonoBehaviour
         // Reset event
         OnUserButtonClicked.RemoveAllListeners();
 
-        GameType = GameType.Prices;
+        GameType = GameType.None;
     }
 
     /// <summary>
     /// Called in "GeneralMenu" in editor on "QuitGame" button 
-    /// Functions does not work with hololens
+    /// Function does not work with hololens
     /// </summary>
     public void QuitGame()
     {
