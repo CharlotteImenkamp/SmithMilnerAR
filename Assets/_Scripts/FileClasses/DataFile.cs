@@ -22,11 +22,11 @@ public class DataFile
     /// </summary>
     /// <param name="filepath">local path with filename without ending</param>
     /// <returns></returns>
-    public static T SecureLoad<T>(string filepath) where T: new()
+    public static T SecureLoad<T>(string filepath) where T : new()
     {
         string jsonString;
 
-        T newData = new T(); 
+        T newData = new T();
 
         // Load from persistent datapath
         string path = Path.Combine(Application.persistentDataPath, filepath);
@@ -67,7 +67,7 @@ public class DataFile
     public static T Load<T>(string completePath) where T : new()
     {
         string jsonString;
-        
+
         // Load from persistent datapath
         string path = Path.Combine(Application.persistentDataPath, completePath);
 
@@ -75,7 +75,7 @@ public class DataFile
         {
             jsonString = File.ReadAllText(path + fileending);
             JsonFile<T> file = JsonUtility.FromJson<JsonFile<T>>(jsonString);
-            T newData = file.entries[0]; 
+            T newData = file.entries[0];
 
             // debug
             GameManager.Instance.DebugText.text = "data loaded from persistent Path.";
@@ -85,7 +85,7 @@ public class DataFile
         }
         else
         {
-            throw new Exception("... path " + path + " not found"); 
+            throw new Exception("... path " + path + " not found");
         }
     }
 
@@ -149,7 +149,7 @@ public class DataFile
         if (typeof(T) == typeof(ApplicationData))
             jsonString = StartSettingsFile();
         else
-            jsonString = StartFile(); 
+            jsonString = StartFile();
 
         jsonString += AddLine<T>(data);
         jsonString = jsonString.TrimEnd('\n').TrimEnd('\r').TrimEnd(',');
@@ -162,7 +162,7 @@ public class DataFile
         GameManager.Instance.DebugText.text = "Data saved into persistent Path.";
         Debug.Log("Data saved into persistent Path: " + filePath);
 
-        return fileName; 
+        return fileName;
     }
 
     /// <summary>
@@ -174,12 +174,12 @@ public class DataFile
     public static void OverwriteData<T>(T data, string folderAfterPersistentPath, string name)
     {
         // Prepare file path 
-        string directory    = Path.Combine(Application.persistentDataPath, folderAfterPersistentPath);
-        string filePath     = Path.Combine(directory, name);
+        string directory = Path.Combine(Application.persistentDataPath, folderAfterPersistentPath);
+        string filePath = Path.Combine(directory, name);
 
         // Prepare file content
-        string jsonString; 
-        if( typeof(T) == typeof(ApplicationData))
+        string jsonString;
+        if (typeof(T) == typeof(ApplicationData))
             jsonString = StartSettingsFile();
         else
             jsonString = StartFile();
@@ -216,7 +216,7 @@ public class DataFile
         GameManager.Instance.DebugText.text = "Data saved into persistent Path.";
         Debug.Log("Data saved into " + filePath);
 
-        return fileName; 
+        return fileName;
     }
 
     /// <summary>
@@ -257,10 +257,10 @@ public class DataFile
         catch
         {
             id = "";
-        } 
-        
+        }
+
         return "{\n \"start\": \"" + "User: " + id
-             + " ," + DateTime.Now.ToString("F") + " \", " 
+             + " ," + DateTime.Now.ToString("F") + " \", "
             + Environment.NewLine
             + "\"entries\": \n[ \n ";
     }
@@ -287,7 +287,7 @@ public class DataFile
         string jsonString = JsonUtility.ToJson(data, true);
         jsonString += "," + System.Environment.NewLine;
 
-        return jsonString; 
+        return jsonString;
     }
 
     /// <summary>
@@ -314,7 +314,7 @@ public class DataFile
         if (!Directory.Exists(directroyPath))
             Directory.CreateDirectory(directroyPath);
 
-        return directroyPath; 
+        return directroyPath;
     }
 
     /// <summary>
@@ -335,7 +335,7 @@ public class DataFile
             filePath = Path.Combine(directoryPath, filename);
         }
 
-        return filename; 
+        return filename;
     }
 
     #endregion Helper Functions 
@@ -349,5 +349,5 @@ public class JsonFile<T>
 {
     public string start;
     public T[] entries;
-    public string ende; 
+    public string ende;
 }

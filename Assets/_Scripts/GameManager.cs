@@ -7,7 +7,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
-// Medieningenieure 5. semester
 
 /// <summary>
 /// First and only MonoBehaviour script, which needs to be in the scene. 
@@ -49,7 +48,7 @@ public class GameManager : MonoBehaviour
     public GameObject UserButton;
 
     [Header("Data")]
-    public float BackupPeriod = 60.0f; 
+    public float BackupPeriod = 60.0f;
 
     [Header("Debug")]
     public GameObject DebugTextObject;
@@ -66,14 +65,15 @@ public class GameManager : MonoBehaviour
     #endregion Object Management
 
     #region File Management
-    public ApplicationData GeneralSettings { 
+    public ApplicationData GeneralSettings
+    {
         get => generalSettings;
-        set 
+        set
         {
             generalSettings = value ?? throw new ArgumentNullException(nameof(value), "Value cannot be null");
-            DataManager.Instance.CompleteUserData   = DataFile.LoadUserSets(generalSettings.CompleteUserData);
+            DataManager.Instance.CompleteUserData = DataFile.LoadUserSets(generalSettings.CompleteUserData);
             DataManager.Instance.IncompleteUserData = DataFile.LoadUserSets(generalSettings.IncompleteUserData);
-            DataManager.Instance.NewUserData        = DataFile.LoadUserSets(generalSettings.NewUserData);
+            DataManager.Instance.NewUserData = DataFile.LoadUserSets(generalSettings.NewUserData);
 
             if (generalSettings.IsValid())
                 DataFile.OverwriteData<ApplicationData>(generalSettings, MainFolder, "generalSettings");
@@ -152,13 +152,13 @@ public class GameManager : MonoBehaviour
             Debug.LogError("Instance of GameManager destroyed.");
         }
     }
- 
+
     /// <summary>
     /// Instantiate and set default parameters
     /// </summary>
     void Start()
     {
-        buttonEnabled = true; 
+        buttonEnabled = true;
 
         // Debug
         DebugText = DebugTextObject.GetComponent<TextMeshPro>();
@@ -166,7 +166,7 @@ public class GameManager : MonoBehaviour
         // Check input parameters
         if (MainMenu == null || StartMenu == null || NewLayout == null || PauseMenu == null)
         {
-            DebugText.text = "Not all Menu Parameters are Set in GameManager."; 
+            DebugText.text = "Not all Menu Parameters are Set in GameManager.";
             throw new ArgumentNullException("Not all Menu Parameters are Set in GameManager.");
         }
 
@@ -175,13 +175,13 @@ public class GameManager : MonoBehaviour
             OnUserButtonClicked = new UnityEvent();
 
         // InteractionObjects
-        InteractionObjectsInitialPosition = InteractionObjects.transform.position; 
+        InteractionObjectsInitialPosition = InteractionObjects.transform.position;
 
         // File parameters
         MainFolder = "DataFiles";
-        StartDataName = "StartLocationPrices";  
-        updateRate = 1.0f; 
-        
+        StartDataName = "StartLocationPrices";
+        updateRate = 1.0f;
+
         generalSettings = DataFile.SecureLoad<ApplicationData>(Path.Combine(MainFolder, "generalSettings"));
 
         // Add managers of type monobehaviour
@@ -222,12 +222,12 @@ public class GameManager : MonoBehaviour
     /// <param name="type">Either "Locations" or "Prices"</param>
     public void SetGameType(string type)
     {
-        if(type == "Locations")
+        if (type == "Locations")
             GameType = GameType.Locations;
         else if (type == "Prices")
-            GameType = GameType.Prices; 
+            GameType = GameType.Prices;
         else
-            throw new ArgumentException("...GameManager SetGameType to " + type + " not possible.");  
+            throw new ArgumentException("...GameManager SetGameType to " + type + " not possible.");
     }
 
     /// <summary>
@@ -249,15 +249,15 @@ public class GameManager : MonoBehaviour
         // invoke event
         if (buttonEnabled)
             OnUserButtonClicked.Invoke();
-         
-         // deactivate user button
+
+        // deactivate user button
         UserButton.GetComponent<Interactable>().IsEnabled = false;
         UserButton.GetComponent<PressableButton>().enabled = false;
-        UserButton.GetComponent<Interactable>().SetState(InteractableStates.InteractableStateEnum.Pressed, true); 
+        UserButton.GetComponent<Interactable>().SetState(InteractableStates.InteractableStateEnum.Pressed, true);
         buttonEnabled = false;
 
         // reactivate user button
-        StartCoroutine(EnableAfterSeconds()); 
+        StartCoroutine(EnableAfterSeconds());
     }
 
     /// <summary>
@@ -271,7 +271,7 @@ public class GameManager : MonoBehaviour
         UserButton.GetComponent<PressableButton>().enabled = true;
         UserButton.GetComponent<Interactable>().SetState(InteractableStates.InteractableStateEnum.Pressed, false);
 
-        buttonEnabled = true; 
+        buttonEnabled = true;
     }
 
     /// <summary>
@@ -279,12 +279,12 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void ResetObjectRotation()
     {
-        DataManager.Instance.ResetObjectRotation(); 
+        DataManager.Instance.ResetObjectRotation();
     }
 
     public void ResetObjectPosition()
     {
-        DataManager.Instance.ResetObjectPosition(); 
+        DataManager.Instance.ResetObjectPosition();
     }
 
     /// <summary>
@@ -292,7 +292,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void ResetMenuValues()
     {
-        ResetToDefault(); 
+        ResetToDefault();
     }
 
     #endregion Button Functions
@@ -313,7 +313,7 @@ public class GameManager : MonoBehaviour
         else
         {
             DebugText.text = "GameManager::AddManagerToScene Manager already exists!";
-            Debug.LogWarning("GameManager::AddManagerToScene Manager already exists!"); 
+            Debug.LogWarning("GameManager::AddManagerToScene Manager already exists!");
         }
     }
 
@@ -322,13 +322,13 @@ public class GameManager : MonoBehaviour
     /// </summary>
     /// <param name="newSubManager"></param>
     private void AddSubManager(SubManager newSubManager)
-    { 
-        if(newSubManager != null)
+    {
+        if (newSubManager != null)
             attachedSubManagers.Add(newSubManager);
         else
         {
-            DebugText.text = "GameManager::AddSubManager Failed to load SubManager"; 
-            Debug.LogError("GameManager::AddSubManager Failed to load SubManager"); 
+            DebugText.text = "GameManager::AddSubManager Failed to load SubManager";
+            Debug.LogError("GameManager::AddSubManager Failed to load SubManager");
         }
     }
 

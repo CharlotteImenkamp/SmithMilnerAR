@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-/// todo: -
-////////////////////////////////////////////////////////
 
 /// <summary>
 /// State which is called after price task. Can either be followed by location test or price test of new user.

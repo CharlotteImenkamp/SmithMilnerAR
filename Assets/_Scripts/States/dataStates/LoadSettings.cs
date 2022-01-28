@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using System.IO;
-/// todo: -
-////////////////////////////////////////////////////////
+﻿using UnityEngine;
 
 /// <summary>
 /// Get datapaths from general settings and save data in Datamanager.
@@ -17,16 +13,16 @@ class LoadSettings : IState
     /// </summary>
     public void Enter()
     {
-        GameManager.Instance.DebugText.text = "LoadSettings Enter"; 
+        GameManager.Instance.DebugText.text = "LoadSettings Enter";
         Debug.Log("LoadSettings Enter");
 
         //Load user data
-        if(GameManager.Instance.GeneralSettings.NewUserData.Count != 0)
+        if (GameManager.Instance.GeneralSettings.NewUserData.Count != 0)
             DataManager.Instance.NewUserData = DataFile.LoadUserSets(GameManager.Instance.GeneralSettings.NewUserData);
         if (GameManager.Instance.GeneralSettings.IncompleteUserData.Count != 0)
             DataManager.Instance.IncompleteUserData = DataFile.LoadUserSets(GameManager.Instance.GeneralSettings.IncompleteUserData);
         if (GameManager.Instance.GeneralSettings.CompleteUserData.Count != 0)
-            DataManager.Instance.CompleteUserData = DataFile.LoadUserSets(GameManager.Instance.GeneralSettings.CompleteUserData); 
+            DataManager.Instance.CompleteUserData = DataFile.LoadUserSets(GameManager.Instance.GeneralSettings.CompleteUserData);
     }
 
     public void Execute() { }

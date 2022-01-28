@@ -1,5 +1,3 @@
-/// todo: -
-////////////////////////////////////////////////////////
 
 /// <summary>
 /// The statemachine structures the program in subtasks.
@@ -42,7 +40,7 @@ public class StateMachine
     {
         var runningState = this.currentState;
         if (runningState != null)
-           runningState.Execute();
+            runningState.Execute();
     }
 
     /// <summary>

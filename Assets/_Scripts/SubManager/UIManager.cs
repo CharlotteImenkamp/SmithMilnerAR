@@ -1,11 +1,5 @@
 ﻿using UnityEngine;
 
-/// checked spelling in parameters and comments
-/// checked comments
-/// todo: - 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 /// <summary>
 /// Submanager class to open and close menus, if necessary
 /// </summary>
@@ -16,7 +10,7 @@ public class UIManager : SubManager
     private GameObject generalSettingsMenu;
     private GameObject newSettingsMenu;
     private GameObject oldSettingsMenu;
-    private GameObject pauseMenu; 
+    private GameObject pauseMenu;
     private GameObject[] allMenus;
 
     #endregion Private Fields
@@ -32,11 +26,11 @@ public class UIManager : SubManager
         generalSettingsMenu = GameManager.Instance.MainMenu;
         newSettingsMenu = GameManager.Instance.StartMenu;
         oldSettingsMenu = GameManager.Instance.NewLayout;
-        pauseMenu = GameManager.Instance.PauseMenu; 
+        pauseMenu = GameManager.Instance.PauseMenu;
 
         allMenus = new GameObject[] { generalSettingsMenu, newSettingsMenu, oldSettingsMenu, pauseMenu };
 
-        CloseAllMenus(); 
+        CloseAllMenus();
     }
 
     /// <summary>
@@ -46,8 +40,8 @@ public class UIManager : SubManager
     {
         CloseAllMenus();
         OpenMenu(generalSettingsMenu);
-        GameManager.Instance.DebugText.text = "UIManager::Reset"; 
-        Debug.Log("UIManager::Reset"); 
+        GameManager.Instance.DebugText.text = "UIManager::Reset";
+        Debug.Log("UIManager::Reset");
     }
 
     #region Gamestates
@@ -61,11 +55,11 @@ public class UIManager : SubManager
         switch (newState)
         {
             case "Initialization":
-                Initialize(); 
+                Initialize();
                 break;
 
             case "SettingsMenu":
-                OpenMenu(generalSettingsMenu);  
+                OpenMenu(generalSettingsMenu);
                 break;
 
             case "LocationTest":
@@ -83,13 +77,13 @@ public class UIManager : SubManager
             case "Pause":
                 CloseAllMenus();
                 OpenMenu(pauseMenu);
-                GameManager.Instance.ContinueWithLocationsButton.SetActive(true); 
+                GameManager.Instance.ContinueWithLocationsButton.SetActive(true);
                 break;
 
             case "End":
-                CloseAllMenus(); 
+                CloseAllMenus();
                 OpenMenu(pauseMenu);
-                GameManager.Instance.ContinueWithLocationsButton.SetActive(false);             
+                GameManager.Instance.ContinueWithLocationsButton.SetActive(false);
                 break;
 
             default:
@@ -104,7 +98,7 @@ public class UIManager : SubManager
     public override void OnGameStateLeft(string oldState)
     {
         if (oldState == "SettingsMenu" || oldState == "Pause")
-            CloseAllMenus(); 
+            CloseAllMenus();
     }
 
     #endregion Gamestates
@@ -134,7 +128,7 @@ public class UIManager : SubManager
     {
         foreach (GameObject obj in allMenus)
         {
-            obj.SetActive(false); 
+            obj.SetActive(false);
         }
     }
 

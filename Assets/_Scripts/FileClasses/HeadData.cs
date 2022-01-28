@@ -1,9 +1,6 @@
 ﻿using System;
 using UnityEngine;
 
-/// todo: -
-////////////////////////////////////////////////////////
-
 /// <summary>
 /// Class to hold head tracking specific data
 /// </summary>
@@ -49,7 +46,7 @@ public class HeadData
         if (CameraPosition == null || CameraRotation == null || GazeOrigin == null || GazeDirection == null)
             return false;
         else
-            return true; 
+            return true;
     }
 
     #endregion

@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-/// todo: -
-////////////////////////////////////////////////////////
 
 /// <summary>
 /// End game after price estimation.

@@ -1,8 +1,6 @@
+using Microsoft.MixedReality.Toolkit.Examples.Demos;
 using Microsoft.MixedReality.Toolkit.UI.BoundsControl;
 using UnityEngine;
-using Microsoft.MixedReality.Toolkit.Examples.Demos;
-/// todo: -
-////////////////////////////////////////////////////////
 
 /// <summary>
 /// Class to get access to bounds conrol of game object "InteractionObjects".
@@ -26,7 +24,7 @@ public class ToggleBoundsControl : MonoBehaviour
     void Start()
     {
         isResizeEnabled = true;
-        boxCollider   = (BoxCollider)GetComponent(typeof(BoxCollider));
+        boxCollider = (BoxCollider)GetComponent(typeof(BoxCollider));
         boundsControl = (BoundsControl)GetComponent(typeof(BoundsControl));
     }
 
@@ -70,19 +68,19 @@ public class ToggleBoundsControl : MonoBehaviour
         {
             boxCollider.enabled = false;
             boundsControl.Active = false;
-            isResizeEnabled = false; 
+            isResizeEnabled = false;
         }
         else
         {
             boxCollider.enabled = true;
-            boundsControl.Active = true; 
-            isResizeEnabled = true; 
+            boundsControl.Active = true;
+            isResizeEnabled = true;
         }
 
         // Update spawn point of objects
         TetheredPlacement[] gameObjComp = FindObjectsOfType<TetheredPlacement>();
         foreach (TetheredPlacement tp in gameObjComp)
-            tp.LockSpawnPoint(); 
+            tp.LockSpawnPoint();
     }
 
     #endregion Public Functions

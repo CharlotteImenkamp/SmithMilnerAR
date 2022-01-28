@@ -1,16 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
-using System;
-using System.Runtime.Serialization.Formatters.Binary;
 
 // TODO delete if not needed
 
 public class DataGenerationHelper : MonoBehaviour
 {
     [SerializeField]
-    private bool saveNewSettings; 
+    private bool saveNewSettings;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,7 +13,7 @@ public class DataGenerationHelper : MonoBehaviour
         {
             ApplicationData data = new ApplicationData();
 
-            data = DataFile.Load<ApplicationData>("C:\\Users\\Student\\AppData\\LocalLow\\DefaultCompany\\AR_ProjV63\\DataFiles\\generalSettingsTest16150"); 
+            data = DataFile.Load<ApplicationData>("C:\\Users\\Student\\AppData\\LocalLow\\DefaultCompany\\AR_ProjV63\\DataFiles\\generalSettingsTest16150");
 
 
 
@@ -102,7 +97,7 @@ public class DataGenerationHelper : MonoBehaviour
     //private void SaveNewUserSettings(userSettingsData data, string foldername, string filename, string fileending)
     //{ 
     //    string persistentPath = Application.persistentDataPath; 
-        
+
     //    string filepath = Path.Combine(persistentPath, filename + fileending);
 
     //    Debug.Log(filepath); 
@@ -149,7 +144,7 @@ public class DataGenerationHelper : MonoBehaviour
     //        default:
     //            throw new ArgumentOutOfRangeException("...DataGenerationHelper::AddNEwSettingsFileToGeneral Settings invalid gameType.");         
     //    }
- 
+
     //    DataFile.Save<ApplicationData>(GameManager.Instance.generalSettings, GameManager.Instance.mainFolder, "generalSettings"); 
     //}
 }

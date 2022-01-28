@@ -1,14 +1,9 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using Microsoft.MixedReality.Toolkit; 
-using System;
-using System.IO;
+﻿using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Utilities;
-
-/// checked spelling in parameters and comments
-/// checked comments
-/// todo: - 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
+using System;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
 
 
 /// <summary>
@@ -52,7 +47,7 @@ public class DataManager : MonoBehaviour
         public void Clear()
         {
             objData?.Clear();
-            userData?.Clear(); 
+            userData?.Clear();
         }
 
         public UserSettingsData UserData { get => userData; set => userData = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null"); }
@@ -60,7 +55,7 @@ public class DataManager : MonoBehaviour
     }
 
     // Objectdata
-    public List<GameObject> ObjectsInScene { get => objectsInScene; set => objectsInScene = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null");  }
+    public List<GameObject> ObjectsInScene { get => objectsInScene; set => objectsInScene = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null"); }
     public List<GameObject> MovingObjects { get => movingObjects; set => movingObjects = value ?? throw new ArgumentNullException(nameof(value), "Name cannot be null"); }
 
     // Headdata
@@ -82,7 +77,7 @@ public class DataManager : MonoBehaviour
     private static StateMachine dataStateMachine = new StateMachine();
 
     // Userdata
-    private List<Data> newUserData; 
+    private List<Data> newUserData;
     private List<Data> incompleteUserData;
     private List<Data> completeUserData;
     private Data currentSet;
@@ -117,7 +112,7 @@ public class DataManager : MonoBehaviour
     /// </summary>
     void Start()
     {
-        ResetToDefault();  
+        ResetToDefault();
     }
 
     /// <summary>
@@ -127,9 +122,9 @@ public class DataManager : MonoBehaviour
     private void Update()
     {
         currentHeadData.SetCameraParameters(Camera.main.transform);
-        currentHeadData.SetGazeParameters(CoreServices.InputSystem.EyeGazeProvider.GazeOrigin, CoreServices.InputSystem.EyeGazeProvider.GazeDirection); 
+        currentHeadData.SetGazeParameters(CoreServices.InputSystem.EyeGazeProvider.GazeOrigin, CoreServices.InputSystem.EyeGazeProvider.GazeDirection);
 
-        dataStateMachine.ExecuteStateUpdate(); 
+        dataStateMachine.ExecuteStateUpdate();
     }
 
     #endregion MonoBehaviour Functions
@@ -162,12 +157,12 @@ public class DataManager : MonoBehaviour
             GameManager.Instance.GeneralSettings.NewUserData.Add("User" + data.UserData.UserID.ToString() + "/" + userFileName);
 
             var dat = GameManager.Instance.GeneralSettings;
-            GameManager.Instance.GeneralSettings = dat;             
+            GameManager.Instance.GeneralSettings = dat;
         }
         else
         {
             GameManager.Instance.DebugText.text = "DataManager::SetCurrentSettings no valid data.";
-            throw new ArgumentNullException("No valid data"); 
+            throw new ArgumentNullException("No valid data");
         }
     }
 
@@ -182,11 +177,11 @@ public class DataManager : MonoBehaviour
     {
         foreach (GameObject obj in ObjectsInScene)
         {
-            var a = currentSet.ObjData.GameObjects; 
+            var a = currentSet.ObjData.GameObjects;
             var b = a.Find(x => x.Objectname.Equals(obj.name));
             var c = b.GlobalRotation;
-            obj.transform.rotation = c; 
-            obj.transform.rotation = Quaternion.Euler(obj.transform.rotation.x, 0f, transform.rotation.z); 
+            obj.transform.rotation = c;
+            obj.transform.rotation = Quaternion.Euler(obj.transform.rotation.x, 0f, transform.rotation.z);
         }
     }
 
@@ -196,7 +191,7 @@ public class DataManager : MonoBehaviour
     /// </summary>
     public void ResetObjectPosition()
     {
-        if(GameManager.Instance.GameType == GameType.Prices)
+        if (GameManager.Instance.GameType == GameType.Prices)
         {
             foreach (GameObject obj in ObjectsInScene)
             {
@@ -207,9 +202,9 @@ public class DataManager : MonoBehaviour
             }
         }
 
-        if(GameManager.Instance.GameType == GameType.Locations)
+        if (GameManager.Instance.GameType == GameType.Locations)
         {
-            GameManager.Instance.ParentSideTable.GetComponent<GridObjectCollection>().UpdateCollection(); 
+            GameManager.Instance.ParentSideTable.GetComponent<GridObjectCollection>().UpdateCollection();
         }
     }
 
@@ -219,25 +214,25 @@ public class DataManager : MonoBehaviour
     public void ResetToDefault()
     {
         // Parameters
-        if(newSettings == null)
+        if (newSettings == null)
             newSettings = new List<ObjectData>();
 
-        if(completeUserData == null)
+        if (completeUserData == null)
             completeUserData = new List<Data>();
 
-        if(incompleteUserData == null)
+        if (incompleteUserData == null)
             incompleteUserData = new List<Data>();
 
-        if(newUserData == null)
+        if (newUserData == null)
             newUserData = new List<Data>();
 
-        if(movingObjects == null)
+        if (movingObjects == null)
             movingObjects = new List<GameObject>();
 
-        if(objectsInScene == null)
+        if (objectsInScene == null)
             objectsInScene = new List<GameObject>();
 
-        if(currentHeadData == null)
+        if (currentHeadData == null)
             currentHeadData = new HeadData();
 
         // Start loading data

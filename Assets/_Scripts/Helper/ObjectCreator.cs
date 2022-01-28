@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-using System.IO;
+﻿using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Examples.Demos;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
-using Microsoft.MixedReality.Toolkit.Utilities;
 using Microsoft.MixedReality.Toolkit.UI.BoundsControl;
-using Microsoft.MixedReality.Toolkit;
+using Microsoft.MixedReality.Toolkit.Utilities;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
 
 /// <summary>
 ///  Helper class to use functions from MonoBehaviour in ObjectManager
@@ -26,7 +26,7 @@ public class ObjectCreator : ScriptableObject
 
     // Folder name
     private string boundingBoxFolderName;
-    private string soundFolderName; 
+    private string soundFolderName;
     private string prefabFolderName;
 
     // Game objects
@@ -96,8 +96,8 @@ public class ObjectCreator : ScriptableObject
         var generatedObject = Instantiate(obj, position, rotation);
 
         // Add Sounds to Movement
-        generatedObject.GetComponent<BoundsControl>().RotateStarted.RemoveAllListeners(); 
-        generatedObject.GetComponent<BoundsControl>().RotateStarted.AddListener(()=>HandleOnRotationStarted(generatedObject));
+        generatedObject.GetComponent<BoundsControl>().RotateStarted.RemoveAllListeners();
+        generatedObject.GetComponent<BoundsControl>().RotateStarted.AddListener(() => HandleOnRotationStarted(generatedObject));
 
         generatedObject.GetComponent<BoundsControl>().RotateStopped.RemoveAllListeners();
         generatedObject.GetComponent<BoundsControl>().RotateStopped.AddListener(() => HandleOnRotationStopped(generatedObject));
@@ -105,12 +105,12 @@ public class ObjectCreator : ScriptableObject
         generatedObject.GetComponent<ObjectManipulator>().OnManipulationStarted.RemoveAllListeners();
         generatedObject.GetComponent<ObjectManipulator>().OnManipulationStarted.RemoveAllListeners();
 
-        generatedObject.GetComponent<ObjectManipulator>().OnManipulationStarted.AddListener(HandleOnManipulationStarted); 
+        generatedObject.GetComponent<ObjectManipulator>().OnManipulationStarted.AddListener(HandleOnManipulationStarted);
         generatedObject.GetComponent<ObjectManipulator>().OnManipulationEnded.AddListener(HandleOnManipulationStopped);
 
         generatedObject.SetActive(true);
 
-        generatedObject.name = generatedObject.name.Replace("(Clone)", ""); 
+        generatedObject.name = generatedObject.name.Replace("(Clone)", "");
         generatedObject.transform.position = position;
         generatedObject.transform.rotation = rotation;
         generatedObject.transform.parent = parent.transform;
@@ -129,7 +129,7 @@ public class ObjectCreator : ScriptableObject
     public void SpawnObjects(GameObject[] gameObjects, GameObject parent, Vector3[] positions, Quaternion[] rotations, ConfigType config)
     {
         for (int i = 0; i < gameObjects.Length; i++)
-            SpawnObject(gameObjects[i], parent, positions[i], rotations[i], config); 
+            SpawnObject(gameObjects[i], parent, positions[i], rotations[i], config);
     }
 
     /// <summary>
@@ -203,7 +203,7 @@ public class ObjectCreator : ScriptableObject
     public void Reset()
     {
         if (instantiatedObjects != null)
-            RemoveAllObjects(); 
+            RemoveAllObjects();
     }
 
     #endregion Remove Objects
@@ -234,7 +234,7 @@ public class ObjectCreator : ScriptableObject
                 {
                     // Allow gravity to let the object fall on the table and adjust position
                     rb.useGravity = true;
-                    rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ |RigidbodyConstraints.FreezeRotation;
+                    rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
                 }
             }
             catch (InvalidCastException e)
@@ -259,7 +259,7 @@ public class ObjectCreator : ScriptableObject
                 if (obj.TryGetComponent(out Rigidbody rb))
                 {
                     rb.useGravity = true;
-                    rb.constraints = RigidbodyConstraints.FreezeRotation; 
+                    rb.constraints = RigidbodyConstraints.FreezeRotation;
                 }
 
             }
@@ -281,7 +281,7 @@ public class ObjectCreator : ScriptableObject
     /// <param name="loadedObj"></param>
     private void ApplyRelevantComponents(GameObject loadedObj)
     {
-        loadedObj.tag = "InteractionObject"; 
+        loadedObj.tag = "InteractionObject";
 
         // Rigidbody
         var rb = loadedObj.EnsureComponent<Rigidbody>();
@@ -319,32 +319,32 @@ public class ObjectCreator : ScriptableObject
 
         // Min Max Scale Constraint
         var scaleConst = loadedObj.EnsureComponent<MinMaxScaleConstraint>();
-            scaleConst.HandType = ManipulationHandFlags.TwoHanded | ManipulationHandFlags.OneHanded; ;
-            scaleConst.ProximityType = ManipulationProximityFlags.Far| ManipulationProximityFlags.Near;
-            scaleConst.ScaleMaximum = 1;
-            scaleConst.ScaleMinimum = 1;
-            scaleConst.RelativeToInitialState = true;
+        scaleConst.HandType = ManipulationHandFlags.TwoHanded | ManipulationHandFlags.OneHanded; ;
+        scaleConst.ProximityType = ManipulationProximityFlags.Far | ManipulationProximityFlags.Near;
+        scaleConst.ScaleMaximum = 1;
+        scaleConst.ScaleMinimum = 1;
+        scaleConst.RelativeToInitialState = true;
 
-            constMan.AddConstraintToManualSelection(scaleConst);
+        constMan.AddConstraintToManualSelection(scaleConst);
 
         // Custom Movement Constraint
         var moveConst = loadedObj.EnsureComponent<CustomMovementConstraint>();
-            moveConst.HandType = ManipulationHandFlags.OneHanded | ManipulationHandFlags.TwoHanded;
-            moveConst.ConstraintOnMovement = AxisFlags.YAxis;
+        moveConst.HandType = ManipulationHandFlags.OneHanded | ManipulationHandFlags.TwoHanded;
+        moveConst.ConstraintOnMovement = AxisFlags.YAxis;
         constMan.AddConstraintToManualSelection(moveConst);
 
         // Object Manipulator
         var objMan = loadedObj.EnsureComponent<ObjectManipulator>();
-            objMan.AllowFarManipulation = false;
-            objMan.EnableConstraints = true;
-            objMan.ConstraintsManager = constMan;
+        objMan.AllowFarManipulation = false;
+        objMan.EnableConstraints = true;
+        objMan.ConstraintsManager = constMan;
 
         // BoundsControl
         var boundsControl = loadedObj.EnsureComponent<BoundsControl>();
-            boundsControl.Target = loadedObj;
-            boundsControl.BoundsControlActivation = Microsoft.MixedReality.Toolkit.UI.BoundsControlTypes.BoundsControlActivationType.ActivateByProximity;
-            boundsControl.BoundsOverride = col;
-            boundsControl.CalculationMethod = Microsoft.MixedReality.Toolkit.UI.BoundsControlTypes.BoundsCalculationMethod.RendererOverCollider;
+        boundsControl.Target = loadedObj;
+        boundsControl.BoundsControlActivation = Microsoft.MixedReality.Toolkit.UI.BoundsControlTypes.BoundsControlActivationType.ActivateByProximity;
+        boundsControl.BoundsOverride = col;
+        boundsControl.CalculationMethod = Microsoft.MixedReality.Toolkit.UI.BoundsControlTypes.BoundsCalculationMethod.RendererOverCollider;
 
         // DisplayConfig
         BoxDisplayConfiguration dispConfig = CreateInstance<BoxDisplayConfiguration>();
@@ -366,10 +366,10 @@ public class ObjectCreator : ScriptableObject
 
         // Rotation Handle
         var rotationHandle = CreateInstance<RotationHandlesConfiguration>();
-        rotationHandle.HandleMaterial           = GameManager.Instance.BoundingBoxHandleWhite;
-        rotationHandle.HandleGrabbedMaterial    = GameManager.Instance.BoundingBoxHandleBlueGrabbed;
-        rotationHandle.HandlePrefab             = GameManager.Instance.BoundingBox_RotateHandle;
-        boundsControl.RotationHandlesConfig = rotationHandle; 
+        rotationHandle.HandleMaterial = GameManager.Instance.BoundingBoxHandleWhite;
+        rotationHandle.HandleGrabbedMaterial = GameManager.Instance.BoundingBoxHandleBlueGrabbed;
+        rotationHandle.HandlePrefab = GameManager.Instance.BoundingBox_RotateHandle;
+        boundsControl.RotationHandlesConfig = rotationHandle;
 
         boundsControl.RotationHandlesConfig = rotationHandle;
         boundsControl.RotationHandlesConfig.ShowHandleForX = false;
@@ -379,7 +379,7 @@ public class ObjectCreator : ScriptableObject
         // Links Config
         var linksConfig = CreateInstance<LinksConfiguration>();
         linksConfig.ShowWireFrame = false;
-        boundsControl.LinksConfig = linksConfig; 
+        boundsControl.LinksConfig = linksConfig;
 
         boundsControl.ConstraintsManager = constMan;
     }
@@ -394,13 +394,13 @@ public class ObjectCreator : ScriptableObject
     /// <param name="eventData"></param>
     private void HandleOnManipulationStarted(ManipulationEventData eventData)
     {
-        Debug.Log("Manipulation Started"); 
+        Debug.Log("Manipulation Started");
 
         // Play audio
         eventData.ManipulationSource.GetComponent<AudioSource>().PlayOneShot(manStart);
 
         // Destroy rigidbody
-        Destroy(eventData.ManipulationSource.GetComponent<Rigidbody>()); 
+        Destroy(eventData.ManipulationSource.GetComponent<Rigidbody>());
 
         // Remove object from list
         DataManager.Instance.MovingObjects.Add(eventData.ManipulationSource);
@@ -425,7 +425,7 @@ public class ObjectCreator : ScriptableObject
 
         // Play audio
         eventData.ManipulationSource.GetComponent<AudioSource>().PlayOneShot(manStop);
-        
+
         // Remove object from list
         DataManager.Instance.MovingObjects.Remove(eventData.ManipulationSource);
     }
@@ -442,7 +442,7 @@ public class ObjectCreator : ScriptableObject
         generatedObject.GetComponent<BoundsControl>().GetComponent<AudioSource>().PlayOneShot(rotateStart);
 
         // Destroy rigidbody
-        Destroy(generatedObject.GetComponent<Rigidbody>()); 
+        Destroy(generatedObject.GetComponent<Rigidbody>());
 
         // Add object to list
         DataManager.Instance.MovingObjects.Add(generatedObject);

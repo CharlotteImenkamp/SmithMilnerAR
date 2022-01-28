@@ -10,7 +10,7 @@ public class ObjectData
     #region Public Fields
 
     public float Time;
-    public Vector3 PositionOffset; 
+    public Vector3 PositionOffset;
     public List<CustomObject> GameObjects;
 
     #endregion Public Fields
@@ -22,7 +22,7 @@ public class ObjectData
         if (GameObjects is null)
             return false;
         else
-            return true; 
+            return true;
     }
 
     #endregion 
@@ -38,7 +38,7 @@ public class ObjectData
         // Set parameters
         GameObjects = new List<CustomObject>();
         this.Time = time;
-        this.PositionOffset = positionOffset; 
+        this.PositionOffset = positionOffset;
 
         // Convert game object to custom object
         foreach (GameObject obj in movingObj)
@@ -62,7 +62,7 @@ public class ObjectData
             // Remove naming conventions from instantiating
             if (obj.name.Contains("(Clone)"))
                 obj.name = obj.name.Replace("(Clone)", "");
-            
+
             var intObj = new CustomObject(obj.name, obj.transform.position, obj.transform.rotation);
             GameObjects.Add(intObj);
         }
@@ -73,7 +73,7 @@ public class ObjectData
     {
         this.GameObjects = objList;
         this.Time = time;
-        this.PositionOffset = positionOffset; 
+        this.PositionOffset = positionOffset;
     }
 
     public ObjectData() { }
@@ -91,7 +91,7 @@ public class ObjectData
         Vector3[] positions = new Vector3[GameObjects.Count];
         for (int i = 0; i < GameObjects.Count; i++)
             positions[i] = GameObjects[i].GlobalPosition;
-        
+
         return positions;
     }
 

@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-/// todo: -
-////////////////////////////////////////////////////////
 
 /// <summary>
 /// Second part of game after location test
@@ -11,7 +9,7 @@ public class LocationEstimation : IState
 
     public void Enter()
     {
-        GameManager.Instance.DebugText.text = "LocationEstimation::Enter()"; 
+        GameManager.Instance.DebugText.text = "LocationEstimation::Enter()";
         Debug.Log("LocationEstimation::Enter()");
 
         // Call submanagers

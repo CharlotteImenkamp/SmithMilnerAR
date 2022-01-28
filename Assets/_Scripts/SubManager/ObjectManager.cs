@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using Microsoft.MixedReality.Toolkit.Utilities;
+﻿using Microsoft.MixedReality.Toolkit.Utilities;
+using UnityEngine;
 
 /// <summary>
 /// Submanager, which manages the spawning and removing of objects in scene. Highly 
@@ -20,11 +20,11 @@ public class ObjectManager : SubManager
     private GridObjectCollection sideTableObjectCollection;
 
     // Test scenarien
-    private GameObject testObject; 
+    private GameObject testObject;
     private Vector3 testPositionPrices;
     private Vector3 testPositionLocations;
 
-    private DataManager.Data currentData; 
+    private DataManager.Data currentData;
     private ObjectCreator objectCreator;
 
     #endregion Private Fields
@@ -43,11 +43,11 @@ public class ObjectManager : SubManager
 
         // Object collections play table
         playTableObjectCollection = parentPlayTable.GetComponent<GridObjectCollection>();
-        if(playTableObjectCollection == null)
+        if (playTableObjectCollection == null)
         {
-            playTableObjectCollection.SurfaceType = ObjectOrientationSurfaceType.Plane; 
+            playTableObjectCollection.SurfaceType = ObjectOrientationSurfaceType.Plane;
             playTableObjectCollection.CellHeight = 0.25f;
-            playTableObjectCollection.CellWidth = 0.25f; 
+            playTableObjectCollection.CellWidth = 0.25f;
         }
 
         // Object collection side table
@@ -73,7 +73,7 @@ public class ObjectManager : SubManager
 
         interactionObjects = null;
         testObject = null;
-        currentData.Clear(); 
+        currentData.Clear();
         objectCreator.Reset();
     }
 
@@ -88,17 +88,17 @@ public class ObjectManager : SubManager
         switch (newState)
         {
             case "Initialization":
-                Initialize(); 
-                break; 
-            
+                Initialize();
+                break;
+
             case "SettingsMenu":
                 break;
 
             case "LocationTest":
                 // Spawn test object at side table
                 CheckDefaultParameters();
-                objectCreator.SpawnObject(testObject,parentSideTable,testPositionLocations,testObject.transform.rotation, ConfigType.MovementEnabled);
-                DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects; 
+                objectCreator.SpawnObject(testObject, parentSideTable, testPositionLocations, testObject.transform.rotation, ConfigType.MovementEnabled);
+                DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects;
                 break;
 
             case "LocationEstimation":
@@ -106,7 +106,7 @@ public class ObjectManager : SubManager
                 objectCreator.SpawnObjects(interactionObjects,
                     parentSideTable,
                     currentData.ObjData.GetObjectPositions(),
-                    currentData.ObjData.GetObjectRotations(), 
+                    currentData.ObjData.GetObjectRotations(),
                     ConfigType.MovementEnabled);
                 sideTableObjectCollection.UpdateCollection();
                 DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects;
@@ -123,18 +123,18 @@ public class ObjectManager : SubManager
                 // Spawn objects at main table
                 objectCreator.SpawnObjects(interactionObjects, parentPlayTable,
                     currentData.ObjData.GetObjectPositions(),
-                    currentData.ObjData.GetObjectRotations(), 
+                    currentData.ObjData.GetObjectRotations(),
                     ConfigType.MovementDisabled,
                     GetPositionOffset()
                     );
                 DataManager.Instance.ObjectsInScene = objectCreator.InstantiatedObjects;
-                break; 
+                break;
 
             case "Pause":
                 break;
 
             case "End":
-                break; 
+                break;
 
             default:
                 Debug.LogError("ObjectManager::OnGameStateEntered invalid State.");
@@ -149,7 +149,7 @@ public class ObjectManager : SubManager
     public override void OnGameStateLeft(string oldState)
     {
         if (oldState == "LocationTest" || oldState == "LocationEstimation" || oldState == "PriceTest" || oldState == "PriceEstimation" || oldState == "Pause" || oldState == "End")
-                objectCreator.RemoveAllObjects();
+            objectCreator.RemoveAllObjects();
     }
 
     #endregion gameStates
@@ -185,8 +185,8 @@ public class ObjectManager : SubManager
         if (testObject == null)
         {
             testObject = objectCreator.CreateInteractionObject(currentData.ObjData);
-            testPositionPrices = GameManager.Instance.SpawnPointGame.position;                                    
-            testPositionLocations = GameManager.Instance.SpawnPointSide.position; 
+            testPositionPrices = GameManager.Instance.SpawnPointGame.position;
+            testPositionLocations = GameManager.Instance.SpawnPointSide.position;
         }
     }
 

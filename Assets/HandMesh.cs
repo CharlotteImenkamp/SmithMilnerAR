@@ -1,12 +1,10 @@
-using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit;
-using System.Collections;
-using System.Collections.Generic;
+using Microsoft.MixedReality.Toolkit.Input;
 using UnityEngine;
 
 public class HandMesh : MonoBehaviour
 {
-    private MixedRealityHandTrackingProfile handTrackingProfile; 
+    private MixedRealityHandTrackingProfile handTrackingProfile;
 
     // Start is called before the first frame update
     void Start()

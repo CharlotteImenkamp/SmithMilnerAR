@@ -6,7 +6,7 @@ using UnityEngine;
 /// Singelton class
 /// tasks: change gameStates, which are no data states
 /// </summary>
-public class GameStateManager: MonoBehaviour
+public class GameStateManager : MonoBehaviour
 {
     #region Instance
 
@@ -40,7 +40,7 @@ public class GameStateManager: MonoBehaviour
     /// </summary>
     private void Start()
     {
-        ResetToDefault(); 
+        ResetToDefault();
     }
 
     #endregion MonoBehaviour Functions
@@ -56,15 +56,15 @@ public class GameStateManager: MonoBehaviour
     {
         // Change game state
         if (gameType == GameType.Prices)
-            gameStateMachine.ChangeState(new PriceTest()); 
-        else if(gameType == GameType.Locations)
+            gameStateMachine.ChangeState(new PriceTest());
+        else if (gameType == GameType.Locations)
             gameStateMachine.ChangeState(new LocationTest());
         else
-            throw new ArgumentException("GameStateManager::StartTestRun no valid GameType {0}", gameType.ToString()); 
-        
+            throw new ArgumentException("GameStateManager::StartTestRun no valid GameType {0}", gameType.ToString());
+
         // Assign next function to userButton event
         GameManager.Instance.OnUserButtonClicked.RemoveAllListeners();
-        GameManager.Instance.OnUserButtonClicked.AddListener(() => StartGame(GameManager.Instance.GameType)); 
+        GameManager.Instance.OnUserButtonClicked.AddListener(() => StartGame(GameManager.Instance.GameType));
     }
 
     /// <summary>
@@ -84,7 +84,7 @@ public class GameStateManager: MonoBehaviour
         else if (gameType == GameType.Locations)
         {
             gameStateMachine.ChangeState(new LocationEstimation());
-            DataManager.Instance.StartDataLogging(); 
+            DataManager.Instance.StartDataLogging();
         }
         else
             throw new ArgumentException("GameStateManager::StartTestRun no valid GameType.");
@@ -118,9 +118,9 @@ public class GameStateManager: MonoBehaviour
         }
         else
             throw new ArgumentException("GameStateManager::EndGame no valid GameType.");
-        
+
         // remove from event
-        GameManager.Instance.OnUserButtonClicked.RemoveAllListeners(); 
+        GameManager.Instance.OnUserButtonClicked.RemoveAllListeners();
     }
 
     #endregion Button Functions
@@ -133,7 +133,7 @@ public class GameStateManager: MonoBehaviour
     public void ResetToDefault()
     {
         // Events
-        GameManager.Instance.OnUserButtonClicked.RemoveAllListeners(); 
+        GameManager.Instance.OnUserButtonClicked.RemoveAllListeners();
 
         // game states
         gameStateMachine.ChangeState(new Initialization());

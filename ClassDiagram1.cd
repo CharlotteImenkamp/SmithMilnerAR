@@ -1,0 +1,318 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access" MembersFormat="FullSignature">
+  <Class Name="CustomMovementConstraint" Collapsed="true">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AECQAAAAAAAAQQAAAAAQAAAABQAAIAAAAAAAAAAACAA=</HashCode>
+      <FileName>Assets\_Scripts\CustomBehaviour\CustomMovementConstraint.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CustomScrollableListPopulator">
+    <Position X="23.25" Y="0.75" Width="2" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>gAAAAAQAEgAAAAMhAQAIIAAMAAAAAIIIwAAAQAEACCA=</HashCode>
+      <FileName>Assets\_Scripts\CustomBehaviour\CustomScrollableListPopulator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ToggleBoundsControl">
+    <Position X="13.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAEACAAAAAAAAAAAAAAAAAAAAIIAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\CustomBehaviour\ToggleBoundsControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataManager">
+    <Position X="6" Y="7.75" Width="3" />
+    <Compartments>
+      <Compartment Name="Public" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Struct Name="DataManager.Data" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\_Scripts\DataManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAQAVgBCgCAgQQCFAAAAgBAEAgBAAAAFQAACAAAAA0A=</HashCode>
+      <FileName>Assets\_Scripts\DataManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ApplicationData" Collapsed="true">
+    <Position X="11.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgCAAAAAAAAAAgAAAAAAAAAQAAEAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\_Scripts\FileClasses\ApplicationData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataFile" Collapsed="true">
+    <Position X="15.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>SAgAgYAAAAAAAACAIAQAAAAACAAAAIAAAAAAABAACAA=</HashCode>
+      <FileName>Assets\_Scripts\FileClasses\DataFile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JsonFile&lt;T&gt;" Collapsed="true">
+    <Position X="9.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAgAAAgAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\FileClasses\DataFile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeadData" Collapsed="true">
+    <Position X="15.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABBAQAIAAAAgAAAAAIAAAAAABAAAAABAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\FileClasses\HeadData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ObjectData" Collapsed="true">
+    <Position X="11.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAEEAAAAAAgAAAAAAAAAAAAAAAAAAEBAAQA=</HashCode>
+      <FileName>Assets\_Scripts\FileClasses\ObjectData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CustomObject" Collapsed="true">
+    <Position X="11.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAIAAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\FileClasses\ObjectData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserSettingsData">
+    <Position X="15.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAQAgAAAgAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Assets\_Scripts\FileClasses\UserSettingsData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameManager">
+    <Position X="0.5" Y="7.5" Width="4.75" />
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>EEBhAggIASAgSQCCYCAwBIk0IiBAjEIBQAgwQgAYIcA=</HashCode>
+      <FileName>Assets\_Scripts\GameManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameStateManager">
+    <Position X="19.25" Y="1" Width="3" />
+    <Compartments>
+      <Compartment Name="Public" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAACAAAAAAAAAAAAAgAABAAAAAQAAAAAgQAUA=</HashCode>
+      <FileName>Assets\_Scripts\GameStateManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataGenerationHelper" Collapsed="true">
+    <Position X="17" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\Helper\DataGenerationHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ObjectCreator" Collapsed="true">
+    <Position X="13.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAQACAiABAAAAAAICgAAEAAIEAgAACAAEQAoCBA=</HashCode>
+      <FileName>Assets\_Scripts\Helper\ObjectCreator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserInputHelper">
+    <Position X="17.75" Y="4.5" Width="2.75" />
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAghAEACAQCBAiAAAAAAAAACAAAAAIAAAg=</HashCode>
+      <FileName>Assets\_Scripts\Helper\UserInputHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LoadSettings" BaseTypeListCollapsed="true">
+    <Position X="21" Y="11.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Public" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAEAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\States\dataStates\LoadSettings.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="LogData" BaseTypeListCollapsed="true">
+    <Position X="18.25" Y="11.75" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+      <Compartment Name="Public" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>EAAEEAQKEgIAAARACQBgCMIAAAiUCBAMIAFAAACAGQA=</HashCode>
+      <FileName>Assets\_Scripts\States\dataStates\LogData.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="1.108" Collapsed="true" />
+  </Class>
+  <Class Name="End" BaseTypeListCollapsed="true">
+    <Position X="23.75" Y="9.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Public" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAEAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\States\gameStates\End.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Initialization" BaseTypeListCollapsed="true">
+    <Position X="18.25" Y="8" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Public" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAEAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\States\gameStates\Initialization.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="LocationEstimation" BaseTypeListCollapsed="true">
+    <Position X="21.75" Y="9.25" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Public" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAEAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\States\gameStates\LocationEstimation.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="LocationTest" BaseTypeListCollapsed="true">
+    <Position X="21.75" Y="8" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Public" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAEAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\States\gameStates\LocationTest.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Pause" BaseTypeListCollapsed="true">
+    <Position X="23.75" Y="8" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Public" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAEAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\States\gameStates\Pause.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="PriceEstimation" BaseTypeListCollapsed="true">
+    <Position X="20" Y="9.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Public" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAEAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\States\gameStates\PriceEstimation.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="PriceTest" BaseTypeListCollapsed="true">
+    <Position X="20" Y="8" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Public" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAEAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\States\gameStates\PriceTest.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SettingsMenu" BaseTypeListCollapsed="true">
+    <Position X="18.25" Y="9.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Public" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAEAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\States\gameStates\SettingsMenu.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="StateMachine">
+    <Position X="11.25" Y="7.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>BAQAAAAAAAAAFAAAIAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\States\StateMachine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SubManager">
+    <Position X="4" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAABAAAAAAAAAAABAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\SubManager\ISubManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ObjectManager">
+    <Position X="2" Y="2.75" Width="3.5" />
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAAQQIgQQBQAAAAgAAAAABQAQAIgAAAAAAAAAABA=</HashCode>
+      <FileName>Assets\_Scripts\SubManager\ObjectManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UIManager">
+    <Position X="6" Y="2.75" Width="3.25" />
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAgAAIRAAAAABQAgAACAEAAABAAAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\SubManager\UIManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Microsoft.MixedReality.Toolkit.Examples.Demos.TetheredPlacement">
+    <Position X="10" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQiAAAAAAAAAAIAAAAAAgAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Assets\Samples\Mixed Reality Toolkit Examples\2.7.0\Demos - HandTracking\Scripts\TetheredPlacement.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="IState">
+    <Position X="14.75" Y="7.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAEAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\States\IState.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="ConfigType">
+    <Position X="9" Y="14" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAEAABAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\_Scripts\Helper\GobalEnums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GameType">
+    <Position X="5.5" Y="14" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAIAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Assets\_Scripts\Helper\GobalEnums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="UserSet">
+    <Position X="7.25" Y="14" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAEAAAA=</HashCode>
+      <FileName>Assets\_Scripts\Helper\GobalEnums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

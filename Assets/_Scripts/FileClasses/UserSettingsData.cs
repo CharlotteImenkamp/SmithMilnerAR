@@ -1,7 +1,4 @@
-﻿/// todo: -
-////////////////////////////////////////////////////////
-
-
+﻿
 /// <summary>
 /// Data class to hold user specific data
 /// </summary>
@@ -16,7 +13,7 @@ public class UserSettingsData
     {
         UserID = userID;
         this.Set = set;
-        this.UpdateRate = updateRate; 
+        this.UpdateRate = updateRate;
     }
 
     #endregion  Constructors
@@ -50,7 +47,7 @@ public class UserSettingsData
     {
         UserID = "";
         Set = UserSet.None;
-        UpdateRate = 0.0f; 
+        UpdateRate = 0.0f;
     }
 
     #endregion Public Functions

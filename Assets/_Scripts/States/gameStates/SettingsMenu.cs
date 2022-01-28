@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-/// todo: -
-////////////////////////////////////////////////////////
 
 
 /// <summary>
@@ -21,7 +19,7 @@ public class SettingsMenu : IState
     }
 
     // No repeated task, hence execute is empty
-    public void Execute(){}
+    public void Execute() { }
 
     public void Exit()
     {

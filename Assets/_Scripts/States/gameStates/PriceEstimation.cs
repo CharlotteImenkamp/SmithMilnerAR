@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-/// todo: -
-////////////////////////////////////////////////////////
 
 /// <summary>
 /// State where Prices are estimated. 

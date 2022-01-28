@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 
-/// todo: -
-////////////////////////////////////////////////////////
-
+// Class to save Application Data
 [System.Serializable]
 public class ApplicationData
 {
@@ -16,10 +14,10 @@ public class ApplicationData
         ApplicationData defaultData = new ApplicationData();
 
         defaultData.UserDataFolder = "data";
-        defaultData.NewUserData = new List<string> { }; 
+        defaultData.NewUserData = new List<string> { };
         defaultData.IncompleteUserData = new List<string> { };
-        defaultData.CompleteUserData = new List<string> { }; 
-        
+        defaultData.CompleteUserData = new List<string> { };
+
         return defaultData;
     }
 
@@ -33,7 +31,7 @@ public class ApplicationData
         else if (NewUserData == null || IncompleteUserData == null || CompleteUserData == null)
             return false;
         else
-            return true; 
+            return true;
     }
 
     #endregion
@@ -44,7 +42,7 @@ public class ApplicationData
     public string UserDataFolder;
 
     // Sets
-    public List<string> NewUserData; 
+    public List<string> NewUserData;
     public List<string> IncompleteUserData;
     public List<string> CompleteUserData;
 

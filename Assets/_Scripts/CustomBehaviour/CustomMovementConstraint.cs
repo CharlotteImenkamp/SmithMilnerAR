@@ -1,9 +1,7 @@
-using UnityEngine;
+using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
-using Microsoft.MixedReality.Toolkit;
-/// todo: -
-////////////////////////////////////////////////////////
+using UnityEngine;
 
 /// <summary>
 /// Movement Constraint to add to constraint manager of game objects.
@@ -92,8 +90,8 @@ public class CustomMovementConstraint : TransformConstraint
     {
         if (referenceTransform == null)
             referenceTransform = GameObject.FindGameObjectWithTag("MovementConstraint").transform;
-        
-        minYAxis = referenceTransform.position.y; 
+
+        minYAxis = referenceTransform.position.y;
     }
 
     #endregion Helper Functions

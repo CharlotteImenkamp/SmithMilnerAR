@@ -1,7 +1,4 @@
-﻿/// todo: -
-////////////////////////////////////////////////////////
-
-
+﻿
 /// <summary>
 /// Enum to describe object configuration
 /// </summary>

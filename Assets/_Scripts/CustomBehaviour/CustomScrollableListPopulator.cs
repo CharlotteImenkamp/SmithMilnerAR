@@ -1,10 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
+
 /// <summary>
 /// Populate scrollable list
 /// </summary>
@@ -32,7 +33,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
 
     [SerializeField]
     [Tooltip("Text object to display user choice. If left empty, no text is displayed.")]
-    private TextMeshPro text; 
+    private TextMeshPro text;
 
     [SerializeField]
     [Tooltip("Demonstrate lazy loading")]
@@ -84,8 +85,8 @@ public class CustomScrollableListPopulator : MonoBehaviour
     /// <param name="listType">Determine type of list. Choose between "incompleteSet", "completeSet", "newSet" and "Objects".</param>
     public void MakeScrollingList(string listType)
     {
-        ClearList(); 
-        if(DataManager.Instance != null)
+        ClearList();
+        if (DataManager.Instance != null)
         {
             if (listType == "incompleteSet")
             {
@@ -113,7 +114,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
                 throw new System.Exception("CustomToggleListPopulator: incorrect input");
         }
         else
-            Debug.LogWarning("CustomScrollableListPopulator tried to get Datamananger instance, which was null."); 
+            Debug.LogWarning("CustomScrollableListPopulator tried to get Datamananger instance, which was null.");
     }
 
     /// <summary>
@@ -128,7 +129,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
         if (newData.IsValid())
             return newData;
         else
-            throw new ArgumentNullException(); 
+            throw new ArgumentNullException();
     }
 
     /// <summary>
@@ -155,7 +156,7 @@ public class CustomScrollableListPopulator : MonoBehaviour
         {
             objectCreator.Reset();
             objectCreator = null;
-            objectCreator = ScriptableObject.CreateInstance<ObjectCreator>(); 
+            objectCreator = ScriptableObject.CreateInstance<ObjectCreator>();
         }
 
         // Instantiated Button Objects
@@ -211,9 +212,9 @@ public class CustomScrollableListPopulator : MonoBehaviour
             }
 
         }
-        
+
         // Reset text
-        if(text != null)
+        if (text != null)
             text.SetText("");
 
         // Activate Scroll View
@@ -223,11 +224,11 @@ public class CustomScrollableListPopulator : MonoBehaviour
             throw new ArgumentNullException("Assign a Scrolling ObjectCollection as Child of CustomScrollableListPopulator.");
 
         // Clipping Box
-        if(clippingBox == null)
+        if (clippingBox == null)
             clippingBox = scrollView.GetComponentInChildren<ClippingBox>();
 
         // Parameters
-        numItems = 0; 
+        numItems = 0;
     }
 
     #endregion Public Functions

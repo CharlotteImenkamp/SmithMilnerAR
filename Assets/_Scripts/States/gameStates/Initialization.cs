@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-/// todo: -
-////////////////////////////////////////////////////////
 
 /// <summary>
 /// Gamestate, which is called on GameManager::Start()
@@ -14,13 +12,13 @@ public class Initialization : IState
     /// </summary>
     public void Enter()
     {
-        GameManager.Instance.DebugText.text = "Initialization::Enter()"; 
+        GameManager.Instance.DebugText.text = "Initialization::Enter()";
         Debug.Log("Initialization::Enter()");
 
         // Call submanagers
-        var SubManagers = GameManager.Instance.AttachedSubManagers; 
+        var SubManagers = GameManager.Instance.AttachedSubManagers;
         foreach (SubManager subManager in SubManagers)
-            subManager.OnGameStateEntered(this.ToString());  
+            subManager.OnGameStateEntered(this.ToString());
     }
 
     // No repeated task, hence execute is empty

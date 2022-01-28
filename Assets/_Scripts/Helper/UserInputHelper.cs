@@ -2,8 +2,6 @@ using Microsoft.MixedReality.Toolkit.UI;
 using System;
 using TMPro;
 using UnityEngine;
-/// todo: -
-////////////////////////////////////////////////////////
 
 /// <summary>
 /// Used in "UserSettingsUI" and "ToggleCollection_Set" in Editor.
@@ -57,7 +55,7 @@ public class UserInputHelper : MonoBehaviour
     // Set default values
     void Start()
     {
-        idText  = "User ID:";
+        idText = "User ID:";
         setText = "User Set: ";
 
         if (idObj != null)
@@ -74,13 +72,13 @@ public class UserInputHelper : MonoBehaviour
     /// </summary>
     private void Reset()
     {
-        userID  = "";
+        userID = "";
         userSet = "";
 
-        if(idObj != null)
+        if (idObj != null)
             idObj.text = idText + userID;
 
-        if(setObj != null)
+        if (setObj != null)
             setObj.text = setText + userSet;
 
         set = new UserSet();
@@ -138,7 +136,7 @@ public class UserInputHelper : MonoBehaviour
 
         // Set text
         idObj.text = idText + userID;
-        setObj.text = setText + userSet; 
+        setObj.text = setText + userSet;
     }
 
     /// <summary>
@@ -148,13 +146,13 @@ public class UserInputHelper : MonoBehaviour
     {
         // Prepare settings
         UserSettingsData userData = new UserSettingsData(UserID, Set, GameManager.Instance.UpdateRate);
-        ObjectData objData = newObjectList.GetInstantiatedObjects(); 
+        ObjectData objData = newObjectList.GetInstantiatedObjects();
 
         // Save settings
-        if(objData.IsValid() && userData.IsValid())
+        if (objData.IsValid() && userData.IsValid())
             DataManager.Instance.SetAndSaveNewSettings(new DataManager.Data(objData, userData));
 
-        Reset(); 
+        Reset();
     }
 
     /// <summary>
@@ -173,7 +171,7 @@ public class UserInputHelper : MonoBehaviour
                 Debug.LogError("UserInputHelper::ResetToggleList Index exceeds List");
         }
         else
-            Debug.LogError("UserInputHelper::ResetToggleList must be attached to an actor with a toggle collection"); 
+            Debug.LogError("UserInputHelper::ResetToggleList must be attached to an actor with a toggle collection");
     }
 
     #endregion Button Functions
