@@ -1,12 +1,12 @@
-## Umsetzung des Smith-Milner-Paradigmas in Augmented-Reality
+## Implementation of the Smith-Milner paradigm in augmented reality
 
-Umsetzung eines etablierten Tests der Visuokonstruktion mit der HoloLens2. \
-Zu Beginn werden Objektnamen und Positionen aus \Assets\Resources\DataFiles\generalSettings.json ausgelesen. 
-Die Datei muss vorhanden sein. 
+Implementation of an established test of visuoconstruction with the HoloLens2. \
+At the beginning, object names and positions are read from \Assets\Resources\DataFiles\generalSettings.json. 
+The file must exist. 
 
-### Ändern einer einzulesenden Datei
-Ein neuer Datensatz kann über das Programm oder manuell angelegt werden. 
-Eine manuelle Änderung erfolgt über das Hinzufügen von .json Dateien in \Assets\Resources\DataFiles\userData\userX und die 
-registrierung der Datei in der generalSettings Datei.
-Zu einem Datensatz gehört eine user-Datei sowie eine Objektpositionsdatei.
+### Changing a file 
+A new data record can be created either via the programme or manually. 
+A manual change is made by adding .json files in \Assets\Resources\DataFiles\userData\userX and the 
+registration of the file in the generalSettings file.
+A data set includes a user file and an object position file.
 
